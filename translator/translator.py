@@ -1,3 +1,4 @@
+import json
 import sys
 
 from _lexer import tokenize, Token
@@ -84,7 +85,7 @@ class Translator:
         self.code.append(instruction)
         self.cur_addr += WORD_SIZE
 
-    def emit_lit(self, value: int | str):
+    def emit_lit(self, value: str):
         self.emit(self.word2addr["LIT"])
         self.emit(str(value))
 
@@ -96,6 +97,7 @@ class Translator:
         Проход 2
         Трансляция в шитый код.
         """
+        self.data_addr = self._calc_data_addr(tokens)
         self.emit_label("START")
 
         self.it = iter(tokens)
@@ -104,7 +106,7 @@ class Translator:
                 self._translate_word(token.value)
             elif token.typ == "NUMBER":
                 self.last_number = token.value
-                self.emit_lit(token.value)
+                self.emit_lit(hex(token.value))
             else:
                 raise Exception(f"Unexpected token type: {token.typ}")
 
@@ -158,10 +160,44 @@ class Translator:
             raise Exception(f"Name error: {name} already defined")
 
 
+def code2json(asm_lines: list[str]) -> list[dict]:
+    json_output = []
+    current_address = 0
+
+    for line in asm_lines:
+        clean_line = line.strip()
+        if not clean_line:
+            continue
+
+        if clean_line.endswith(":"):
+            row_type = "label"
+            json_output.append({
+                "address": hex(current_address),
+                "type": row_type,
+                "value": clean_line
+            })
+        elif clean_line.startswith("#"):
+            continue
+        else:
+            if clean_line.startswith("0x") or clean_line.lstrip('-').isdigit():
+                row_type = "data"
+            else:
+                row_type = "instruction"
+            json_output.append({
+                "address": hex(current_address),
+                "type": row_type,
+                "value": clean_line
+            })
+            current_address += WORD_SIZE
+
+    return json_output
+
+
 def main(source_path: str, target_path: str):
     with open(source_path, 'r', encoding="utf-8") as f:
         source_text = f.read()
-    addr, kernel_code, start_addr = load_kernel("kernel.s")
+    INIT_CODE_SIZE = 9 * WORD_SIZE
+    addr, kernel_code, start_addr = load_kernel("kernel.s", INIT_CODE_SIZE)
     tokens = tokenize(source_text)
 
     translator = Translator(addr, start_addr)
@@ -181,12 +217,21 @@ def main(source_path: str, target_path: str):
     ]
     asm = init_code + kernel_code + translated_code
 
-    with open(target_path, 'w', encoding="utf-8") as f:
-        for line in asm:
-            f.write(line + "\n")
+    if "." in target_path:
+        target_json_path = target_path.rsplit(".", 1)[0] + ".json"
+    else:
+        target_json_path = target_path + ".json"
+
+    json_data = code2json(asm)
+
+    with open(target_json_path, 'w', encoding="utf-8") as f:
+        f.write("[\n")
+        lines = [f"    {json.dumps(item, ensure_ascii=False)}" for item in json_data]
+        f.write(",\n".join(lines))
+        f.write("\n]\n")
 
 
 if __name__ == "__main__":
     source = "../examples/in/input.ft"
-    target = "../examples/out/out.s"
+    target = "../examples/out/out.json"
     main(source, target)

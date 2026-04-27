@@ -1,7 +1,7 @@
 import re
 
 
-def load_kernel(path: str, start_addr: hex = 0x0) -> (dict[str, hex], [str], hex):
+def load_kernel(path: str, start_addr: int = 0x0) -> (dict[str, str], [str], hex):
     labels = {}
     code = []
     current_addr = start_addr
