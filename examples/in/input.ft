@@ -1,0 +1,16 @@
+4 CELLS array results
+
+: fib_step + ;
+
+: main
+    0 1
+    fib_step
+    fib_step
+    fib_step
+    fib_step
+    
+    results !
+    results @ .
+;
+
+main

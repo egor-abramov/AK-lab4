@@ -1,0 +1,192 @@
+import sys
+
+from _lexer import tokenize, Token
+from _kernel import load_kernel
+
+WORD_SIZE = 4
+DATA_STACK_INIT_ADDR = 0x6FF
+RETURN_STACK_INIT_ADDR = 0x7FF
+INPUT_ADDR = 0x5F8
+OUTPUT_ADDR = 0x5FC
+
+FORTH_PRIMITIVES = {
+    "+": "ADD",
+    "-": "SUB",
+    "*": "MUL",
+    "and": "AND",
+    "not": "NOT",
+    "dup": "DUP",
+    "drop": "DROP",
+    "swap": "SWAP",
+    "!": "STORE",
+    "@": "LOAD",
+    "cells": "CELLS",
+    "read": "READ",
+    ".": "PRINT",
+    "=0": "EZ",
+    ">0": "GZ",
+    "execute": "EXECUTE",
+}
+
+
+class Translator:
+    """
+    Транслятор Forth в RISC-ассемблер
+    Выполняет трансляцию за два прохода:
+        1. Расчет адреса статической памяти
+        2. Генерация шитого кода
+    """
+
+    def __init__(self, kernel_word2addr: dict[str, str], start_addr: int):
+        self.word2addr = kernel_word2addr.copy()
+        self.var2addr: dict[str, str] = {}
+
+        self.start_addr = start_addr
+        self.cur_addr = start_addr
+        self.data_addr = 0
+
+        self.code: list[str] = []
+        self.loop_stack = []
+        self.it = iter([])
+
+        self.last_number = 0
+
+    def _calc_data_addr(self, tokens: list[Token]) -> int:
+        """
+        Первый проход транслятора.
+        Расчет конца сегмента кода для определения адреса начала статической памяти.
+        """
+        variables = set()
+        it = iter(tokens)
+        for token in it:
+            if token.typ == "WORD" and token.value in ["var", "array"]:
+                variables.add(next(it).value)
+
+        code_len = 0
+        it = iter(tokens)
+        for token in it:
+            if token.typ == "NUMBER":
+                code_len += 2 * WORD_SIZE
+            elif token.typ == "WORD":
+                word = token.value
+                if word in ["var", "array"]:
+                    next(it)
+                elif word == "loop":
+                    pass
+                elif word in variables or word in ["endloop", "'"]:
+                    code_len += 2 * WORD_SIZE
+                else:
+                    code_len += WORD_SIZE
+
+        return self.start_addr + code_len + WORD_SIZE
+
+    def emit(self, instruction: str):
+        self.code.append(instruction)
+        self.cur_addr += WORD_SIZE
+
+    def emit_lit(self, value: int | str):
+        self.emit(self.word2addr["LIT"])
+        self.emit(str(value))
+
+    def emit_label(self, label: str):
+        self.code.append(f"{label}:")
+
+    def translate(self, tokens: list[Token]) -> (list[str], int):
+        """
+        Проход 2
+        Трансляция в шитый код.
+        """
+        self.emit_label("START")
+
+        self.it = iter(tokens)
+        for token in self.it:
+            if token.typ == "WORD":
+                self._translate_word(token.value)
+            elif token.typ == "NUMBER":
+                self.last_number = token.value
+                self.emit_lit(token.value)
+            else:
+                raise Exception(f"Unexpected token type: {token.typ}")
+
+        self.emit(self.word2addr["HALT"])
+        return self.code, self.data_addr
+
+    def _translate_word(self, word: str):
+        if word in FORTH_PRIMITIVES:
+            word = FORTH_PRIMITIVES[word]
+
+        if word in self.word2addr:
+            self.emit(self.word2addr[word])
+        elif word in self.var2addr:
+            self.emit_lit(self.var2addr[word])
+        elif word == "loop":
+            self.loop_stack.append(self.cur_addr)
+        elif word == "endloop":
+            if not self.loop_stack:
+                raise Exception("Syntax error: loop expected")
+            target_addr = self.loop_stack.pop()
+            self.emit(self.word2addr["JNZ"])
+            self.emit(hex(target_addr))
+        elif word == ":":
+            token_name = str(next(self.it).value)
+            self.word2addr[token_name] = hex(self.cur_addr)
+            self.emit_label(token_name.upper())
+            self.emit("j DOCOL")
+        elif word == ";":
+            self.emit(self.word2addr["EXIT"])
+        elif word == "'":
+            target_name = next(self.it).value
+            if target_name not in self.word2addr:
+                raise Exception(f"Word error: no such word {target_name}")
+            target_addr = self.word2addr[target_name]
+            self.emit_lit(target_addr)
+        elif word == "var":
+            var_name = next(self.it).value
+            self._assert_free_name(var_name)
+            self.var2addr[var_name] = hex(self.data_addr)
+            self.data_addr += WORD_SIZE
+        elif word == "array":
+            arr_name = next(self.it).value
+            self._assert_free_name(arr_name)
+            self.var2addr[arr_name] = hex(self.data_addr)
+            self.data_addr += self.last_number * WORD_SIZE
+        else:
+            raise Exception(f"Unknown word {word}")
+
+    def _assert_free_name(self, name: str):
+        if name in self.var2addr or name in self.word2addr or name in FORTH_PRIMITIVES:
+            raise Exception(f"Name error: {name} already defined")
+
+
+def main(source_path: str, target_path: str):
+    with open(source_path, 'r', encoding="utf-8") as f:
+        source_text = f.read()
+    addr, kernel_code, start_addr = load_kernel("kernel.s")
+    tokens = tokenize(source_text)
+
+    translator = Translator(addr, start_addr)
+    translated_code, data_addr = translator.translate(tokens)
+
+    init_code = [
+        "sub x0, x0, x0",
+        "sub x1, x1, x1",
+        "sub x4, x4, x4",
+        "sub sp, sp, sp",
+        "sub rp, rp, rp",
+
+        f"addi sp, sp, {DATA_STACK_INIT_ADDR}",
+        f"addi rp, rp, {RETURN_STACK_INIT_ADDR}",
+        f"addi x0, x0, {start_addr}",
+        f"addi x4, x4, {data_addr}",
+    ]
+    asm = init_code + kernel_code + translated_code
+
+    with open(target_path, 'w', encoding="utf-8") as f:
+        for line in asm:
+            f.write(line + "\n")
+
+
+if __name__ == "__main__":
+    source = "../examples/in/input.ft"
+    target = "../examples/out/out.s"
+    main(source, target)
