@@ -27,6 +27,8 @@ FORTH_PRIMITIVES = {
     "=0": "EZ",
     ">0": "GZ",
     "execute": "EXECUTE",
+    "print_str": "PRINT_STR",
+    "read_str": "READ_STR",
 }
 
 
@@ -47,6 +49,7 @@ class Translator:
         self.data_addr = 0
 
         self.code: list[str] = []
+        self.data_segment: list[str] = ["Data Segment:"]
         self.loop_stack = []
         self.it = iter([])
 
@@ -60,18 +63,27 @@ class Translator:
         variables = set()
         it = iter(tokens)
         for token in it:
-            if token.typ == "WORD" and token.value in ["var", "array"]:
-                variables.add(next(it).value)
+            if token.typ == "WORD":
+                if token.value in ["var", "array"]:
+                    variables.add(next(it).value)
+                elif token.value == "string":
+                    next(it)
+                    variables.add(next(it).value)
 
         code_len = 0
         it = iter(tokens)
         for token in it:
             if token.typ == "NUMBER":
                 code_len += 2 * WORD_SIZE
+            elif token.typ == "STRING":
+                code_len += 2 * WORD_SIZE
             elif token.typ == "WORD":
                 word = token.value
                 if word in ["var", "array"]:
                     next(it)
+                elif word == "string":
+                    next(it) # skip string token
+                    next(it) # skip string name
                 elif word == "loop":
                     pass
                 elif word in variables or word in ["endloop", "'"]:
@@ -111,6 +123,7 @@ class Translator:
                 raise Exception(f"Unexpected token type: {token.typ}")
 
         self.emit(self.word2addr["HALT"])
+        self.code.extend(self.data_segment)
         return self.code, self.data_addr
 
     def _translate_word(self, word: str):
@@ -152,6 +165,24 @@ class Translator:
             self._assert_free_name(arr_name)
             self.var2addr[arr_name] = hex(self.data_addr)
             self.data_addr += self.last_number * WORD_SIZE
+        elif word == "string":
+            str_token = next(self.it)
+            if str_token.typ != "STRING":
+                raise Exception(f"Syntax error: string literal expected, got {str_token.typ}")
+
+            name_token = next(self.it)
+            if name_token.typ != "WORD":
+                raise Exception(f"Syntax error: identifier expected, got {name_token.typ}")
+
+            str_name = name_token.value
+            self._assert_free_name(str_name)
+            self.var2addr[str_name] = hex(self.data_addr)
+
+            str_val = str_token.value
+            self.data_segment.append(str(len(str_val)))
+            for ch in str_val:
+                self.data_segment.append(str(ord(ch)))
+            self.data_addr += WORD_SIZE * (len(str_val) + 1)
         else:
             raise Exception(f"Unknown word {word}")
 

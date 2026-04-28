@@ -14,6 +14,7 @@ def tokenize(code: str) -> [Token]:
     tokens: [Token] = []
 
     token_specification = [
+        ("STRING", r'"[^"]*"'),
         ("NUMBER", r"-?\d+"),
         ("WORD", r"[^\s]+"),
     ]
@@ -26,4 +27,6 @@ def tokenize(code: str) -> [Token]:
             tokens.append(Token(typ, int(value)))
         elif typ == "WORD":
             tokens.append(Token(typ, str(value).lower()))
+        elif typ == "STRING":
+            tokens.append(Token(typ, value[1:-1]))
     return tokens

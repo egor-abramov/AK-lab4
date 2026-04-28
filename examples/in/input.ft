@@ -1,16 +1,13 @@
-4 CELLS array results
+string "What is your name?\n" question_msg
+string "Hello, " hello_msg
+string "!\n" excl_msg
 
-: fib_step + ;
+256 array user_name_buf
 
-: main
-    0 1
-    fib_step
-    fib_step
-    fib_step
-    fib_step
-    
-    results !
-    results @ .
-;
+question_msg print_str
 
-main
+user_name_buf read_str
+
+hello_msg print_str
+user_name_buf print_str  
+excl_msg print_str

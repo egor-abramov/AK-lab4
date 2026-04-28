@@ -208,6 +208,66 @@ EXECUTE:
 
 ##############################
 
+PRINT_STR:
+    lw x1, 0(sp)
+    addi sp, sp, 4
+    lw x2, 0(x1)
+
+PRINT_STR_LOOP:
+    jz x2, PRINT_STR_END
+    addi x1, x1, 4
+    lw x3, 0(x1)
+
+    addi sp, sp, -4
+    sw x1, 0(sp)
+
+    sub x1, x1, x1
+    addi x1, x1, 0x5FC
+    sw x3, 0(x1)
+
+    lw x1, 0(sp)
+    addi sp, sp, 4
+    addi x2, x2, -1
+    j PRINT_STR_LOOP
+PRINT_STR_END:
+    j NEXT
+
+##############################
+
+READ_STR:
+    lw x1, 0(sp)    # buf addr
+    sub x2, x2, x2  # str len
+    mv x3, x1       # pointer
+
+READ_STR_LOOP:
+    sub x1, x1, x1
+    addi x1, x1, 0x5F8
+    lw x1, 0(x1)
+
+    addi sp, sp, -4
+    sw x1, 0(sp)
+
+    addi x1, x1, -10
+    jz x1, READ_STR_END
+
+    lw x1, 0(sp)
+    addi sp, sp, 4
+
+    addi x3, x3, 4
+    sw x1, 0(x3)
+
+    addi x2, x2, 1
+    j READ_STR_LOOP
+
+READ_STR_END:
+    addi sp, sp, 4
+    lw x1, 0(sp)
+    addi sp, sp, 4
+    sw x2, 0(x1)
+    j NEXT
+
+##############################
+
 HALT:
     halt
 
