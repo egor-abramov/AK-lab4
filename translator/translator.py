@@ -1,8 +1,6 @@
 import json
+import re
 import sys
-
-from _lexer import tokenize, Token
-from _kernel import load_kernel
 
 WORD_SIZE = 4
 DATA_STACK_INIT_ADDR = 0x6FF
@@ -10,6 +8,7 @@ RETURN_STACK_INIT_ADDR = 0x7FF
 INPUT_ADDR = 0x5F8
 OUTPUT_ADDR = 0x5FC
 
+# Перевод forth слов в метки kernel.s
 FORTH_PRIMITIVES = {
     "+": "ADD",
     "-": "SUB",
@@ -30,6 +29,72 @@ FORTH_PRIMITIVES = {
     "print_str": "PRINT_STR",
     "read_str": "READ_STR",
 }
+
+
+class Token:
+    def __init__(self, typ, value):
+        self.typ: str = typ
+        self.value = value
+
+    def __repr__(self):
+        return f"Token=({self.typ}, {self.value})"
+
+
+def tokenize(code: str) -> [Token]:
+    """
+    Исходный код разбивается на токены, для последующей обработки
+    """
+
+    tokens: [Token] = []
+
+    token_specification = [
+        ("STRING", r'"[^"]*"'),
+        ("NUMBER", r"-?\d+"),
+        ("WORD", r"[^\s]+"),
+    ]
+
+    token_regexp = "|".join([f"(?P<{pair[0]}>{pair[1]})" for pair in token_specification])
+    for m in re.finditer(token_regexp, code):
+        typ = m.lastgroup
+        value = m.group()
+        if typ == "NUMBER":
+            tokens.append(Token(typ, int(value)))
+        elif typ == "WORD":
+            tokens.append(Token(typ, str(value).lower()))
+        elif typ == "STRING":
+            tokens.append(Token(typ, value[1:-1]))
+    return tokens
+
+
+def load_kernel(path: str, start_addr: int = 0x0) -> (dict[str, str], [str], hex):
+    """
+    Загружает код ядра (kernel.s)
+    """
+
+    labels = {}
+    code = []
+    current_addr = start_addr
+    label_pattern = re.compile(r'^([A-Z_a-z0-9]*):')
+    instruction_pattern = re.compile(r'^([A-Z_a-z]+)')
+
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.split("#")[0].strip()
+            if not line: continue
+
+            label_match = label_pattern.match(line)
+            if label_match:
+                label_name = label_match.group(1)
+                labels[label_name] = hex(current_addr)
+
+                line = line[label_match.end():].strip()
+                code.append(f"{label_name}:")
+
+            if instruction_pattern.match(line):
+                current_addr += 4
+                code.append(line)
+
+    return labels, code, current_addr
 
 
 class Translator:
@@ -57,7 +122,7 @@ class Translator:
 
     def _calc_data_addr(self, tokens: list[Token]) -> int:
         """
-        Первый проход транслятора.
+        Проход 1.
         Расчет конца сегмента кода для определения адреса начала статической памяти.
         """
         variables = set()
@@ -82,8 +147,8 @@ class Translator:
                 if word in ["var", "array"]:
                     next(it)
                 elif word == "string":
-                    next(it) # skip string token
-                    next(it) # skip string name
+                    next(it)  # skip string token
+                    next(it)  # skip string name
                 elif word == "loop":
                     pass
                 elif word in variables or word in ["endloop", "'"]:
