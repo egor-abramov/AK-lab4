@@ -54,7 +54,9 @@ def tokenize(code: str) -> [Token]:
         ("WORD", r"[^\s]+"),
     ]
 
-    token_regexp = "|".join([f"(?P<{pair[0]}>{pair[1]})" for pair in token_specification])
+    token_regexp = "|".join(
+        [f"(?P<{pair[0]}>{pair[1]})" for pair in token_specification]
+    )
     for m in re.finditer(token_regexp, code):
         typ = m.lastgroup
         value = m.group()
@@ -75,20 +77,21 @@ def load_kernel(path: str, start_addr: int = 0x0) -> (dict[str, str], [str], hex
     labels = {}
     code = []
     current_addr = start_addr
-    label_pattern = re.compile(r'^([A-Z_a-z0-9]*):')
-    instruction_pattern = re.compile(r'^([A-Z_a-z]+)')
+    label_pattern = re.compile(r"^([A-Z_a-z0-9]*):")
+    instruction_pattern = re.compile(r"^([A-Z_a-z]+)")
 
     with open(path, encoding="utf-8") as f:
         for line in f:
             line = line.split("#")[0].strip()
-            if not line: continue
+            if not line:
+                continue
 
             label_match = label_pattern.match(line)
             if label_match:
                 label_name = label_match.group(1)
                 labels[label_name] = hex(current_addr)
 
-                line = line[label_match.end():].strip()
+                line = line[label_match.end() :].strip()
                 code.append(f"{label_name}:")
 
             if instruction_pattern.match(line):
@@ -234,11 +237,15 @@ class Translator:
         elif word == "string":
             str_token = next(self.it)
             if str_token.typ != "STRING":
-                raise Exception(f"Syntax error: string literal expected, got {str_token.typ}")
+                raise Exception(
+                    f"Syntax error: string literal expected, got {str_token.typ}"
+                )
 
             name_token = next(self.it)
             if name_token.typ != "WORD":
-                raise Exception(f"Syntax error: identifier expected, got {name_token.typ}")
+                raise Exception(
+                    f"Syntax error: identifier expected, got {name_token.typ}"
+                )
 
             str_name = name_token.value
             self._assert_free_name(str_name)
@@ -276,8 +283,9 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
     label2addr = {}
     addr2label = {}
     for line in code:
-        line = line.split('#')[0].strip()
-        if not line: continue
+        line = line.split("#")[0].strip()
+        if not line:
+            continue
         if line.endswith(":"):
             label2addr[line[:-1]] = current_addr
             addr2label[current_addr] = line[:-1]
@@ -288,16 +296,12 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
     program: list[dict[str, any]] = []
     for addr, line in lines:
         if line.startswith("0x") or line.lstrip("-").isdigit():
-            program.append({
-                "address": addr,
-                "type": "data",
-                "value": int(line, 0)
-            })
+            program.append({"address": addr, "type": "data", "value": int(line, 0)})
         else:
             instruction = line.replace(",", " ").split()
             mnemonic = instruction[0].upper()
 
-            if not mnemonic in Opcode.__members__:
+            if mnemonic not in Opcode.__members__:
                 raise ValueError(f"Unknown opcode: {mnemonic} in line {line}")
 
             opcode = Opcode[mnemonic]
@@ -306,7 +310,7 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
                 "address": addr,
                 "type": "instruction",
                 "opcode": opcode,
-                "args": args
+                "args": args,
             }
             if addr in addr2label:
                 parsed_instruction["label"] = addr2label[addr]
@@ -324,7 +328,7 @@ def parse_arg(op_str: str, labels: dict[str, int]) -> any:
     if op_upper in Register.__members__:
         return Register[op_upper]
 
-    mem_match = re.match(r'^(-?[0-9a-fA-F]+)\(([a-zA-Z0-9_]+)\)$', op_str)
+    mem_match = re.match(r"^(-?[0-9a-fA-F]+)\(([a-zA-Z0-9_]+)\)$", op_str)
     if mem_match:
         offset = int(mem_match.group(1), 0)
         reg_name = mem_match.group(2).upper()
@@ -365,7 +369,9 @@ def save_json(target_path: str, program: list[dict[str, any]]):
                 if isinstance(arg, Register):
                     json_item["args"].append(arg.name)
                 elif isinstance(arg, dict):
-                    json_item["args"].append({"offset": arg["offset"], "reg": arg["reg"].name})
+                    json_item["args"].append(
+                        {"offset": arg["offset"], "reg": arg["reg"].name}
+                    )
                 else:
                     json_item["args"].append(hex(arg))
         json_data.append(json_item)
@@ -380,7 +386,7 @@ def save_json(target_path: str, program: list[dict[str, any]]):
 
 
 def main(source_path: str, target_path: str):
-    with open(source_path, 'r', encoding="utf-8") as f:
+    with open(source_path, "r", encoding="utf-8") as f:
         source_text = f.read()
     INIT_CODE_SIZE = 9 * WORD_SIZE
     addr, kernel_code, start_addr = load_kernel("kernel.s", INIT_CODE_SIZE)
@@ -395,7 +401,6 @@ def main(source_path: str, target_path: str):
         "sub x4, x4, x4",
         "sub sp, sp, sp",
         "sub rp, rp, rp",
-
         f"addi sp, sp, {DATA_STACK_INIT_ADDR}",
         f"addi rp, rp, {RETURN_STACK_INIT_ADDR}",
         f"addi x0, x0, {start_addr}",
