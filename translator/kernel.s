@@ -190,7 +190,8 @@ DO_NEXT_GZ:
 
 CELLS:
     lw x2, 0(sp)
-    mul x2, x2, 4
+    addi x3, x3, 4
+    mul x2, x2, x3
     sw x2, 0(sp)
     j NEXT
 

@@ -1,6 +1,7 @@
 import json
 import re
-import sys
+
+from isa import Opcode, Register, to_bytes
 
 WORD_SIZE = 4
 DATA_STACK_INIT_ADDR = 0x6FF
@@ -256,37 +257,126 @@ class Translator:
             raise Exception(f"Name error: {name} already defined")
 
 
-def code2json(asm_lines: list[str]) -> list[dict]:
-    json_output = []
-    current_address = 0
+def assemble(code: list[str]) -> list[dict[str, any]]:
+    """
+    Переводит строковый код в словари формата
+    {
+        address: 0,
+        type: "instruction" / "data",
+        label: "",
 
-    for line in asm_lines:
-        clean_line = line.strip()
-        if not clean_line:
-            continue
+        value: 0,                       <- для ячееек с данными
 
-        if clean_line.endswith(":"):
-            row_type = "label"
-            json_output.append({
-                "address": hex(current_address),
-                "type": row_type,
-                "value": clean_line
-            })
-        elif clean_line.startswith("#"):
-            continue
+        opcode: isa.Opcode,             <- для ячеек с инструкциями
+        args: [],
+    }
+    """
+    current_addr = 0
+    lines = []
+    label2addr = {}
+    addr2label = {}
+    for line in code:
+        line = line.split('#')[0].strip()
+        if not line: continue
+        if line.endswith(":"):
+            label2addr[line[:-1]] = current_addr
+            addr2label[current_addr] = line[:-1]
         else:
-            if clean_line.startswith("0x") or clean_line.lstrip('-').isdigit():
-                row_type = "data"
-            else:
-                row_type = "instruction"
-            json_output.append({
-                "address": hex(current_address),
-                "type": row_type,
-                "value": clean_line
-            })
-            current_address += WORD_SIZE
+            lines.append((current_addr, line))
+            current_addr += 4
 
-    return json_output
+    program: list[dict[str, any]] = []
+    for addr, line in lines:
+        if line.startswith("0x") or line.lstrip("-").isdigit():
+            program.append({
+                "address": addr,
+                "type": "data",
+                "value": int(line, 0)
+            })
+        else:
+            instruction = line.replace(",", " ").split()
+            mnemonic = instruction[0].upper()
+
+            if not mnemonic in Opcode.__members__:
+                raise ValueError(f"Unknown opcode: {mnemonic} in line {line}")
+
+            opcode = Opcode[mnemonic]
+            args = [parse_arg(p, label2addr) for p in instruction[1:]]
+            parsed_instruction = {
+                "address": addr,
+                "type": "instruction",
+                "opcode": opcode,
+                "args": args
+            }
+            if addr in addr2label:
+                parsed_instruction["label"] = addr2label[addr]
+            program.append(parsed_instruction)
+
+    return program
+
+
+def parse_arg(op_str: str, labels: dict[str, int]) -> any:
+    """
+    Разбирает строковый аргумент и возвращает Register, число или словарь смещения.
+    """
+    op_upper = op_str.upper()
+
+    if op_upper in Register.__members__:
+        return Register[op_upper]
+
+    mem_match = re.match(r'^(-?[0-9a-fA-F]+)\(([a-zA-Z0-9_]+)\)$', op_str)
+    if mem_match:
+        offset = int(mem_match.group(1), 0)
+        reg_name = mem_match.group(2).upper()
+        if reg_name in Register.__members__:
+            return {"offset": offset, "reg": Register[reg_name]}
+        else:
+            raise ValueError(f"Unknown register in memory operand: {reg_name}")
+
+    if op_str in labels:
+        return labels[op_str]
+
+    try:
+        return int(op_str, 0)
+    except ValueError:
+        pass
+
+    raise ValueError(f"Unresolvable operand: {op_str}")
+
+
+def save_json(target_path: str, program: list[dict[str, any]]):
+    """
+    Сохраняет транслированый код в json формате для дебага
+    """
+    json_data = []
+    for item in program:
+        json_item = {}
+        if "label" in item:
+            json_item["label"] = item["label"]
+        json_item["address"] = hex(item["address"])
+        json_item["type"] = item["type"]
+
+        if item["type"] == "data":
+            json_item["value"] = hex(item["value"])
+        else:
+            json_item["opcode"] = item["opcode"].name
+            json_item["args"] = []
+            for arg in item["args"]:
+                if isinstance(arg, Register):
+                    json_item["args"].append(arg.name)
+                elif isinstance(arg, dict):
+                    json_item["args"].append({"offset": arg["offset"], "reg": arg["reg"].name})
+                else:
+                    json_item["args"].append(hex(arg))
+        json_data.append(json_item)
+
+    if not target_path.endswith(".json"):
+        target_path += ".json"
+    with open(target_path, "w") as f:
+        f.write("[\n")
+        lines = [f"    {json.dumps(item, ensure_ascii=False)}" for item in json_data]
+        f.write(",\n".join(lines))
+        f.write("\n]\n")
 
 
 def main(source_path: str, target_path: str):
@@ -312,22 +402,17 @@ def main(source_path: str, target_path: str):
         f"addi x4, x4, {data_addr}",
     ]
     asm = init_code + kernel_code + translated_code
+    parsed_program = assemble(asm)
+    save_json(target_path, parsed_program)
 
-    if "." in target_path:
-        target_json_path = target_path.rsplit(".", 1)[0] + ".json"
-    else:
-        target_json_path = target_path + ".json"
-
-    json_data = code2json(asm)
-
-    with open(target_json_path, 'w', encoding="utf-8") as f:
-        f.write("[\n")
-        lines = [f"    {json.dumps(item, ensure_ascii=False)}" for item in json_data]
-        f.write(",\n".join(lines))
-        f.write("\n]\n")
+    binary_code = to_bytes(parsed_program)
+    if not target_path.endswith(".bin"):
+        target_path += ".bin"
+    with open(target_path, "wb") as f:
+        f.write(binary_code)
 
 
 if __name__ == "__main__":
     source = "../examples/in/input.ft"
-    target = "../examples/out/out.json"
+    target = "../examples/out/out"
     main(source, target)
