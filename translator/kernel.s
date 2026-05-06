@@ -1,5 +1,4 @@
 # x0 -- IP
-# x1 -- HERE Pointer
 # rp -- Return Stack Pointer
 # sp -- Data Stack Pointer
 
@@ -26,7 +25,6 @@ EXIT:
     j NEXT
 
 #############################
-
 
 # Primitives
 
@@ -131,9 +129,7 @@ LOAD:
 ##############################
 
 READ:
-    sub t0, t0, t0
-    addi t0, t0, 0x5F8  # load input port address
-
+    addi t0, zero, 0x5F8  # load input port address
     lw t1, 0(t0)
     addi sp, sp, -4
     sw t1, 0(sp)
@@ -142,8 +138,7 @@ READ:
 ##############################
 
 PRINT:
-    sub t0, t0, t0
-    addi t0, t0, 0x5FC  # load output port address
+    addi t0, zero, 0x5FC  # load output port address
 
     lw t1, 0(sp)
     addi sp, sp, 4
@@ -178,9 +173,9 @@ GZ:
     lw t0, 0(sp)
     addi sp, sp, 4
     jz t0, DO_SKIP_GZ
-    lui t1, 0xFFFFF
-    and t0, t0, t1
-    jz t0, DO_NEXT_GZ
+    lui t1, 0x80000
+    and t1, t0, t1
+    jz t1, DO_NEXT_GZ
 DO_SKIP_GZ:
     addi x0, x0, 4
 DO_NEXT_GZ:
@@ -190,7 +185,7 @@ DO_NEXT_GZ:
 
 CELLS:
     lw t0, 0(sp)
-    addi t1, t1, 4
+    addi t1, zero, 4
     mul t0, t0, t1
     sw t0, 0(sp)
     j NEXT
@@ -198,37 +193,29 @@ CELLS:
 ##############################
 
 EXECUTE:
-    lw t2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
 
     addi rp, rp, -4
     sw x0, 0(rp)
 
-    mv x0, t2
+    mv x0, t0
     j NEXT
 
 ##############################
 
 PRINT_STR:
-    lw t2, 0(sp)
+    lw t0, 0(sp)         # start addr
     addi sp, sp, 4
-    lw t0, 0(t2)
+    lw t1, 0(t0)         # str len
+    addi t2, zero, 0x5FC # output addr
 
 PRINT_STR_LOOP:
-    jz t0, PRINT_STR_END
-    addi t2, t2, 4
-    lw t1, 0(t2)
-
-    addi sp, sp, -4
-    sw t2, 0(sp)
-
-    sub t2, t2, t2
-    addi t2, t2, 0x5FC
-    sw t1, 0(t2)
-
-    lw t2, 0(sp)
-    addi sp, sp, 4
-    addi t0, t0, -1
+    jz t1, PRINT_STR_END
+    addi t0, t0, 4
+    lw t3, 0(t0)
+    sw t3, 0(t2)
+    addi t1, t1, -1
     j PRINT_STR_LOOP
 PRINT_STR_END:
     j NEXT
@@ -236,35 +223,25 @@ PRINT_STR_END:
 ##############################
 
 READ_STR:
-    lw t2, 0(sp)    # buf addr
-    sub t0, t0, t0  # str len
-    mv t1, t2       # pointer
+    lw t0, 0(sp)            # start addr
+    addi sp, sp, 4
+    mv t1, t0               # current pointer
+    addi t2, zero, 0x5F8    # input addr
+    addi t3, zero, 0        # str len
 
 READ_STR_LOOP:
-    sub t2, t2, t2
-    addi t2, t2, 0x5F8
-    lw t2, 0(t2)
-
-    addi sp, sp, -4
-    sw t2, 0(sp)
-
-    addi t2, t2, -10
-    jz t2, READ_STR_END
-
-    lw t2, 0(sp)
-    addi sp, sp, 4
+    lw t4, 0(t2)
+    addi t4, t4, -10
+    jz t4, READ_STR_END
+    addi t4, t4, 10
 
     addi t1, t1, 4
-    sw t2, 0(t1)
-
-    addi t0, t0, 1
+    sw t4, 0(t1)
+    addi t3, t3, 1
     j READ_STR_LOOP
 
 READ_STR_END:
-    addi sp, sp, 4
-    lw t2, 0(sp)
-    addi sp, sp, 4
-    sw t0, 0(t2)
+    sw t3, 0(t0)
     j NEXT
 
 ##############################

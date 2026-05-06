@@ -373,7 +373,7 @@ def save_json(target_path: str, program: list[dict[str, any]]):
                         {"offset": arg["offset"], "reg": arg["reg"].name}
                     )
                 else:
-                    json_item["args"].append(hex(arg))
+                    json_item["args"].append(arg)
         json_data.append(json_item)
 
     if not target_path.endswith(".json"):
@@ -396,15 +396,13 @@ def main(source_path: str, target_path: str):
     translated_code, data_addr = translator.translate(tokens)
 
     init_code = [
-        "sub x0, x0, x0",
-        "sub x1, x1, x1",
-        "sub x4, x4, x4",
-        "sub sp, sp, sp",
-        "sub rp, rp, rp",
-        f"addi sp, sp, {DATA_STACK_INIT_ADDR}",
-        f"addi rp, rp, {RETURN_STACK_INIT_ADDR}",
-        f"addi x0, x0, {start_addr}",
-        f"addi x4, x4, {data_addr}",
+        f"addi x0, zero, {start_addr}",
+        f"addi sp, zero, {DATA_STACK_INIT_ADDR}",
+        f"addi rp, zero, {RETURN_STACK_INIT_ADDR}",
+        "addi t1, zero, 0",
+        "addi t2, zero, 0",
+        "addi t3, zero, 0",
+        "addi t4, zero, 0",
     ]
     asm = init_code + kernel_code + translated_code
     parsed_program = assemble(asm)

@@ -68,10 +68,10 @@ class Register(str, Enum):
     T1 = "t1"
     T2 = "t2"
     T3 = "t3"
+    T4 = "t4"
     A0 = "a0"
     A1 = "a1"
     A2 = "a2"
-    A3 = "a3"
     ZERO = "zero"
 
 
@@ -84,11 +84,11 @@ register_to_binary = {
     Register.A0: 0x5,
     Register.A1: 0x6,
     Register.A2: 0x7,
-    Register.A3: 0x8,
-    Register.T0: 0x9,
-    Register.T1: 0xA,
-    Register.T2: 0xB,
-    Register.T3: 0xC,
+    Register.T0: 0x8,
+    Register.T1: 0x9,
+    Register.T2: 0xA,
+    Register.T3: 0xB,
+    Register.T4: 0xC,
     Register.ZERO: 0xD,
     Register.SP: 0xE,
     Register.RP: 0xF,
@@ -103,11 +103,11 @@ binary_to_register = {
     0x5: Register.A0,
     0x6: Register.A1,
     0x7: Register.A2,
-    0x8: Register.A3,
-    0x9: Register.T0,
-    0xA: Register.T1,
-    0xB: Register.T2,
-    0xC: Register.T3,
+    0x8: Register.T0,
+    0x9: Register.T1,
+    0xA: Register.T2,
+    0xB: Register.T3,
+    0xC: Register.T4,
     0xD: Register.ZERO,
     0xE: Register.SP,
     0xF: Register.RP,
