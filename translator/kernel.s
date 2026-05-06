@@ -1,21 +1,21 @@
 # x0 -- IP
-# x4 -- HERE Pointer
+# x1 -- HERE Pointer
 # rp -- Return Stack Pointer
 # sp -- Data Stack Pointer
 
 #############################
 
 NEXT:
-    lw x2, 0(x0)
+    lw t0, 0(x0)
     addi x0, x0, 4
-    jr x2
+    jr t0
 
 #############################
 
 DOCOL:
     addi rp, rp, -4
     sw x0, 0(rp)
-    addi x0, x2, 4
+    addi x0, t0, 4
     j NEXT
 
 #############################
@@ -33,57 +33,57 @@ EXIT:
 ##############################
 
 ADD:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    lw x3, 0(sp)
-    add x2, x2, x3
-    sw x2, 0(sp)
+    lw t1, 0(sp)
+    add t0, t0, t1
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 SUB:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    lw x3, 0(sp)
-    sub x2, x3, x2
-    sw x2, 0(sp)
+    lw t1, 0(sp)
+    sub t0, t1, t0
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 MUL:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    lw x3, 0(sp)
-    mul x2, x2, x3
-    sw x2, 0(sp)
+    lw t1, 0(sp)
+    mul t0, t0, t1
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 AND:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    lw x3, 0(sp)
-    and x2, x2, x3
-    sw x2, 0(sp)
+    lw t1, 0(sp)
+    and t0, t0, t1
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 NOT:
-    lw x2, 0(sp)
-    inv x2, x2
-    sw x2, 0(sp)
+    lw t0, 0(sp)
+    inv t0, t0
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 DUP:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, -4
-    sw x2, 0(sp)
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
@@ -95,67 +95,67 @@ DROP:
 ##############################
 
 LIT:
-    lw x2, 0(x0)
+    lw t0, 0(x0)
     addi x0, x0, 4
     addi sp, sp, -4
-    sw x2, 0(sp)
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 SWAP:
-    lw x2, 0(sp)
-    lw x3, 4(sp)
-    sw x2, 4(sp)
-    sw x3, 0(sp)
+    lw t0, 0(sp)
+    lw t1, 4(sp)
+    sw t0, 4(sp)
+    sw t1, 0(sp)
     j NEXT
 
 ##############################
 
 STORE:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    lw x3, 0(sp)
+    lw t1, 0(sp)
     addi sp, sp, 4
-    sw x3, 0(x2)
+    sw t1, 0(t0)
     j NEXT
 
 ##############################
 
 LOAD:
-    lw x2, 0(sp)
-    lw x3, 0(x2)
-    sw x3, 0(sp)
+    lw t0, 0(sp)
+    lw t1, 0(t0)
+    sw t1, 0(sp)
     j NEXT
 
 ##############################
 
 READ:
-    sub x2, x2, x2
-    addi x2, x2, 0x5F8  # load input port address
+    sub t0, t0, t0
+    addi t0, t0, 0x5F8  # load input port address
 
-    lw x3, 0(x2)
+    lw t1, 0(t0)
     addi sp, sp, -4
-    sw x3, 0(sp)
+    sw t1, 0(sp)
     j NEXT
 
 ##############################
 
 PRINT:
-    sub x2, x2, x2
-    addi x2, x2, 0x5FC  # load output port address
+    sub t0, t0, t0
+    addi t0, t0, 0x5FC  # load output port address
 
-    lw x3, 0(sp)
+    lw t1, 0(sp)
     addi sp, sp, 4
-    sw x3, 0(x2)
+    sw t1, 0(t0)
     j NEXT
 
 ##############################
 
 JNZ:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    jz x2, SKIP_JNZ
+    jz t0, SKIP_JNZ
     lw x0, 0(x0)
     j NEXT
 SKIP_JNZ:
@@ -165,9 +165,9 @@ SKIP_JNZ:
 ##############################
 
 EZ:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    jz x2, DO_NEXT_Z
+    jz t0, DO_NEXT_Z
     addi x0, x0, 4
 DO_NEXT_Z:
     j NEXT
@@ -175,12 +175,12 @@ DO_NEXT_Z:
 ##############################
 
 GZ:
-    lw x2, 0(sp)
+    lw t0, 0(sp)
     addi sp, sp, 4
-    jz x2, DO_SKIP_GZ
-    lui x3, 0xFFFFF
-    and x2, x2, x3
-    jz x2, DO_NEXT_GZ
+    jz t0, DO_SKIP_GZ
+    lui t1, 0xFFFFF
+    and t0, t0, t1
+    jz t0, DO_NEXT_GZ
 DO_SKIP_GZ:
     addi x0, x0, 4
 DO_NEXT_GZ:
@@ -189,46 +189,46 @@ DO_NEXT_GZ:
 ##############################
 
 CELLS:
-    lw x2, 0(sp)
-    addi x3, x3, 4
-    mul x2, x2, x3
-    sw x2, 0(sp)
+    lw t0, 0(sp)
+    addi t1, t1, 4
+    mul t0, t0, t1
+    sw t0, 0(sp)
     j NEXT
 
 ##############################
 
 EXECUTE:
-    lw x1, 0(sp)
+    lw t2, 0(sp)
     addi sp, sp, 4
 
     addi rp, rp, -4
     sw x0, 0(rp)
 
-    mv x0, x1
+    mv x0, t2
     j NEXT
 
 ##############################
 
 PRINT_STR:
-    lw x1, 0(sp)
+    lw t2, 0(sp)
     addi sp, sp, 4
-    lw x2, 0(x1)
+    lw t0, 0(t2)
 
 PRINT_STR_LOOP:
-    jz x2, PRINT_STR_END
-    addi x1, x1, 4
-    lw x3, 0(x1)
+    jz t0, PRINT_STR_END
+    addi t2, t2, 4
+    lw t1, 0(t2)
 
     addi sp, sp, -4
-    sw x1, 0(sp)
+    sw t2, 0(sp)
 
-    sub x1, x1, x1
-    addi x1, x1, 0x5FC
-    sw x3, 0(x1)
+    sub t2, t2, t2
+    addi t2, t2, 0x5FC
+    sw t1, 0(t2)
 
-    lw x1, 0(sp)
+    lw t2, 0(sp)
     addi sp, sp, 4
-    addi x2, x2, -1
+    addi t0, t0, -1
     j PRINT_STR_LOOP
 PRINT_STR_END:
     j NEXT
@@ -236,35 +236,35 @@ PRINT_STR_END:
 ##############################
 
 READ_STR:
-    lw x1, 0(sp)    # buf addr
-    sub x2, x2, x2  # str len
-    mv x3, x1       # pointer
+    lw t2, 0(sp)    # buf addr
+    sub t0, t0, t0  # str len
+    mv t1, t2       # pointer
 
 READ_STR_LOOP:
-    sub x1, x1, x1
-    addi x1, x1, 0x5F8
-    lw x1, 0(x1)
+    sub t2, t2, t2
+    addi t2, t2, 0x5F8
+    lw t2, 0(t2)
 
     addi sp, sp, -4
-    sw x1, 0(sp)
+    sw t2, 0(sp)
 
-    addi x1, x1, -10
-    jz x1, READ_STR_END
+    addi t2, t2, -10
+    jz t2, READ_STR_END
 
-    lw x1, 0(sp)
+    lw t2, 0(sp)
     addi sp, sp, 4
 
-    addi x3, x3, 4
-    sw x1, 0(x3)
+    addi t1, t1, 4
+    sw t2, 0(t1)
 
-    addi x2, x2, 1
+    addi t0, t0, 1
     j READ_STR_LOOP
 
 READ_STR_END:
     addi sp, sp, 4
-    lw x1, 0(sp)
+    lw t2, 0(sp)
     addi sp, sp, 4
-    sw x2, 0(x1)
+    sw t0, 0(t2)
     j NEXT
 
 ##############################

@@ -114,23 +114,16 @@ binary_to_register = {
 }
 
 
-class AddrMode(int, Enum):
-    REG = 0x0  # регистровая
-    IMM = 0x1  # непосредственная загрузка
-    IND = 0x2  # косвенная со смещением
-    ABS = 0x3  # абсолютная
-
-
 def to_bytes(code: list[dict[str, any]]) -> bytes:
     """
     Преобразует машинный код в бинарное представление
 
     Бинарное представление инструкций:
-    ┌───────────────┬─────────┬────────────────────────────────────────────┐
-    │    31...27    │  26-24  │ 23                                       0 │
-    ├───────────────┼─────────┼────────────────────────────────────────────┤
-    │     опкод     │ реж.адр │                аргуметны                   │
-    └───────────────┴─────────┴────────────────────────────────────────────┘
+    ┌───────────────┬──────────────────────────────────────────────────────┐
+    │    31...27    │  26                                                0 │
+    ├───────────────┼──────────────────────────────────────────────────────┤
+    │     опкод     │                          аргуметны                   │
+    └───────────────┴──────────────────────────────────────────────────────┘
     """
 
     binary_bytes = bytearray()
@@ -154,53 +147,48 @@ def to_bytes(code: list[dict[str, any]]) -> bytes:
                 Opcode.JR,
                 Opcode.HALT,
             ):
-                mode_bits = AddrMode.REG
-
                 if len(args) > 0:
-                    arg_bits |= register_to_binary[args[0]] << 20
+                    arg_bits |= register_to_binary[args[0]] << 23
                 if len(args) > 1:
-                    arg_bits |= register_to_binary[args[1]] << 16
+                    arg_bits |= register_to_binary[args[1]] << 19
                 if len(args) > 2:
-                    arg_bits |= register_to_binary[args[2]] << 12
+                    arg_bits |= register_to_binary[args[2]] << 15
 
             # непосредственная загрузка
             elif opcode in (Opcode.LUI, Opcode.ADDI):
-                mode_bits = AddrMode.IMM
                 if opcode == Opcode.LUI:
                     rd, k = args[0], args[1]
-                    arg_bits |= register_to_binary[rd] << 20
+                    arg_bits |= register_to_binary[rd] << 23
                     arg_bits |= k & 0xFFFFF
                 elif opcode == Opcode.ADDI:
                     rd, rs, k = args[0], args[1], args[2]
-                    arg_bits |= register_to_binary[rd] << 20
-                    arg_bits |= register_to_binary[rs] << 16
+                    arg_bits |= register_to_binary[rd] << 23
+                    arg_bits |= register_to_binary[rs] << 19
                     arg_bits |= k & 0xFFF
 
             # косвенная адресация
             elif opcode in (Opcode.SW, Opcode.LW):
-                mode_bits = AddrMode.IND
                 reg = args[0]
                 mem = args[1]
 
-                arg_bits |= register_to_binary[reg] << 20
-                arg_bits |= register_to_binary[mem["reg"]] << 16
+                arg_bits |= register_to_binary[reg] << 23
+                arg_bits |= register_to_binary[mem["reg"]] << 19
                 arg_bits |= mem["offset"] & 0xFFFF
 
             # абсолютная адресация
             elif opcode in (Opcode.J, Opcode.JZ):
-                mode_bits = AddrMode.ABS
                 if opcode == Opcode.J:
                     k = args[0]
                     arg_bits |= k & 0xFFFFF
                 elif opcode == Opcode.JZ:
                     rs, k = args[0], args[1]
-                    arg_bits |= register_to_binary[rs] << 20
+                    arg_bits |= register_to_binary[rs] << 23
                     arg_bits |= k & 0xFFFFF
 
             else:
                 raise ValueError(f"Unknown opcode: {opcode}")
 
-            instruction = (op_bits << 27) | (mode_bits << 24) | arg_bits
+            instruction = (op_bits << 27) | arg_bits
             binary_bytes.extend(instruction.to_bytes(4, byteorder="big", signed=False))
 
     return bytes(binary_bytes)
@@ -213,41 +201,48 @@ def from_bytes(binary_code: bytes) -> dict[str, any]:
     binary_instr = int.from_bytes(binary_code, byteorder="big", signed=False)
 
     op_bits = (binary_instr >> 27) & 0x1F
-    mode_bits = (binary_instr >> 24) & 0x7
-    arg_bits = binary_instr & 0xFFFFFF
+    arg_bits = binary_instr & 0x7FFFFFF
 
     opcode = binary_to_opcode[op_bits]
-    mode = AddrMode(mode_bits)
 
-    if mode == AddrMode.REG:
-        rd = binary_to_register[(arg_bits >> 20) & 0xF]
-        rs1 = binary_to_register[(arg_bits >> 16) & 0xF]
-        rs2 = binary_to_register[(arg_bits >> 12) & 0xF]
+    if opcode in (
+        Opcode.ADD,
+        Opcode.SUB,
+        Opcode.MUL,
+        Opcode.AND,
+        Opcode.MV,
+        Opcode.INV,
+        Opcode.JR,
+        Opcode.HALT,
+    ):
+        rd = binary_to_register[(arg_bits >> 23) & 0xF]
+        rs1 = binary_to_register[(arg_bits >> 19) & 0xF]
+        rs2 = binary_to_register[(arg_bits >> 15) & 0xF]
         return {"opcode": opcode, "args": [rd, rs1, rs2]}
-    elif mode == AddrMode.IMM:
-        rd = binary_to_register[(arg_bits >> 20) & 0xF]
+    elif opcode in (Opcode.LUI, Opcode.ADDI):
+        rd = binary_to_register[(arg_bits >> 23) & 0xF]
 
         if opcode == Opcode.LUI:
             k = arg_bits & 0xFFFFF
             return {"opcode": opcode, "args": [rd, k]}
 
         elif opcode == Opcode.ADDI:
-            rs = binary_to_register[(arg_bits >> 16) & 0xF]
+            rs = binary_to_register[(arg_bits >> 19) & 0xF]
             k = arg_bits & 0xFFF
             return {"opcode": opcode, "args": [rd, rs, k]}
-    elif mode == AddrMode.IND:
-        reg1 = binary_to_register[(arg_bits >> 20) & 0xF]
-        reg2 = binary_to_register[(arg_bits >> 16) & 0xF]
+    elif opcode in (Opcode.SW, Opcode.LW):
+        reg1 = binary_to_register[(arg_bits >> 23) & 0xF]
+        reg2 = binary_to_register[(arg_bits >> 19) & 0xF]
         offset = arg_bits & 0xFFFF
 
         return {"opcode": opcode, "args": [reg1, {"offset": offset, "reg": reg2}]}
-    elif mode == AddrMode.ABS:
+    elif opcode in (Opcode.J, Opcode.JZ):
         if opcode == Opcode.J:
             address = arg_bits & 0xFFFFF
             return {"opcode": opcode, "args": [address]}
 
         elif opcode == Opcode.JZ:
-            rs = binary_to_register[(arg_bits >> 20) & 0xF]
+            rs = binary_to_register[(arg_bits >> 23) & 0xF]
             address = arg_bits & 0xFFFFF
             return {"opcode": opcode, "args": [rs, address]}
 
