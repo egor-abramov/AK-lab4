@@ -414,7 +414,8 @@ def main(source_path: str, target_path: str):
     with open(target_path, "wb") as f:
         f.write(binary_code)
 
-
+# TODO: add hex
+# TODO: remove json
 if __name__ == "__main__":
     source = "../examples/in/input.ft"
     target = "../examples/out/out"

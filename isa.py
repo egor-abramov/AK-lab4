@@ -246,4 +246,4 @@ def from_bytes(binary_code: bytes) -> dict[str, any]:
             address = arg_bits & 0xFFFFF
             return {"opcode": opcode, "args": [rs, address]}
 
-    raise ValueError(f"Unknown instruction: op={op_bits}, mode={mode_bits}")
+    raise ValueError(f"Unknown instruction: op={op_bits}")

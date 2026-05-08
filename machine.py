@@ -1,3 +1,6 @@
+from isa import Opcode, opcode_to_binary
+
+
 class RegisterFile:
     def __init__(
         self,
@@ -72,7 +75,7 @@ class DataPath:
             alu_l = rs1_data
 
         sel_alu_r = signals.get("sel_alu_r", "RS2")
-        if sel_alu_r == "INC_4":
+        if sel_alu_r == "INC_PC":
             alu_r = 4
         elif sel_alu_r == "IMM":
             alu_r = imm_data
@@ -89,7 +92,7 @@ class DataPath:
             mem_addr = self.PC
 
         if signals.get("write_mem", False):
-            self.memory.write(rs2_data, mem_addr)
+            self.memory.write(rs1_data, mem_addr)
 
         mem_data_out = 0
         if signals.get("read_mem", False):
@@ -155,7 +158,24 @@ class ControlUnit:
     def __init__(self, data_path: DataPath):
         self.data_path = data_path
         self.mPC = 0x0
-        self.dispatch_table = {}
+
+        # Опкод в адрес начала микропограммы
+        self.dispatch_table = {
+            opcode_to_binary[Opcode.LUI]: 0x2,
+            opcode_to_binary[Opcode.MV]: 0x3,
+            opcode_to_binary[Opcode.SW]: 0x4,
+            opcode_to_binary[Opcode.LW]: 0x6,
+            opcode_to_binary[Opcode.ADDI]: 0x9,
+            opcode_to_binary[Opcode.ADD]: 0xA,
+            opcode_to_binary[Opcode.SUB]: 0xB,
+            opcode_to_binary[Opcode.MUL]: 0xC,
+            opcode_to_binary[Opcode.AND]: 0xD,
+            opcode_to_binary[Opcode.INV]: 0xE,
+            opcode_to_binary[Opcode.J]: 0xF,
+            opcode_to_binary[Opcode.JR]: 0x10,
+            opcode_to_binary[Opcode.JZ]: 0x11,
+            opcode_to_binary[Opcode.HALT]: 0x15,
+        }
 
         # Типы переходов после исполнения микрокоманды
         self.SEQ_INC = 0  # pc + 4
@@ -163,22 +183,203 @@ class ControlUnit:
         self.SEQ_JMP = 2  # безусловный
         self.SEQ_JMP_Z = 3  # условный (z == 0)
 
+        # Режимы расширения знака
+        EXT_MODE_12 = 0
+        EXT_MODE_20 = 1
+        EXT_MODE_16 = 2
+
         # TODO: translate asm to mc
         self.mp_memory = {
-            # FETCH 1 MEM[PC] -> IR
+            # FETCH
             0x00: self._microcode(
                 {"read_mem": True, "latch_ir": True, "sel_mem_addr": "PC"}, self.SEQ_INC
             ),
-            # FETCH 2 (0x01): PC = PC + 4.
             0x01: self._microcode(
                 {
                     "sel_alu_l": "PC",
-                    "sel_alu_r": "INC4",
+                    "sel_alu_r": "INC_PC",
                     "alu_op": "ADD",
                     "latch_pc": True,
                 },
                 self.SEQ_MAP,
             ),
+            # LUI
+            0x2: self._microcode(
+                {
+                    "self_alu_r": "IMM",
+                    "alu_op": "PASS_R",
+                    "sel_reg_wr": "ALU",
+                    "reg_write": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+                ext_mode=EXT_MODE_20,
+            ),
+            # MV
+            0x3: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "alu_op": "PASS_L",
+                    "sel_reg_wr": "ALU",
+                    "reg_write": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # SW
+            0x4: self._microcode(
+                {"sel_alu_l": "RS1", "sel_alu_r": "IMM", "alu_op": "ADD"},
+                self.SEQ_INC,
+                ext_mode=EXT_MODE_16,
+            ),
+            0x5: self._microcode(
+                {
+                    "sel_mem_addr": "ALU",
+                    "write_mem": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # LW
+            0x6: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "IMM",
+                    "alu_op": "ADD",
+                },
+                self.SEQ_INC,
+                ext_mode=EXT_MODE_16,
+            ),
+            0x7: self._microcode(
+                {
+                    "sel_mem_addr": "ALU",
+                    "read_mem": True,
+                },
+                self.SEQ_INC,
+            ),
+            0x8: self._microcode(
+                {
+                    "sel_reg_wr": "MEM",
+                    "write_reg": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # ADDI
+            0x9: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "IMM",
+                    "alu_op": "ADD",
+                    "write_reg": True,
+                    "sel_reg_write": "ALU",
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+                ext_mode=EXT_MODE_12,
+            ),
+            # ADD
+            0xA: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "RS2",
+                    "alu_op": "ADD",
+                    "sel_reg_wr": "ALU",
+                    "write_reg": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # SUB
+            0xB: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "RS2",
+                    "alu_op": "SUB",
+                    "sel_reg_wr": "ALU",
+                    "write_reg": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # MUL
+            0xC: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "RS2",
+                    "alu_op": "MUL",
+                    "sel_reg_wr": "ALU",
+                    "write_reg": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # AND
+            0xD: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "RS2",
+                    "alu_op": "AND",
+                    "sel_reg_wr": "ALU",
+                    "write_reg": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # INV
+            0xE: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "alu_op": "INV",
+                    "sel_reg_wr": "ALU",
+                    "write_reg": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # J
+            0xF: self._microcode(
+                {
+                    "sel_alu_r": "IMM",
+                    "alu_op": "PASS_R",
+                    "latch_pc": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+                ext_mode=EXT_MODE_20,
+            ),
+            # JR
+            0x10: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "alu_op": "PASS_L",
+                    "latch_pc": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+            ),
+            # JZ
+            0x11: self._microcode(
+                {
+                    "sel_alu_l": "RS1",
+                    "alu_op": "PASS_L",
+                },
+                self.SEQ_INC,
+            ),
+            0x12: self._microcode({}, self.SEQ_JMP_Z, jmp_addr=0x14),
+            0x13: self._microcode({}, self.SEQ_JMP, 0x0),
+            0x14: self._microcode(
+                {
+                    "sel_alu_r": "IMM",
+                    "alu_op": "PASS_R",
+                    "latch_pc": True,
+                },
+                self.SEQ_JMP,
+                jmp_addr=0x0,
+                ext_mode=EXT_MODE_20,
+            ),
+            # HALT
+            0x15: self._microcode({}, self.SEQ_JMP, jmp_addr=0x15),
         }
 
         self.SHIFT_LATCH_PC = 0
@@ -204,11 +405,15 @@ class ControlUnit:
             "read_mem": bool(instr & (1 << self.SHIFT_READ_MEM)),
             "write_mem": bool(instr & (1 << self.SHIFT_WRITE_MEM)),
             "write_reg": bool(instr & (1 << self.SHIFT_WRITE_REG)),
-            "sel_ext_mode": bool(instr & (1 << self.SHIFT_SEL_EXT_MODE)),
+            "sel_ext_mode": ["IMM_12", "IMM_20", "OFFSET_16"][
+                (instr >> self.SHIFT_SEL_EXT_MODE) & 0x3
+            ],
             "sel_mem_addr": "PC" if (instr & (1 << self.SHIFT_SEL_MEM_ADDR)) else "ALU",
             "sel_reg_wr": "MEM" if (instr & (1 << self.SHIFT_SEL_REG_WR)) else "ALU",
-            "sel_alu_l": ["RS1", "PC"][(instr >> self.SHIFT_SEL_ALU_R) & 0x3],
-            "sel_alu_r": ["RS2", "IMM", "INC4"][(instr >> self.SHIFT_SEL_ALU_R) & 0x3],
+            "sel_alu_l": ["RS1", "PC"][(instr >> self.SHIFT_SEL_ALU_L) & 0x3],
+            "sel_alu_r": ["RS2", "IMM", "INC_PC"][
+                (instr >> self.SHIFT_SEL_ALU_R) & 0x3
+            ],
             "alu_op": ["ADD", "SUB", "AND", "INV", "PASS_L", "PASS_R", "MUL"][
                 (instr >> self.SHIFT_ALU_OP) & 0x7
             ],
@@ -223,14 +428,16 @@ class ControlUnit:
             self.mPC += 1
         elif jmp_type == self.SEQ_MAP:
             self.mPC = self.dispatch_table.get(opcode, 0)
-        elif jmp_type == self.SEQ_MAP:
+        elif jmp_type == self.SEQ_JMP:
             self.mPC = jmp_addr
-        elif jmp_type == self.SEQ_MAP:
+        elif jmp_type == self.SEQ_JMP_Z:
             if self.data_path.flags.get("Z", False):
                 self.mPC = jmp_addr
+            else:
+                self.mPC += 1
 
     def _microcode(
-        self, signals: dict[str, any], jmp_type=0, jmp_addr=0, ext_mode=0
+        self, signals: dict[str, any], jmp_type, jmp_addr=0, ext_mode=0
     ) -> int:
         """
         Перевод из словаря в микрокод.
@@ -266,7 +473,9 @@ class ControlUnit:
             self.bits |= 1 << self.SHIFT_SEL_REG_WR
 
         alu_l = {"RS1": 0, "PC": 1}.get(signals.get("sel_alu_l", "RS1"), 0)
-        alu_r = {"RS2": 0, "IMM": 1, "INC4": 2}.get(signals.get("sel_alu_r", "RS2"), 0)
+        alu_r = {"RS2": 0, "IMM": 1, "INC_PC": 2}.get(
+            signals.get("sel_alu_r", "RS2"), 0
+        )
         op = {
             "ADD": 0,
             "SUB": 1,
@@ -286,3 +495,7 @@ class ControlUnit:
         self.bits |= jmp_type << self.SHIFT_JMP_TYPE
         self.bits |= (jmp_addr & 0x7F) << self.SHIFT_JMP_ADDR
         return self.bits
+
+
+if __name__ == "__main__":
+    ...
