@@ -306,16 +306,52 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
 
             opcode = Opcode[mnemonic]
             args = [parse_arg(p, label2addr) for p in instruction[1:]]
+            rd_val, rs1_val, rs2_val, imm_val = (
+                Register.ZERO,
+                Register.ZERO,
+                Register.ZERO,
+                0,
+            )
+
+            if opcode in (Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.AND):
+                rd_val, rs1_val, rs2_val = args[0], args[1], args[2]
+            elif opcode == Opcode.INV:
+                rd_val, rs1_val = args[0], args[1]
+            elif opcode == Opcode.ADDI:
+                rd_val, rs1_val, imm_val = args[0], args[1], args[2]
+            elif opcode == Opcode.LUI:
+                rd_val, imm_val = args[0], args[1]
+            elif opcode == Opcode.MV:
+                rd_val, rs1_val = args[0], args[1]
+            elif opcode == Opcode.LW:
+                rd_val = args[0]
+                rs1_val = args[1]["reg"]
+                imm_val = args[1]["offset"]
+            elif opcode == Opcode.SW:
+                rs2_val = args[0]
+                rs1_val = args[1]["reg"]
+                imm_val = args[1]["offset"]
+            elif opcode == Opcode.J:
+                imm_val = args[0]
+            elif opcode == Opcode.JR:
+                rs1_val = args[0]
+            elif opcode == Opcode.JZ:
+                rs1_val = args[0]
+                imm_val = args[1]
+
             parsed_instruction = {
                 "address": addr,
                 "type": "instruction",
                 "opcode": opcode,
                 "args": args,
+                "rd": rd_val,
+                "rs1": rs1_val,
+                "rs2": rs2_val,
+                "imm": imm_val,
             }
             if addr in addr2label:
                 parsed_instruction["label"] = addr2label[addr]
             program.append(parsed_instruction)
-
     return program
 
 
@@ -388,7 +424,7 @@ def save_json(target_path: str, program: list[dict[str, any]]):
 def main(source_path: str, target_path: str):
     with open(source_path, "r", encoding="utf-8") as f:
         source_text = f.read()
-    INIT_CODE_SIZE = 9 * WORD_SIZE
+    INIT_CODE_SIZE = 3 * WORD_SIZE
     addr, kernel_code, start_addr = load_kernel("kernel.s", INIT_CODE_SIZE)
     tokens = tokenize(source_text)
 
@@ -399,10 +435,6 @@ def main(source_path: str, target_path: str):
         f"addi x0, zero, {start_addr}",
         f"addi sp, zero, {DATA_STACK_INIT_ADDR}",
         f"addi rp, zero, {RETURN_STACK_INIT_ADDR}",
-        "addi t1, zero, 0",
-        "addi t2, zero, 0",
-        "addi t3, zero, 0",
-        "addi t4, zero, 0",
     ]
     asm = init_code + kernel_code + translated_code
     parsed_program = assemble(asm)
@@ -414,9 +446,10 @@ def main(source_path: str, target_path: str):
     with open(target_path, "wb") as f:
         f.write(binary_code)
 
+
 # TODO: add hex
 # TODO: remove json
 if __name__ == "__main__":
-    source = "../examples/in/input.ft"
-    target = "../examples/out/out"
+    source = "../examples/hello_world/hello_word.ft"
+    target = "../examples/hello_world/hello_world.bin"
     main(source, target)
