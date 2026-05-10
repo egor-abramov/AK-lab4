@@ -1,3 +1,5 @@
+import argparse
+
 from isa import Opcode, opcode_to_binary
 
 
@@ -24,26 +26,43 @@ class RegisterFile:
 
 class Memory:
     def __init__(
-        self, mem_size: int = 2048, input_addr: int = 0x5F8, output_addr: int = 0x5FC
+        self,
+        initial_mem: [int],
+        input_buffer: [str],
+        mem_size: int = 2048,
+        input_addr: int = 0x5F8,
+        output_addr: int = 0x5FC,
     ):
         self.INPUT_ADDR = input_addr
         self.OUTPUT_ADDR = output_addr
         self.MEM_SIZE = mem_size
         self.mem = [0] * self.MEM_SIZE
-        self.input_buffer = []
+        for i in range(len(initial_mem)):
+            self.mem[i] = initial_mem[i]
+        self.input_buffer = input_buffer
 
     def read(self, addr: int) -> int:
         if addr == self.INPUT_ADDR:
+            if not self.input_buffer:
+                raise EOFError("No elements in input buffer")
             return self.input_buffer.pop(0)
-        elif 0 <= addr < self.MEM_SIZE and addr != self.OUTPUT_ADDR:
-            return self.mem[addr]
+        elif 0 <= addr < self.MEM_SIZE - 3 and addr != self.OUTPUT_ADDR:
+            return (
+                (self.mem[addr] << 24)
+                | (self.mem[addr + 1] << 16)
+                | (self.mem[addr + 2] << 8)
+                | self.mem[addr + 3]
+            )
         raise Exception(f"Invalid memory access at address {addr}")
 
     def write(self, val: int, addr: int):
         if addr == self.OUTPUT_ADDR:
-            print(val)
-        elif 0 <= addr < self.MEM_SIZE and addr != self.INPUT_ADDR:
-            self.mem[addr] = val
+            print(chr(val), end="")
+        elif 0 <= addr < self.MEM_SIZE - 3 and addr != self.INPUT_ADDR:
+            self.mem[addr] = (val >> 24) & 0xFF
+            self.mem[addr + 1] = (val >> 16) & 0xFF
+            self.mem[addr + 2] = (val >> 8) & 0xFF
+            self.mem[addr + 3] = val & 0xFF
         else:
             raise Exception(f"Invalid memory access at address {addr}")
 
@@ -92,7 +111,7 @@ class DataPath:
             mem_addr = self.PC
 
         if signals.get("write_mem", False):
-            self.memory.write(rs1_data, mem_addr)
+            self.memory.write(rs2_data, mem_addr)
 
         mem_data_out = 0
         if signals.get("read_mem", False):
@@ -135,11 +154,16 @@ class DataPath:
 
     def _sign_extend(self, x: int, mode: str):
         if mode == "IMM_12":
+            x &= 0xFFF
             n = 12
         elif mode == "IMM_20":
+            x &= 0xFFFFF
             n = 20
         elif mode == "OFFSET_16":
+            x &= 0x7FFF
             n = 16
+        elif mode == "IMM_U":
+            return (x & 0xFFFFF) << 12
         else:
             return 0
         sign_bit = 1 << (n - 1)
@@ -164,22 +188,22 @@ class ControlUnit:
             opcode_to_binary[Opcode.LUI]: 0x2,
             opcode_to_binary[Opcode.MV]: 0x3,
             opcode_to_binary[Opcode.SW]: 0x4,
-            opcode_to_binary[Opcode.LW]: 0x6,
-            opcode_to_binary[Opcode.ADDI]: 0x9,
-            opcode_to_binary[Opcode.ADD]: 0xA,
-            opcode_to_binary[Opcode.SUB]: 0xB,
-            opcode_to_binary[Opcode.MUL]: 0xC,
-            opcode_to_binary[Opcode.AND]: 0xD,
-            opcode_to_binary[Opcode.INV]: 0xE,
-            opcode_to_binary[Opcode.J]: 0xF,
-            opcode_to_binary[Opcode.JR]: 0x10,
-            opcode_to_binary[Opcode.JZ]: 0x11,
-            opcode_to_binary[Opcode.HALT]: 0x15,
+            opcode_to_binary[Opcode.LW]: 0x5,
+            opcode_to_binary[Opcode.ADDI]: 0x6,
+            opcode_to_binary[Opcode.ADD]: 0x7,
+            opcode_to_binary[Opcode.SUB]: 0x8,
+            opcode_to_binary[Opcode.MUL]: 0x9,
+            opcode_to_binary[Opcode.AND]: 0xA,
+            opcode_to_binary[Opcode.INV]: 0xB,
+            opcode_to_binary[Opcode.J]: 0xC,
+            opcode_to_binary[Opcode.JR]: 0xD,
+            opcode_to_binary[Opcode.JZ]: 0xE,
+            opcode_to_binary[Opcode.HALT]: 0x11,
         }
 
         # Типы переходов после исполнения микрокоманды
         self.SEQ_INC = 0  # pc + 4
-        self.SEQ_MAP = 1  # dispatch
+        self.SEQ_MAP = 1  # переход по dispatch_table
         self.SEQ_JMP = 2  # безусловный
         self.SEQ_JMP_Z = 3  # условный (z == 0)
 
@@ -187,8 +211,22 @@ class ControlUnit:
         EXT_MODE_12 = 0
         EXT_MODE_20 = 1
         EXT_MODE_16 = 2
+        EXT_MODE_U = 3
 
-        # TODO: translate asm to mc
+        self.SHIFT_LATCH_PC = 0
+        self.SHIFT_LATCH_IR = 1
+        self.SHIFT_READ_MEM = 2
+        self.SHIFT_WRITE_MEM = 3
+        self.SHIFT_WRITE_REG = 4
+        self.SHIFT_SEL_MEM_ADDR = 5
+        self.SHIFT_SEL_REG_WR = 6
+        self.SHIFT_SEL_ALU_L = 7
+        self.SHIFT_SEL_ALU_R = 8
+        self.SHIFT_SEL_EXT_MODE = 10
+        self.SHIFT_ALU_OP = 12
+        self.SHIFT_JMP_TYPE = 15
+        self.SHIFT_JMP_ADDR = 17
+
         self.mp_memory = {
             # FETCH
             0x00: self._microcode(
@@ -209,11 +247,11 @@ class ControlUnit:
                     "self_alu_r": "IMM",
                     "alu_op": "PASS_R",
                     "sel_reg_wr": "ALU",
-                    "reg_write": True,
+                    "write_reg": True,
                 },
                 self.SEQ_JMP,
                 jmp_addr=0x0,
-                ext_mode=EXT_MODE_20,
+                ext_mode=EXT_MODE_U,
             ),
             # MV
             0x3: self._microcode(
@@ -221,52 +259,41 @@ class ControlUnit:
                     "sel_alu_l": "RS1",
                     "alu_op": "PASS_L",
                     "sel_reg_wr": "ALU",
-                    "reg_write": True,
+                    "write_reg": True,
                 },
                 self.SEQ_JMP,
                 jmp_addr=0x0,
             ),
             # SW
             0x4: self._microcode(
-                {"sel_alu_l": "RS1", "sel_alu_r": "IMM", "alu_op": "ADD"},
-                self.SEQ_INC,
-                ext_mode=EXT_MODE_16,
-            ),
-            0x5: self._microcode(
                 {
+                    "sel_alu_l": "RS1",
+                    "sel_alu_r": "IMM",
+                    "alu_op": "ADD",
                     "sel_mem_addr": "ALU",
                     "write_mem": True,
                 },
                 self.SEQ_JMP,
                 jmp_addr=0x0,
+                ext_mode=EXT_MODE_16,
             ),
             # LW
-            0x6: self._microcode(
+            0x5: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "sel_alu_r": "IMM",
                     "alu_op": "ADD",
-                },
-                self.SEQ_INC,
-                ext_mode=EXT_MODE_16,
-            ),
-            0x7: self._microcode(
-                {
                     "sel_mem_addr": "ALU",
                     "read_mem": True,
-                },
-                self.SEQ_INC,
-            ),
-            0x8: self._microcode(
-                {
                     "sel_reg_wr": "MEM",
                     "write_reg": True,
                 },
                 self.SEQ_JMP,
                 jmp_addr=0x0,
+                ext_mode=EXT_MODE_16,
             ),
             # ADDI
-            0x9: self._microcode(
+            0x6: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "sel_alu_r": "IMM",
@@ -279,7 +306,7 @@ class ControlUnit:
                 ext_mode=EXT_MODE_12,
             ),
             # ADD
-            0xA: self._microcode(
+            0x7: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "sel_alu_r": "RS2",
@@ -291,7 +318,7 @@ class ControlUnit:
                 jmp_addr=0x0,
             ),
             # SUB
-            0xB: self._microcode(
+            0x8: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "sel_alu_r": "RS2",
@@ -303,7 +330,7 @@ class ControlUnit:
                 jmp_addr=0x0,
             ),
             # MUL
-            0xC: self._microcode(
+            0x9: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "sel_alu_r": "RS2",
@@ -315,7 +342,7 @@ class ControlUnit:
                 jmp_addr=0x0,
             ),
             # AND
-            0xD: self._microcode(
+            0xA: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "sel_alu_r": "RS2",
@@ -327,7 +354,7 @@ class ControlUnit:
                 jmp_addr=0x0,
             ),
             # INV
-            0xE: self._microcode(
+            0xB: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "alu_op": "INV",
@@ -338,7 +365,7 @@ class ControlUnit:
                 jmp_addr=0x0,
             ),
             # J
-            0xF: self._microcode(
+            0xC: self._microcode(
                 {
                     "sel_alu_r": "IMM",
                     "alu_op": "PASS_R",
@@ -349,7 +376,7 @@ class ControlUnit:
                 ext_mode=EXT_MODE_20,
             ),
             # JR
-            0x10: self._microcode(
+            0xD: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "alu_op": "PASS_L",
@@ -359,16 +386,16 @@ class ControlUnit:
                 jmp_addr=0x0,
             ),
             # JZ
-            0x11: self._microcode(
+            0xE: self._microcode(
                 {
                     "sel_alu_l": "RS1",
                     "alu_op": "PASS_L",
                 },
-                self.SEQ_INC,
+                self.SEQ_JMP_Z,
+                jmp_addr=0x10,
             ),
-            0x12: self._microcode({}, self.SEQ_JMP_Z, jmp_addr=0x14),
-            0x13: self._microcode({}, self.SEQ_JMP, 0x0),
-            0x14: self._microcode(
+            0xF: self._microcode({}, self.SEQ_JMP, jmp_addr=0x0),
+            0x10: self._microcode(
                 {
                     "sel_alu_r": "IMM",
                     "alu_op": "PASS_R",
@@ -376,27 +403,16 @@ class ControlUnit:
                 },
                 self.SEQ_JMP,
                 jmp_addr=0x0,
-                ext_mode=EXT_MODE_20,
+                ext_mode=EXT_MODE_16,
             ),
             # HALT
-            0x15: self._microcode({}, self.SEQ_JMP, jmp_addr=0x15),
+            0x11: self._microcode({}, self.SEQ_JMP, jmp_addr=0x12),
         }
 
-        self.SHIFT_LATCH_PC = 0
-        self.SHIFT_LATCH_IR = 1
-        self.SHIFT_READ_MEM = 2
-        self.SHIFT_WRITE_MEM = 3
-        self.SHIFT_WRITE_REG = 4
-        self.SHIFT_SEL_MEM_ADDR = 5
-        self.SHIFT_SEL_REG_WR = 6
-        self.SHIFT_SEL_ALU_L = 7
-        self.SHIFT_SEL_ALU_R = 8
-        self.SHIFT_SEL_EXT_MODE = 10
-        self.SHIFT_ALU_OP = 12
-        self.SHIFT_JMP_TYPE = 15
-        self.SHIFT_JMP_ADDR = 17
-
     def tick(self):
+        if self.mPC == self.dispatch_table[opcode_to_binary[Opcode.HALT]]:
+            raise StopIteration()
+
         instr = self.mp_memory.get(self.mPC, 0)
 
         signals = {
@@ -405,12 +421,12 @@ class ControlUnit:
             "read_mem": bool(instr & (1 << self.SHIFT_READ_MEM)),
             "write_mem": bool(instr & (1 << self.SHIFT_WRITE_MEM)),
             "write_reg": bool(instr & (1 << self.SHIFT_WRITE_REG)),
-            "sel_ext_mode": ["IMM_12", "IMM_20", "OFFSET_16"][
+            "sel_ext_mode": ["IMM_12", "IMM_20", "OFFSET_16", "IMM_U"][
                 (instr >> self.SHIFT_SEL_EXT_MODE) & 0x3
             ],
             "sel_mem_addr": "PC" if (instr & (1 << self.SHIFT_SEL_MEM_ADDR)) else "ALU",
             "sel_reg_wr": "MEM" if (instr & (1 << self.SHIFT_SEL_REG_WR)) else "ALU",
-            "sel_alu_l": ["RS1", "PC"][(instr >> self.SHIFT_SEL_ALU_L) & 0x3],
+            "sel_alu_l": "PC" if (instr & (1 << self.SHIFT_SEL_ALU_L)) else "RS1",
             "sel_alu_r": ["RS2", "IMM", "INC_PC"][
                 (instr >> self.SHIFT_SEL_ALU_R) & 0x3
             ],
@@ -497,5 +513,64 @@ class ControlUnit:
         return self.bits
 
 
+def simulation(initial_mem: [int], input_token: [str], trace_regs: list[int] = None):
+    memory = Memory(initial_mem, input_token)
+    data_path = DataPath(memory)
+    control_unit = ControlUnit(data_path)
+    ticks = 0
+    try:
+        while True:
+            control_unit.tick()
+            ticks += 1
+
+            if trace_regs is not None:
+                pc_str = f"PC: {data_path.PC}"
+                mpc_str = f"mPC: 0x{control_unit.mPC:02X}"
+                ir_str = f"IR: 0x{data_path.IR:08X}"
+                flags_str = f"Z: {data_path.flags['Z']} N: {data_path.flags['N']}"
+
+                regs_str = " | ".join(
+                    [f"R{r}: 0x{data_path.reg_file.read_rs(r):08X}" for r in trace_regs]
+                )
+
+                trace_line = f"[TRACE] Tick: {ticks:04d} | {mpc_str} | {pc_str} | {ir_str} | {flags_str} | {regs_str}"
+                print(trace_line)
+    except StopIteration:
+        pass
+    print(f"\nSimulation halted. Ticks executed: {ticks}")
+
+
+def main(source_path: str, input_path: str, trace_regs: list[int] = None):
+    with open(source_path, "rb") as f:
+        initial_mem = list(f.read())
+
+    with open(input_path, encoding="utf-8") as f:
+        input_text = f.read()
+        input_token = []
+        for char in input_text:
+            input_token.append(char)
+    simulation(initial_mem, input_token, trace_regs)
+
+
 if __name__ == "__main__":
-    ...
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "source_file",
+        nargs="?",
+        default="./examples/hello_world/hello_world.bin",
+    )
+    parser.add_argument(
+        "input_file",
+        nargs="?",
+        default="./examples/hello_world/hello_world.txt",
+    )
+    parser.add_argument(
+        "--trace",
+        nargs="+",
+        type=int,
+    )
+
+    args = parser.parse_args()
+    trace_regs = [0, 8, 14, 15]
+
+    main(args.source_file, args.input_file, None)

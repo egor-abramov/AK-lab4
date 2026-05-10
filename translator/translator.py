@@ -65,7 +65,8 @@ def tokenize(code: str) -> [Token]:
         elif typ == "WORD":
             tokens.append(Token(typ, str(value).lower()))
         elif typ == "STRING":
-            tokens.append(Token(typ, value[1:-1]))
+            actual_str = value[1:-1].encode("utf-8").decode("unicode_escape")
+            tokens.append(Token(typ, actual_str))
     return tokens
 
 
@@ -307,9 +308,9 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
             opcode = Opcode[mnemonic]
             args = [parse_arg(p, label2addr) for p in instruction[1:]]
             rd_val, rs1_val, rs2_val, imm_val = (
-                Register.ZERO,
-                Register.ZERO,
-                Register.ZERO,
+                Register.X0,
+                Register.X0,
+                Register.X0,
                 0,
             )
 

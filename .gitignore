@@ -1,3 +1,3 @@
 .idea
-examples/out/*.bin
+examples/*/*.bin
 __pycache__

@@ -1,2 +1,2 @@
-string "Hello World!" hello
+string "Hello World!\n" hello
 hello print_str
