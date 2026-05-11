@@ -1,6 +1,7 @@
 import argparse
+import logging
 
-from isa import Opcode, opcode_to_binary
+from isa import Opcode, opcode_to_binary, binary_to_opcode
 
 
 class RegisterFile:
@@ -31,22 +32,30 @@ class Memory:
         input_buffer: [str],
         mem_size: int = 2048,
         input_addr: int = 0x5F8,
-        output_addr: int = 0x5FC,
+        output_num_addr: int = 0x5FC,
+        output_char_addr: int = 0x600,
     ):
         self.INPUT_ADDR = input_addr
-        self.OUTPUT_ADDR = output_addr
+        self.OUTPUT_NUM_ADDR = output_num_addr
+        self.OUTPUT_CHAR_ADDR = output_char_addr
+
         self.MEM_SIZE = mem_size
         self.mem = [0] * self.MEM_SIZE
         for i in range(len(initial_mem)):
             self.mem[i] = initial_mem[i]
         self.input_buffer = input_buffer
+        self.output_buffer = []
 
     def read(self, addr: int) -> int:
         if addr == self.INPUT_ADDR:
             if not self.input_buffer:
                 raise EOFError("No elements in input buffer")
             return self.input_buffer.pop(0)
-        elif 0 <= addr < self.MEM_SIZE - 3 and addr != self.OUTPUT_ADDR:
+        elif (
+            0 <= addr < self.MEM_SIZE - 3
+            and addr != self.OUTPUT_NUM_ADDR
+            and addr != self.OUTPUT_CHAR_ADDR
+        ):
             return (
                 (self.mem[addr] << 24)
                 | (self.mem[addr + 1] << 16)
@@ -56,8 +65,10 @@ class Memory:
         raise Exception(f"Invalid memory access at address {addr}")
 
     def write(self, val: int, addr: int):
-        if addr == self.OUTPUT_ADDR:
-            print(chr(val), end="")
+        if addr == self.OUTPUT_NUM_ADDR:
+            self.output_buffer.append(val)
+        elif addr == self.OUTPUT_CHAR_ADDR:
+            self.output_buffer.append(chr(val))
         elif 0 <= addr < self.MEM_SIZE - 3 and addr != self.INPUT_ADDR:
             self.mem[addr] = (val >> 24) & 0xFF
             self.mem[addr + 1] = (val >> 16) & 0xFF
@@ -524,20 +535,22 @@ def simulation(initial_mem: [int], input_token: [str], trace_regs: list[int] = N
             ticks += 1
 
             if trace_regs is not None:
-                pc_str = f"PC: {data_path.PC}"
+                pc_str = f"PC: 0x{data_path.PC:02X}"
                 mpc_str = f"mPC: 0x{control_unit.mPC:02X}"
-                ir_str = f"IR: 0x{data_path.IR:08X}"
+                opcode = binary_to_opcode[(data_path.IR >> 27) & 0x1F]
                 flags_str = f"Z: {data_path.flags['Z']} N: {data_path.flags['N']}"
 
                 regs_str = " | ".join(
                     [f"R{r}: 0x{data_path.reg_file.read_rs(r):08X}" for r in trace_regs]
                 )
 
-                trace_line = f"[TRACE] Tick: {ticks:04d} | {mpc_str} | {pc_str} | {ir_str} | {flags_str} | {regs_str}"
-                print(trace_line)
+                trace_line = f"Tick: {ticks:04d} | {pc_str:9} | {mpc_str:9} | {opcode:>4} | {flags_str} | {regs_str}"
+                logging.debug("%s", trace_line)
     except StopIteration:
         pass
-    print(f"\nSimulation halted. Ticks executed: {ticks}")
+    print(f"\nTicks executed: {ticks}")
+    print("Output:")
+    print("".join(memory.output_buffer))
 
 
 def main(source_path: str, input_path: str, trace_regs: list[int] = None):
@@ -545,24 +558,29 @@ def main(source_path: str, input_path: str, trace_regs: list[int] = None):
         initial_mem = list(f.read())
 
     with open(input_path, encoding="utf-8") as f:
-        input_text = f.read()
-        input_token = []
-        for char in input_text:
-            input_token.append(char)
-    simulation(initial_mem, input_token, trace_regs)
+        data = f.read()
+        input_tokens = []
+        for ch in data:
+            if isinstance(ch, int):
+                input_tokens.append(int(ch))
+            else:
+                input_tokens.append(ord(ch))
+        input_tokens.append(ord("\n"))
+    simulation(initial_mem, input_tokens, trace_regs)
 
 
 if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "source_file",
         nargs="?",
-        default="./examples/hello_world/hello_world.bin",
+        default="./examples/hello/hello.bin",
     )
     parser.add_argument(
         "input_file",
         nargs="?",
-        default="./examples/hello_world/hello_world.txt",
+        default="./examples/hello/hello.txt",
     )
     parser.add_argument(
         "--trace",
@@ -571,6 +589,4 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    trace_regs = [0, 8, 14, 15]
-
-    main(args.source_file, args.input_file, None)
+    main(args.source_file, args.input_file, args.trace)

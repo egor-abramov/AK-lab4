@@ -1,7 +1,8 @@
-import json
+import argparse
 import re
+import os
 
-from isa import Opcode, Register, to_bytes
+from isa import Opcode, Register, to_bytes, save_hex
 
 WORD_SIZE = 4
 DATA_STACK_INIT_ADDR = 0x6FF
@@ -124,6 +125,7 @@ class Translator:
         self.it = iter([])
 
         self.last_number = 0
+        self.func_skips = []
 
     def _calc_data_addr(self, tokens: list[Token]) -> int:
         """
@@ -151,6 +153,9 @@ class Translator:
                 word = token.value
                 if word in ["var", "array"]:
                     next(it)
+                elif word == ":":
+                    next(it)
+                    code_len += 3 * WORD_SIZE
                 elif word == "string":
                     next(it)  # skip string token
                     next(it)  # skip string name
@@ -174,13 +179,12 @@ class Translator:
     def emit_label(self, label: str):
         self.code.append(f"{label}:")
 
-    def translate(self, tokens: list[Token]) -> (list[str], int):
+    def translate(self, tokens: list[Token]) -> list[str]:
         """
         Проход 2
         Трансляция в шитый код.
         """
         self.data_addr = self._calc_data_addr(tokens)
-        self.emit_label("START")
 
         self.it = iter(tokens)
         for token in self.it:
@@ -194,7 +198,7 @@ class Translator:
 
         self.emit(self.word2addr["HALT"])
         self.code.extend(self.data_segment)
-        return self.code, self.data_addr
+        return self.code
 
     def _translate_word(self, word: str):
         if word in FORTH_PRIMITIVES:
@@ -214,11 +218,20 @@ class Translator:
             self.emit(hex(target_addr))
         elif word == ":":
             token_name = str(next(self.it).value)
+
+            self.emit(self.word2addr["JMP"])
+            skip_idx = len(self.code)
+            self.emit("0x0")  # заглушка для адреса перехода
+
             self.word2addr[token_name] = hex(self.cur_addr)
             self.emit_label(token_name.upper())
             self.emit("j DOCOL")
+
+            self.func_skips.append(skip_idx)
         elif word == ";":
             self.emit(self.word2addr["EXIT"])
+            skip_idx = self.func_skips.pop()
+            self.code[skip_idx] = hex(self.cur_addr)
         elif word == "'":
             target_name = next(self.it).value
             if target_name not in self.word2addr:
@@ -276,7 +289,7 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
         value: 0,                       <- для ячееек с данными
 
         opcode: isa.Opcode,             <- для ячеек с инструкциями
-        args: [],
+        args: [],                       <- аргументы инструкции
     }
     """
     current_addr = 0
@@ -297,7 +310,17 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
     program: list[dict[str, any]] = []
     for addr, line in lines:
         if line.startswith("0x") or line.lstrip("-").isdigit():
-            program.append({"address": addr, "type": "data", "value": int(line, 0)})
+            if addr not in addr2label:
+                program.append({"address": addr, "type": "data", "value": int(line, 0)})
+            else:
+                program.append(
+                    {
+                        "label": addr2label[addr],
+                        "address": addr,
+                        "type": "data",
+                        "value": int(line, 0),
+                    }
+                )
         else:
             instruction = line.replace(",", " ").split()
             mnemonic = instruction[0].upper()
@@ -306,7 +329,7 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
                 raise ValueError(f"Unknown opcode: {mnemonic} in line {line}")
 
             opcode = Opcode[mnemonic]
-            args = [parse_arg(p, label2addr) for p in instruction[1:]]
+            instr_args = [parse_arg(p, label2addr) for p in instruction[1:]]
             rd_val, rs1_val, rs2_val, imm_val = (
                 Register.X0,
                 Register.X0,
@@ -315,36 +338,36 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
             )
 
             if opcode in (Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.AND):
-                rd_val, rs1_val, rs2_val = args[0], args[1], args[2]
+                rd_val, rs1_val, rs2_val = instr_args[0], instr_args[1], instr_args[2]
             elif opcode == Opcode.INV:
-                rd_val, rs1_val = args[0], args[1]
+                rd_val, rs1_val = instr_args[0], instr_args[1]
             elif opcode == Opcode.ADDI:
-                rd_val, rs1_val, imm_val = args[0], args[1], args[2]
+                rd_val, rs1_val, imm_val = instr_args[0], instr_args[1], instr_args[2]
             elif opcode == Opcode.LUI:
-                rd_val, imm_val = args[0], args[1]
+                rd_val, imm_val = instr_args[0], instr_args[1]
             elif opcode == Opcode.MV:
-                rd_val, rs1_val = args[0], args[1]
+                rd_val, rs1_val = instr_args[0], instr_args[1]
             elif opcode == Opcode.LW:
-                rd_val = args[0]
-                rs1_val = args[1]["reg"]
-                imm_val = args[1]["offset"]
+                rd_val = instr_args[0]
+                rs1_val = instr_args[1]["reg"]
+                imm_val = instr_args[1]["offset"]
             elif opcode == Opcode.SW:
-                rs2_val = args[0]
-                rs1_val = args[1]["reg"]
-                imm_val = args[1]["offset"]
+                rs2_val = instr_args[0]
+                rs1_val = instr_args[1]["reg"]
+                imm_val = instr_args[1]["offset"]
             elif opcode == Opcode.J:
-                imm_val = args[0]
+                imm_val = instr_args[0]
             elif opcode == Opcode.JR:
-                rs1_val = args[0]
+                rs1_val = instr_args[0]
             elif opcode == Opcode.JZ:
-                rs1_val = args[0]
-                imm_val = args[1]
+                rs1_val = instr_args[0]
+                imm_val = instr_args[1]
 
             parsed_instruction = {
                 "address": addr,
                 "type": "instruction",
                 "opcode": opcode,
-                "args": args,
+                "args": instr_args,
                 "rd": rd_val,
                 "rs1": rs1_val,
                 "rs2": rs2_val,
@@ -385,52 +408,16 @@ def parse_arg(op_str: str, labels: dict[str, int]) -> any:
     raise ValueError(f"Unresolvable operand: {op_str}")
 
 
-def save_json(target_path: str, program: list[dict[str, any]]):
-    """
-    Сохраняет транслированый код в json формате для дебага
-    """
-    json_data = []
-    for item in program:
-        json_item = {}
-        if "label" in item:
-            json_item["label"] = item["label"]
-        json_item["address"] = hex(item["address"])
-        json_item["type"] = item["type"]
-
-        if item["type"] == "data":
-            json_item["value"] = hex(item["value"])
-        else:
-            json_item["opcode"] = item["opcode"].name
-            json_item["args"] = []
-            for arg in item["args"]:
-                if isinstance(arg, Register):
-                    json_item["args"].append(arg.name)
-                elif isinstance(arg, dict):
-                    json_item["args"].append(
-                        {"offset": arg["offset"], "reg": arg["reg"].name}
-                    )
-                else:
-                    json_item["args"].append(arg)
-        json_data.append(json_item)
-
-    if not target_path.endswith(".json"):
-        target_path += ".json"
-    with open(target_path, "w") as f:
-        f.write("[\n")
-        lines = [f"    {json.dumps(item, ensure_ascii=False)}" for item in json_data]
-        f.write(",\n".join(lines))
-        f.write("\n]\n")
-
-
 def main(source_path: str, target_path: str):
     with open(source_path, "r", encoding="utf-8") as f:
         source_text = f.read()
     INIT_CODE_SIZE = 3 * WORD_SIZE
-    addr, kernel_code, start_addr = load_kernel("kernel.s", INIT_CODE_SIZE)
+    kernel_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kernel.s")
+    addr, kernel_code, start_addr = load_kernel(kernel_path, INIT_CODE_SIZE)
     tokens = tokenize(source_text)
 
     translator = Translator(addr, start_addr)
-    translated_code, data_addr = translator.translate(tokens)
+    translated_code = translator.translate(tokens)
 
     init_code = [
         f"addi x0, zero, {start_addr}",
@@ -439,18 +426,27 @@ def main(source_path: str, target_path: str):
     ]
     asm = init_code + kernel_code + translated_code
     parsed_program = assemble(asm)
-    save_json(target_path, parsed_program)
+    save_hex(target_path, parsed_program)
 
     binary_code = to_bytes(parsed_program)
     if not target_path.endswith(".bin"):
         target_path += ".bin"
     with open(target_path, "wb") as f:
         f.write(binary_code)
+    print(f"Binary saved to {target_path}")
 
 
-# TODO: add hex
-# TODO: remove json
 if __name__ == "__main__":
-    source = "../examples/hello_world/hello_word.ft"
-    target = "../examples/hello_world/hello_world.bin"
-    main(source, target)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "source",
+        nargs="?",
+        default="../examples/hello/hello.ft",
+    )
+    parser.add_argument(
+        "target",
+        nargs="?",
+        default="../examples/hello/hello.bin",
+    )
+    args = parser.parse_args()
+    main(args.source, args.target)

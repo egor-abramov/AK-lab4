@@ -1,0 +1,11 @@
+var i
+1 i !
+
+loop
+    i @ .
+
+    i @ 1 +
+    i !
+
+    11 i @ -
+endloop

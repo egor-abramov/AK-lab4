@@ -159,6 +159,12 @@ SKIP_JNZ:
 
 ##############################
 
+JMP:
+    lw x0, 0(x0)
+    j NEXT
+
+##############################
+
 EZ:
     lw t0, 0(sp)
     addi sp, sp, 4
@@ -208,7 +214,7 @@ PRINT_STR:
     lw t0, 0(sp)         # start addr
     addi sp, sp, 4
     lw t1, 0(t0)         # str len
-    addi t2, zero, 0x5FC # output addr
+    addi t2, zero, 0x600 # output addr
 
 PRINT_STR_LOOP:
     jz t1, PRINT_STR_END

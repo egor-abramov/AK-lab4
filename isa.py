@@ -159,3 +159,39 @@ def to_bytes(program: list[dict[str, any]]) -> bytearray:
 
             binary_code.extend(instr_val.to_bytes(4, byteorder="big"))
     return binary_code
+
+
+def save_hex(target_path: str, program: list[dict[str, any]]):
+    """
+    Сохраняет транслированый код в формате
+    <label> - <address> - <HEXCODE> - <mnemonic>
+    """
+    if not target_path.endswith(".hex"):
+        target_path += ".hex"
+
+    with open(target_path, "w", encoding="utf-8") as f:
+        header = (
+            f"{'<label>':<15} | {'<address>':>10} | {'<HEXCODE>':>10} | {'<mnemonic>'}"
+        )
+        f.write(header + "\n")
+
+        for item in program:
+            label = item.get("label", "")
+            address = item["address"]
+
+            if item["type"] == "data":
+                hexcode = hex(item["value"])
+                mnemonic = "DATA"
+            elif item["type"] == "instruction":
+                hexcode = f"0x{opcode_to_binary[item['opcode']]}"
+                args = []
+                for arg in item["args"]:
+                    if isinstance(arg, Register):
+                        args.append(arg.name)
+                    elif isinstance(arg, dict):
+                        args.append(f"{arg['offset']}({arg['reg'].name})")
+                    else:
+                        args.append(str(arg))
+                mnemonic = f"{item['opcode'].name} {', '.join(args)}"
+            line = f"{label:<15} | {address:>10} | {hexcode:>10} | {mnemonic}"
+            f.write(line + "\n")
