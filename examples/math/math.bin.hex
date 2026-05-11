@@ -112,7 +112,7 @@ EXECUTE         |        416 |        0x0 | LW T0, 0(SP)
 PRINT_STR       |        440 |        0x0 | LW T0, 0(SP)
                 |        444 |        0x6 | ADDI SP, SP, 4
                 |        448 |        0x0 | LW T1, 0(T0)
-                |        452 |        0x6 | ADDI T2, ZERO, 1532
+                |        452 |        0x6 | ADDI T2, ZERO, 1536
 PRINT_STR_LOOP  |        456 |        0x3 | JZ T1, 480
                 |        460 |        0x6 | ADDI T0, T0, 4
                 |        464 |        0x0 | LW T3, 0(T0)
@@ -136,30 +136,30 @@ READ_STR_LOOP   |        504 |        0x0 | LW T4, 0(T2)
 READ_STR_END    |        536 |        0x1 | SW T3, 0(T0)
                 |        540 |       0x11 | J 12
 HALT            |        544 |       0x13 | HALT 
-                |        548 |     0x0xbc | DATA
-                |        552 |      0x0x1 | DATA
-                |        556 |     0x0xbc | DATA
-                |        560 |    0x0x290 | DATA
-                |        564 |     0x0xe4 | DATA
-                |        568 |     0x0xbc | DATA
-                |        572 |    0x0x290 | DATA
-                |        576 |     0x0xfc | DATA
-                |        580 |    0x0x120 | DATA
-                |        584 |     0x0xbc | DATA
-                |        588 |    0x0x290 | DATA
-                |        592 |     0x0xfc | DATA
-                |        596 |     0x0xbc | DATA
-                |        600 |      0x0x1 | DATA
-                |        604 |     0x0x34 | DATA
-                |        608 |     0x0xbc | DATA
-                |        612 |    0x0x290 | DATA
-                |        616 |     0x0xe4 | DATA
-                |        620 |     0x0xbc | DATA
-                |        624 |      0x0xb | DATA
-                |        628 |     0x0xbc | DATA
-                |        632 |    0x0x290 | DATA
-                |        636 |     0x0xfc | DATA
-                |        640 |     0x0x4c | DATA
-                |        644 |    0x0x134 | DATA
-                |        648 |    0x0x238 | DATA
-                |        652 |    0x0x220 | DATA
+                |        548 |       0xbc | DATA
+                |        552 |        0x1 | DATA
+                |        556 |       0xbc | DATA
+                |        560 |      0x290 | DATA
+                |        564 |       0xe4 | DATA
+                |        568 |       0xbc | DATA
+                |        572 |      0x290 | DATA
+                |        576 |       0xfc | DATA
+                |        580 |      0x120 | DATA
+                |        584 |       0xbc | DATA
+                |        588 |      0x290 | DATA
+                |        592 |       0xfc | DATA
+                |        596 |       0xbc | DATA
+                |        600 |        0x1 | DATA
+                |        604 |       0x34 | DATA
+                |        608 |       0xbc | DATA
+                |        612 |      0x290 | DATA
+                |        616 |       0xe4 | DATA
+                |        620 |       0xbc | DATA
+                |        624 |        0xb | DATA
+                |        628 |       0xbc | DATA
+                |        632 |      0x290 | DATA
+                |        636 |       0xfc | DATA
+                |        640 |       0x4c | DATA
+                |        644 |      0x134 | DATA
+                |        648 |      0x238 | DATA
+                |        652 |      0x220 | DATA

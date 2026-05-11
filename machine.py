@@ -66,7 +66,7 @@ class Memory:
 
     def write(self, val: int, addr: int):
         if addr == self.OUTPUT_NUM_ADDR:
-            self.output_buffer.append(val)
+            self.output_buffer.append(f"{val} ")
         elif addr == self.OUTPUT_CHAR_ADDR:
             self.output_buffer.append(chr(val))
         elif 0 <= addr < self.MEM_SIZE - 3 and addr != self.INPUT_ADDR:
