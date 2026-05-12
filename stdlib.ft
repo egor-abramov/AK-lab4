@@ -1,0 +1,54 @@
+: cells 4 * ;
+: emit 1536 ! ;
+: cr 10 emit ;
+
+
+var _str_ptr
+var _str_len
+
+: _print_char
+    _str_ptr @ 4 + _str_ptr !
+    _str_ptr @ @ emit
+;
+
+: _print_loop
+    loop
+        _print_char
+        _str_len @ 1 - _str_len !
+    endloop
+;
+
+: print_str
+    _str_ptr !
+    _str_ptr @ @ _str_len !
+    _str_len @ >0 _print_loop
+;
+
+var _start_ptr
+var _char
+
+: _process_char
+    _str_ptr @ 4 + _str_ptr !
+    _char @ _str_ptr @ !
+    _str_len @ 1 + _str_len !
+;
+
+: read_str
+    _start_ptr !
+    _start_ptr @ _str_ptr !
+    0 _str_len !
+
+    loop
+        read  _char
+        _char @ 10 -
+        dup >0 _process_char
+    endloop
+
+    _str_len @ _start_ptr @ !
+;
+
+: or
+    not
+    swap not
+    and not
+;

@@ -255,7 +255,7 @@ class ControlUnit:
             # LUI
             0x2: self._microcode(
                 {
-                    "self_alu_r": "IMM",
+                    "sel_alu_r": "IMM",
                     "alu_op": "PASS_R",
                     "sel_reg_wr": "ALU",
                     "write_reg": True,
@@ -310,7 +310,7 @@ class ControlUnit:
                     "sel_alu_r": "IMM",
                     "alu_op": "ADD",
                     "write_reg": True,
-                    "sel_reg_write": "ALU",
+                    "sel_reg_wr": "ALU",
                 },
                 self.SEQ_JMP,
                 jmp_addr=0x0,
