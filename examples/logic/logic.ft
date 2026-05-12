@@ -3,10 +3,4 @@ var x
 var y
 1 y !
 
-: or
-    not
-    swap not
-    and not
-;
-
 x @ y @ or .

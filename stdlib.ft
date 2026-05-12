@@ -1,5 +1,5 @@
 : cells 4 * ;
-: emit 2008 ! ;
+: emit 3808 ! ;
 : cr 10 emit ;
 
 
@@ -15,6 +15,7 @@ var _str_len
     loop
         _print_char
         _str_len @ 1 - _str_len !
+        _str_len @
     endloop
 ;
 
@@ -39,8 +40,9 @@ var _char
     0 _str_len !
 
     loop
-        read  _char
-        _char @ 10 -
+        read _char !
+        _char @
+        10 -
         dup >0 _process_char
     endloop
 

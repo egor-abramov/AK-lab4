@@ -4,10 +4,10 @@ import re
 from isa import Opcode, Register, to_bytes, save_hex
 
 WORD_SIZE = 4
-DATA_STACK_INIT_ADDR = 0x6FF
-RETURN_STACK_INIT_ADDR = 0x7FF
-INPUT_ADDR = 0x5F8
-OUTPUT_ADDR = 0x5FC
+DATA_STACK_INIT_ADDR = 3968
+RETURN_STACK_INIT_ADDR = 4096
+INPUT_ADDR = 3800
+OUTPUT_ADDR = 3804
 
 
 class Token:
@@ -77,7 +77,7 @@ class Translator:
         else:
             upper = (val >> 12) & 0xFFFFF
             lower = val & 0xFFF
-            if lower & 0x8000:
+            if lower & 0x800:
                 upper += 1
             self.emit(f"lui {reg}, {upper}")
             self.emit(f"addi {reg}, {reg}, {lower}")
@@ -378,10 +378,13 @@ def parse_arg(op_str: str, labels: dict[str, int]) -> any:
 
 
 def main(source_path: str, target_path: str):
+    with open("stdlib.ft", "r", encoding="utf-8") as f:
+        stdlib_text = f.read()
+
     with open(source_path, "r", encoding="utf-8") as f:
         source_text = f.read()
 
-    tokens = tokenize(source_text)
+    tokens = tokenize(stdlib_text + "\n" + source_text)
     translator = Translator()
     translated_code = translator.translate(tokens)
     parsed_program = assemble(translated_code)
@@ -395,10 +398,9 @@ def main(source_path: str, target_path: str):
     print(f"Binary saved to {target_path}")
 
 
-# TODO: extend memory 4096 bytes
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("source", nargs="?", default="./examples/math/math.ft")
-    parser.add_argument("target", nargs="?", default="./examples/math/math.bin")
+    parser.add_argument("source", nargs="?", default="./examples/hello/hello.ft")
+    parser.add_argument("target", nargs="?", default="./examples/hello/hello.bin")
     args = parser.parse_args()
     main(args.source, args.target)

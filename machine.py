@@ -30,10 +30,10 @@ class Memory:
         self,
         initial_mem: [int],
         input_buffer: [str],
-        mem_size: int = 2048,
-        input_addr: int = 0x5F8,
-        output_num_addr: int = 0x5FC,
-        output_char_addr: int = 0x600,
+        mem_size: int = 4096,
+        input_addr: int = 3800,
+        output_num_addr: int = 3804,
+        output_char_addr: int = 3808,
     ):
         self.INPUT_ADDR = input_addr
         self.OUTPUT_NUM_ADDR = output_num_addr
@@ -572,21 +572,9 @@ def main(source_path: str, input_path: str, trace_regs: list[int] = None):
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "source_file",
-        nargs="?",
-        default="./examples/hello/hello.bin",
-    )
-    parser.add_argument(
-        "input_file",
-        nargs="?",
-        default="./examples/hello/hello.txt",
-    )
-    parser.add_argument(
-        "--trace",
-        nargs="+",
-        type=int,
-    )
+    parser.add_argument("source_file", nargs="?", default="./examples/hello/hello.bin")
+    parser.add_argument("input_file", nargs="?", default="./examples/hello/hello.txt")
+    parser.add_argument("--trace", nargs="+", type=int)
 
     args = parser.parse_args()
     main(args.source_file, args.input_file, args.trace)
