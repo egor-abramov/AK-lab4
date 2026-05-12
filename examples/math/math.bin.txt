@@ -1,0 +1,11 @@
+<label>               |  <address> |  <HEXCODE> | <mnemonic>
+                      |          0 |        0x6 | ADDI SP, ZERO, 1791
+                      |          4 |        0x6 | ADDI RP, ZERO, 2047
+                      |          8 |        0x6 | ADDI T0, ZERO, 1
+                      |         12 |        0x6 | ADDI SP, SP, -4
+                      |         16 |        0x1 | SW T0, 0(SP)
+                      |         20 |        0x6 | ADDI T0, ZERO, 1532
+                      |         24 |        0x0 | LW T1, 0(SP)
+                      |         28 |        0x6 | ADDI SP, SP, 4
+                      |         32 |        0x1 | SW T1, 0(T0)
+                      |         36 |       0x13 | HALT 

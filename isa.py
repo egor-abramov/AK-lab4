@@ -171,7 +171,7 @@ def save_hex(target_path: str, program: list[dict[str, any]]):
 
     with open(target_path, "w", encoding="utf-8") as f:
         header = (
-            f"{'<label>':<15} | {'<address>':>10} | {'<HEXCODE>':>10} | {'<mnemonic>'}"
+            f"{'<label>':<21} | {'<address>':>10} | {'<HEXCODE>':>10} | {'<mnemonic>'}"
         )
         f.write(header + "\n")
 
@@ -193,5 +193,5 @@ def save_hex(target_path: str, program: list[dict[str, any]]):
                     else:
                         args.append(str(arg))
                 mnemonic = f"{item['opcode'].name} {', '.join(args)}"
-            line = f"{label:<15} | {address:>10} | {hexcode:>10} | {mnemonic}"
+            line = f"{label:<21} | {address:>10} | {hexcode:>10} | {mnemonic}"
             f.write(line + "\n")

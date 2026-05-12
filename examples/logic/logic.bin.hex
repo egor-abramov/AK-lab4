@@ -1,0 +1,70 @@
+<label>               |  <address> |  <HEXCODE> | <mnemonic>
+                      |          0 |        0x6 | ADDI SP, ZERO, 1791
+                      |          4 |        0x6 | ADDI RP, ZERO, 2047
+                      |          8 |        0x6 | ADDI T0, ZERO, 4
+                      |         12 |        0x6 | ADDI SP, SP, -4
+                      |         16 |        0x1 | SW T0, 0(SP)
+                      |         20 |        0x6 | ADDI T0, ZERO, 268
+                      |         24 |        0x6 | ADDI SP, SP, -4
+                      |         28 |        0x1 | SW T0, 0(SP)
+                      |         32 |        0x0 | LW T0, 0(SP)
+                      |         36 |        0x6 | ADDI SP, SP, 4
+                      |         40 |        0x0 | LW T1, 0(SP)
+                      |         44 |        0x6 | ADDI SP, SP, 4
+                      |         48 |        0x1 | SW T1, 0(T0)
+                      |         52 |        0x6 | ADDI T0, ZERO, 1
+                      |         56 |        0x6 | ADDI SP, SP, -4
+                      |         60 |        0x1 | SW T0, 0(SP)
+                      |         64 |        0x6 | ADDI T0, ZERO, 272
+                      |         68 |        0x6 | ADDI SP, SP, -4
+                      |         72 |        0x1 | SW T0, 0(SP)
+                      |         76 |        0x0 | LW T0, 0(SP)
+                      |         80 |        0x6 | ADDI SP, SP, 4
+                      |         84 |        0x0 | LW T1, 0(SP)
+                      |         88 |        0x6 | ADDI SP, SP, 4
+                      |         92 |        0x1 | SW T1, 0(T0)
+                      |         96 |       0x11 | J 184
+OR                    |        100 |        0x0 | LW T0, 0(SP)
+                      |        104 |        0x5 | INV T0, T0
+                      |        108 |        0x1 | SW T0, 0(SP)
+                      |        112 |        0x0 | LW T0, 0(SP)
+                      |        116 |        0x0 | LW T1, 4(SP)
+                      |        120 |        0x1 | SW T0, 4(SP)
+                      |        124 |        0x1 | SW T1, 0(SP)
+                      |        128 |        0x0 | LW T0, 0(SP)
+                      |        132 |        0x5 | INV T0, T0
+                      |        136 |        0x1 | SW T0, 0(SP)
+                      |        140 |        0x0 | LW T0, 0(SP)
+                      |        144 |        0x6 | ADDI SP, SP, 4
+                      |        148 |        0x0 | LW T1, 0(SP)
+                      |        152 |       0x10 | AND T0, T0, T1
+                      |        156 |        0x1 | SW T0, 0(SP)
+                      |        160 |        0x0 | LW T0, 0(SP)
+                      |        164 |        0x5 | INV T0, T0
+                      |        168 |        0x1 | SW T0, 0(SP)
+                      |        172 |        0x0 | LW T1, 0(RP)
+                      |        176 |        0x6 | ADDI RP, RP, 4
+                      |        180 |       0x12 | JR T1
+SKIP_FUNC_OR          |        184 |        0x6 | ADDI T0, ZERO, 268
+                      |        188 |        0x6 | ADDI SP, SP, -4
+                      |        192 |        0x1 | SW T0, 0(SP)
+                      |        196 |        0x0 | LW T0, 0(SP)
+                      |        200 |        0x0 | LW T1, 0(T0)
+                      |        204 |        0x1 | SW T1, 0(SP)
+                      |        208 |        0x6 | ADDI T0, ZERO, 272
+                      |        212 |        0x6 | ADDI SP, SP, -4
+                      |        216 |        0x1 | SW T0, 0(SP)
+                      |        220 |        0x0 | LW T0, 0(SP)
+                      |        224 |        0x0 | LW T1, 0(T0)
+                      |        228 |        0x1 | SW T1, 0(SP)
+                      |        232 |        0x6 | ADDI T1, ZERO, 248
+                      |        236 |        0x6 | ADDI RP, RP, -4
+                      |        240 |        0x1 | SW T1, 0(RP)
+                      |        244 |       0x11 | J 100
+RET_232               |        248 |        0x6 | ADDI T0, ZERO, 1532
+                      |        252 |        0x0 | LW T1, 0(SP)
+                      |        256 |        0x6 | ADDI SP, SP, 4
+                      |        260 |        0x1 | SW T1, 0(T0)
+                      |        264 |       0x13 | HALT 
+VAR_X                 |        268 |        0x0 | DATA
+VAR_Y                 |        272 |        0x0 | DATA
