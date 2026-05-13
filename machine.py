@@ -84,6 +84,8 @@ class DataPath:
         self.reg_file = RegisterFile()
         self.PC = 0x0
         self.IR = 0x0
+        self.DR = 0x0
+        self.AR = 0x0
         self.flags = {"N": 0, "Z": 0}
 
     def tick(self, signals: dict[str, any]):
@@ -116,8 +118,8 @@ class DataPath:
         alu_res, self.flags = self._alu_execute(alu_op, alu_l, alu_r)
 
         sel_mem_addr = signals.get("sel_mem_addr", "PC")
-        if sel_mem_addr == "ALU":
-            mem_addr = alu_res
+        if sel_mem_addr == "AR":
+            mem_addr = self.AR
         else:
             mem_addr = self.PC
 
@@ -129,8 +131,8 @@ class DataPath:
             mem_data_out = self.memory.read(mem_addr)
 
         sel_reg_wr = signals.get("sel_reg_wr", "ALU")
-        if sel_reg_wr == "MEM":
-            reg_write_data = mem_data_out
+        if sel_reg_wr == "DR":
+            reg_write_data = self.DR
         else:
             reg_write_data = alu_res
 
@@ -142,6 +144,12 @@ class DataPath:
 
         if signals.get("latch_ir", False):
             self.IR = mem_data_out & 0xFFFFFFFF
+
+        if signals.get("latch_ar", False):
+            self.AR = alu_res & 0xFFFFFFFF
+
+        if signals.get("latch_dr", False):
+            self.DR = mem_data_out & 0xFFFFFFFF
 
     def _alu_execute(self, op, x, y) -> (int, dict[str, int]):
         res = 0
@@ -182,14 +190,6 @@ class DataPath:
 
 
 class ControlUnit:
-    """
-    Блок управления процессора. Управление осуществляется при помощи микрокоманд.
-    Инструкция декодируется в надор микрокоманд.
-
-    Для удобства микрокоманды можно записывать в словари, где ключ - это управляющий сигнал, а данные - это значение сигнала.
-    Такой далее словарь транслируется в микрокоманду (24 бита) и передается в DataPath
-    """
-
     def __init__(self, data_path: DataPath):
         self.data_path = data_path
         self.mPC = 0x0
@@ -199,17 +199,17 @@ class ControlUnit:
             opcode_to_binary[Opcode.LUI]: 0x2,
             opcode_to_binary[Opcode.MV]: 0x3,
             opcode_to_binary[Opcode.SW]: 0x4,
-            opcode_to_binary[Opcode.LW]: 0x5,
-            opcode_to_binary[Opcode.ADDI]: 0x6,
-            opcode_to_binary[Opcode.ADD]: 0x7,
-            opcode_to_binary[Opcode.SUB]: 0x8,
-            opcode_to_binary[Opcode.MUL]: 0x9,
-            opcode_to_binary[Opcode.AND]: 0xA,
-            opcode_to_binary[Opcode.INV]: 0xB,
-            opcode_to_binary[Opcode.J]: 0xC,
-            opcode_to_binary[Opcode.JR]: 0xD,
-            opcode_to_binary[Opcode.JZ]: 0xE,
-            opcode_to_binary[Opcode.HALT]: 0x11,
+            opcode_to_binary[Opcode.LW]: 0x6,
+            opcode_to_binary[Opcode.ADDI]: 0x9,
+            opcode_to_binary[Opcode.ADD]: 0xA,
+            opcode_to_binary[Opcode.SUB]: 0xB,
+            opcode_to_binary[Opcode.MUL]: 0xC,
+            opcode_to_binary[Opcode.AND]: 0xD,
+            opcode_to_binary[Opcode.INV]: 0xE,
+            opcode_to_binary[Opcode.J]: 0xF,
+            opcode_to_binary[Opcode.JR]: 0x10,
+            opcode_to_binary[Opcode.JZ]: 0x11,
+            opcode_to_binary[Opcode.HALT]: 0x14,
         }
 
         # Типы переходов после исполнения микрокоманды
@@ -258,26 +258,39 @@ class ControlUnit:
                 "sel_alu_r": "IMM",
                 "alu_op": "ADD",
                 "sel_mem_addr": "ALU",
+                "latch_ar": True,
+                "sel_ext_mode": "OFFSET_16",
+                "jmp_mode": self.SEQ_INC,
+            },
+            0x5: {
+                "sel_mem_addr": "AR",
                 "write_mem": True,
                 "jmp_mode": self.SEQ_JMP,
                 "jmp_addr": 0x0,
-                "sel_ext_mode": "OFFSET_16",
             },
             # LW
-            0x5: {
+            0x6: {
                 "sel_alu_l": "RS1",
                 "sel_alu_r": "IMM",
                 "alu_op": "ADD",
-                "sel_mem_addr": "ALU",
+                "sel_ext_mode": "OFFSET_16",
+                "latch_ar": True,
+                "jmp_mode": self.SEQ_INC,
+            },
+            0x7: {
+                "sel_mem_addr": "AR",
                 "read_mem": True,
-                "sel_reg_wr": "MEM",
+                "latch_dr": True,
+                "jmp_mode": self.SEQ_INC,
+            },
+            0x8: {
+                "sel_reg_wr": "DR",
                 "write_reg": True,
                 "jmp_mode": self.SEQ_JMP,
                 "jmp_addr": 0x0,
-                "sel_ext_mode": "OFFSET_16",
             },
             # ADDI
-            0x6: {
+            0x9: {
                 "sel_alu_l": "RS1",
                 "sel_alu_r": "IMM",
                 "alu_op": "ADD",
@@ -288,7 +301,7 @@ class ControlUnit:
                 "sel_ext_mode": "IMM_12",
             },
             # ADD
-            0x7: {
+            0xA: {
                 "sel_alu_l": "RS1",
                 "sel_alu_r": "RS2",
                 "alu_op": "ADD",
@@ -298,7 +311,7 @@ class ControlUnit:
                 "jmp_addr": 0x0,
             },
             # SUB
-            0x8: {
+            0xB: {
                 "sel_alu_l": "RS1",
                 "sel_alu_r": "RS2",
                 "alu_op": "SUB",
@@ -308,7 +321,7 @@ class ControlUnit:
                 "jmp_addr": 0x0,
             },
             # MUL
-            0x9: {
+            0xC: {
                 "sel_alu_l": "RS1",
                 "sel_alu_r": "RS2",
                 "alu_op": "MUL",
@@ -318,7 +331,7 @@ class ControlUnit:
                 "jmp_addr": 0x0,
             },
             # AND
-            0xA: {
+            0xD: {
                 "sel_alu_l": "RS1",
                 "sel_alu_r": "RS2",
                 "alu_op": "AND",
@@ -328,7 +341,7 @@ class ControlUnit:
                 "jmp_addr": 0x0,
             },
             # INV
-            0xB: {
+            0xE: {
                 "sel_alu_l": "RS1",
                 "alu_op": "INV",
                 "sel_reg_wr": "ALU",
@@ -337,7 +350,7 @@ class ControlUnit:
                 "jmp_addr": 0x0,
             },
             # J
-            0xC: {
+            0xF: {
                 "sel_alu_r": "IMM",
                 "alu_op": "PASS_R",
                 "latch_pc": True,
@@ -346,7 +359,7 @@ class ControlUnit:
                 "sel_ext_mode": "IMM_20",
             },
             # JR
-            0xD: {
+            0x10: {
                 "sel_alu_l": "RS1",
                 "alu_op": "PASS_L",
                 "latch_pc": True,
@@ -354,14 +367,14 @@ class ControlUnit:
                 "jmp_addr": 0x0,
             },
             # JZ
-            0xE: {
+            0x11: {
                 "sel_alu_l": "RS1",
                 "alu_op": "PASS_L",
                 "jmp_mode": self.SEQ_JMP_Z,
-                "jmp_addr": 0x10,
+                "jmp_addr": 0x13,
             },
-            0xF: {"jmp_mode": self.SEQ_JMP, "jmp_addr": 0x0},
-            0x10: {
+            0x12: {"jmp_mode": self.SEQ_JMP, "jmp_addr": 0x0},
+            0x13: {
                 "sel_alu_r": "IMM",
                 "alu_op": "PASS_R",
                 "latch_pc": True,
@@ -370,7 +383,7 @@ class ControlUnit:
                 "sel_ext_mode": "OFFSET_16",
             },
             # HALT
-            0x11: {
+            0x14: {
                 "jmp_mode": self.SEQ_JMP,
                 "jmp_addr": 0x12,
             },
