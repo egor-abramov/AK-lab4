@@ -2,7 +2,7 @@ string "What is your name?\n" question_msg
 string "Hello, " hello_msg
 string "!\n" excl_msg
 
-256 array user_name_buf
+32 array user_name_buf
 
 question_msg print_str
 

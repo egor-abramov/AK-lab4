@@ -1,0 +1,8 @@
+var len
+var i
+var j
+var di
+var dj
+
+read len !
+len @ .
