@@ -4,10 +4,10 @@ import re
 from isa import Opcode, Register, to_bytes, save_hex
 
 WORD_SIZE = 4
-DATA_STACK_INIT_ADDR = 0xF80
-RETURN_STACK_INIT_ADDR = 0x1000
-INPUT_ADDR = 0xEF4
-OUTPUT_ADDR = 0xEF8
+DATA_STACK_INIT_ADDR = 0x3F80
+RETURN_STACK_INIT_ADDR = 0x4000
+INPUT_ADDR = 0x3EF8
+OUTPUT_ADDR = 0x3EFC
 
 
 class Token:
@@ -63,28 +63,28 @@ class Translator:
         self.code.append(f"{label}:")
 
     def emit_lit(self, val):
-        if isinstance(val, int):
-            self.emit_lit_reg("t0", val)
-        else:
-            self.emit(f"addi t0, zero, {val}")
-
+        self.emit_lit_reg("t0", val)
         self.emit("addi sp, sp, -4")
         self.emit("sw t0, 0(sp)")
 
-    def emit_lit_reg(self, reg: str, val: int):
-        if -2048 <= val <= 2047:
-            self.emit(f"addi {reg}, zero, {val}")
+    def emit_lit_reg(self, reg: str, val):
+        if isinstance(val, int):
+            if -2048 <= val <= 2047:
+                self.emit(f"addi {reg}, zero, {val}")
+            else:
+                upper = (val >> 12) & 0xFFFFF
+                lower = val & 0xFFF
+                if lower & 0x800:
+                    upper += 1
+                self.emit(f"lui {reg}, {upper}")
+                self.emit(f"addi {reg}, {reg}, {lower}")
         else:
-            upper = (val >> 12) & 0xFFFFF
-            lower = val & 0xFFF
-            if lower & 0x800:
-                upper += 1
-            self.emit(f"lui {reg}, {upper}")
-            self.emit(f"addi {reg}, {reg}, {lower}")
+            self.emit(f"lui {reg}, %hi({val})")
+            self.emit(f"addi {reg}, {reg}, %lo({val})")
 
     def emit_call(self, target_label: str):
         ret_label = f"RET_{self.cur_addr}"
-        self.emit(f"addi t1, zero, {ret_label}")
+        self.emit_lit_reg("t1", ret_label)
         self.emit("addi rp, rp, -4")
         self.emit("sw t1, 0(rp)")
         self.emit(f"j {target_label}")
@@ -237,6 +237,12 @@ class Translator:
             target_name = next(self.it).value.upper()
             self.emit_lit(target_name)
 
+        elif word == "cells":
+            self.emit("lw t0, 0(sp)")
+            self.emit("addi t1, zero, 4")
+            self.emit("mul t0, t0, t1")
+            self.emit("sw t0, 0(sp)")
+
         elif word == "execute":
             self.emit("lw t0, 0(sp)")
             self.emit("addi sp, sp, 4")
@@ -258,6 +264,7 @@ class Translator:
         elif word == "array":
             arr_name = next(self.it).value
             self._assert_free_name(arr_name)
+            self.emit("addi sp, sp, 4")
             lbl = f"VAR_{arr_name.upper()}"
             self.var2addr[arr_name] = lbl
             self.data_segment.append(f"{lbl}:")
@@ -369,6 +376,21 @@ def parse_arg(op_str: str, labels: dict[str, int]) -> any:
         offset = int(mem_match.group(1), 0)
         reg_name = mem_match.group(2).upper()
         return {"offset": offset, "reg": Register[reg_name]}
+
+    if op_str.startswith("%hi("):
+        lbl = op_str[4:-1]
+        val = labels[lbl]
+        lower = val & 0xFFF
+        upper = (val >> 12) & 0xFFFFF
+        if lower & 0x800:
+            upper += 1
+        return upper & 0xFFFFF
+
+    if op_str.startswith("%lo("):
+        lbl = op_str[4:-1]
+        val = labels[lbl]
+        return val & 0xFFF
+
     if op_str in labels:
         return labels[op_str]
     try:
@@ -378,7 +400,7 @@ def parse_arg(op_str: str, labels: dict[str, int]) -> any:
 
 
 def main(source_path: str, target_path: str):
-    with open("stdlib.ft", "r", encoding="utf-8") as f:
+    with open("stdlib.fth", "r", encoding="utf-8") as f:
         stdlib_text = f.read()
 
     with open(source_path, "r", encoding="utf-8") as f:
@@ -400,7 +422,7 @@ def main(source_path: str, target_path: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("source", nargs="?", default="./examples/hello/hello.ft")
+    parser.add_argument("source", nargs="?", default="./examples/hello/hello.fth")
     parser.add_argument("target", nargs="?", default="./examples/hello/hello.bin")
     args = parser.parse_args()
     main(args.source, args.target)

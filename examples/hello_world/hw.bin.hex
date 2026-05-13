@@ -1,0 +1,335 @@
+<label>                 |  <address> |  <HEXCODE> | <mnemonic>
+                        |          0 |        0x2 | LUI SP, 1
+                        |          4 |        0x6 | ADDI SP, SP, 3968
+                        |          8 |        0x2 | LUI RP, 1
+                        |         12 |        0x6 | ADDI RP, RP, 0
+                        |         16 |       0x11 | J 56
+CELLS                   |         20 |        0x6 | ADDI T0, ZERO, 4
+                        |         24 |        0x6 | ADDI SP, SP, -4
+                        |         28 |        0x1 | SW T0, 0(SP)
+                        |         32 |        0x0 | LW T0, 0(SP)
+                        |         36 |        0x6 | ADDI SP, SP, 4
+                        |         40 |        0x0 | LW T1, 0(SP)
+                        |         44 |        0x9 | MUL T0, T0, T1
+                        |         48 |        0x1 | SW T0, 0(SP)
+                        |         52 |       0x15 | RET 
+SKIP_FUNC_CELLS         |         56 |       0x11 | J 100
+EMIT                    |         60 |        0x2 | LUI T0, 1
+                        |         64 |        0x6 | ADDI T0, T0, 3836
+                        |         68 |        0x6 | ADDI SP, SP, -4
+                        |         72 |        0x1 | SW T0, 0(SP)
+                        |         76 |        0x0 | LW T0, 0(SP)
+                        |         80 |        0x6 | ADDI SP, SP, 4
+                        |         84 |        0x0 | LW T1, 0(SP)
+                        |         88 |        0x6 | ADDI SP, SP, 4
+                        |         92 |        0x1 | SW T1, 0(T0)
+                        |         96 |       0x15 | RET 
+SKIP_FUNC_EMIT          |        100 |       0x11 | J 124
+CR                      |        104 |        0x6 | ADDI T0, ZERO, 10
+                        |        108 |        0x6 | ADDI SP, SP, -4
+                        |        112 |        0x1 | SW T0, 0(SP)
+                        |        116 |       0x14 | CALL 60
+                        |        120 |       0x15 | RET 
+SKIP_FUNC_CR            |        124 |       0x11 | J 260
+_PRINT_CHAR             |        128 |        0x6 | ADDI T0, ZERO, 1268
+                        |        132 |        0x6 | ADDI SP, SP, -4
+                        |        136 |        0x1 | SW T0, 0(SP)
+                        |        140 |        0x0 | LW T0, 0(SP)
+                        |        144 |        0x0 | LW T1, 0(T0)
+                        |        148 |        0x1 | SW T1, 0(SP)
+                        |        152 |        0x6 | ADDI T0, ZERO, 4
+                        |        156 |        0x6 | ADDI SP, SP, -4
+                        |        160 |        0x1 | SW T0, 0(SP)
+                        |        164 |        0x0 | LW T0, 0(SP)
+                        |        168 |        0x6 | ADDI SP, SP, 4
+                        |        172 |        0x0 | LW T1, 0(SP)
+                        |        176 |        0x7 | ADD T0, T0, T1
+                        |        180 |        0x1 | SW T0, 0(SP)
+                        |        184 |        0x6 | ADDI T0, ZERO, 1268
+                        |        188 |        0x6 | ADDI SP, SP, -4
+                        |        192 |        0x1 | SW T0, 0(SP)
+                        |        196 |        0x0 | LW T0, 0(SP)
+                        |        200 |        0x6 | ADDI SP, SP, 4
+                        |        204 |        0x0 | LW T1, 0(SP)
+                        |        208 |        0x6 | ADDI SP, SP, 4
+                        |        212 |        0x1 | SW T1, 0(T0)
+                        |        216 |        0x6 | ADDI T0, ZERO, 1268
+                        |        220 |        0x6 | ADDI SP, SP, -4
+                        |        224 |        0x1 | SW T0, 0(SP)
+                        |        228 |        0x0 | LW T0, 0(SP)
+                        |        232 |        0x0 | LW T1, 0(T0)
+                        |        236 |        0x1 | SW T1, 0(SP)
+                        |        240 |        0x0 | LW T0, 0(SP)
+                        |        244 |        0x0 | LW T1, 0(T0)
+                        |        248 |        0x1 | SW T1, 0(SP)
+                        |        252 |       0x14 | CALL 60
+                        |        256 |       0x15 | RET 
+SKIP_FUNC__PRINT_CHAR   |        260 |       0x11 | J 400
+LOOP_264                |        264 |       0x14 | CALL 128
+                        |        268 |        0x6 | ADDI T0, ZERO, 1272
+                        |        272 |        0x6 | ADDI SP, SP, -4
+                        |        276 |        0x1 | SW T0, 0(SP)
+                        |        280 |        0x0 | LW T0, 0(SP)
+                        |        284 |        0x0 | LW T1, 0(T0)
+                        |        288 |        0x1 | SW T1, 0(SP)
+                        |        292 |        0x6 | ADDI T0, ZERO, 1
+                        |        296 |        0x6 | ADDI SP, SP, -4
+                        |        300 |        0x1 | SW T0, 0(SP)
+                        |        304 |        0x0 | LW T0, 0(SP)
+                        |        308 |        0x6 | ADDI SP, SP, 4
+                        |        312 |        0x0 | LW T1, 0(SP)
+                        |        316 |        0x8 | SUB T0, T1, T0
+                        |        320 |        0x1 | SW T0, 0(SP)
+                        |        324 |        0x6 | ADDI T0, ZERO, 1272
+                        |        328 |        0x6 | ADDI SP, SP, -4
+                        |        332 |        0x1 | SW T0, 0(SP)
+                        |        336 |        0x0 | LW T0, 0(SP)
+                        |        340 |        0x6 | ADDI SP, SP, 4
+                        |        344 |        0x0 | LW T1, 0(SP)
+                        |        348 |        0x6 | ADDI SP, SP, 4
+                        |        352 |        0x1 | SW T1, 0(T0)
+                        |        356 |        0x6 | ADDI T0, ZERO, 1272
+                        |        360 |        0x6 | ADDI SP, SP, -4
+                        |        364 |        0x1 | SW T0, 0(SP)
+                        |        368 |        0x0 | LW T0, 0(SP)
+                        |        372 |        0x0 | LW T1, 0(T0)
+                        |        376 |        0x1 | SW T1, 0(SP)
+                        |        380 |        0x0 | LW T0, 0(SP)
+                        |        384 |        0x6 | ADDI SP, SP, 4
+                        |        388 |        0x3 | JZ T0, 396
+                        |        392 |       0x11 | J 264
+ENDLOOP_380             |        396 |       0x15 | RET 
+SKIP_FUNC__PRINT_LOOP   |        400 |       0x11 | J 564
+PRINT_STR               |        404 |        0x6 | ADDI T0, ZERO, 1268
+                        |        408 |        0x6 | ADDI SP, SP, -4
+                        |        412 |        0x1 | SW T0, 0(SP)
+                        |        416 |        0x0 | LW T0, 0(SP)
+                        |        420 |        0x6 | ADDI SP, SP, 4
+                        |        424 |        0x0 | LW T1, 0(SP)
+                        |        428 |        0x6 | ADDI SP, SP, 4
+                        |        432 |        0x1 | SW T1, 0(T0)
+                        |        436 |        0x6 | ADDI T0, ZERO, 1268
+                        |        440 |        0x6 | ADDI SP, SP, -4
+                        |        444 |        0x1 | SW T0, 0(SP)
+                        |        448 |        0x0 | LW T0, 0(SP)
+                        |        452 |        0x0 | LW T1, 0(T0)
+                        |        456 |        0x1 | SW T1, 0(SP)
+                        |        460 |        0x0 | LW T0, 0(SP)
+                        |        464 |        0x0 | LW T1, 0(T0)
+                        |        468 |        0x1 | SW T1, 0(SP)
+                        |        472 |        0x6 | ADDI T0, ZERO, 1272
+                        |        476 |        0x6 | ADDI SP, SP, -4
+                        |        480 |        0x1 | SW T0, 0(SP)
+                        |        484 |        0x0 | LW T0, 0(SP)
+                        |        488 |        0x6 | ADDI SP, SP, 4
+                        |        492 |        0x0 | LW T1, 0(SP)
+                        |        496 |        0x6 | ADDI SP, SP, 4
+                        |        500 |        0x1 | SW T1, 0(T0)
+                        |        504 |        0x6 | ADDI T0, ZERO, 1272
+                        |        508 |        0x6 | ADDI SP, SP, -4
+                        |        512 |        0x1 | SW T0, 0(SP)
+                        |        516 |        0x0 | LW T0, 0(SP)
+                        |        520 |        0x0 | LW T1, 0(T0)
+                        |        524 |        0x1 | SW T1, 0(SP)
+                        |        528 |        0x0 | LW T0, 0(SP)
+                        |        532 |        0x6 | ADDI SP, SP, 4
+                        |        536 |        0x3 | JZ T0, 560
+                        |        540 |        0x2 | LUI T1, 524288
+                        |        544 |       0x10 | AND T1, T0, T1
+                        |        548 |        0x3 | JZ T1, 556
+                        |        552 |       0x11 | J 560
+EXEC_528                |        556 |       0x14 | CALL 264
+SKIP_528                |        560 |       0x15 | RET 
+SKIP_FUNC_PRINT_STR     |        564 |       0x11 | J 804
+_PROCESS_CHAR           |        568 |        0x6 | ADDI T0, ZERO, 1280
+                        |        572 |        0x6 | ADDI SP, SP, -4
+                        |        576 |        0x1 | SW T0, 0(SP)
+                        |        580 |        0x0 | LW T0, 0(SP)
+                        |        584 |        0x0 | LW T1, 0(T0)
+                        |        588 |        0x1 | SW T1, 0(SP)
+                        |        592 |        0x6 | ADDI T0, ZERO, 1268
+                        |        596 |        0x6 | ADDI SP, SP, -4
+                        |        600 |        0x1 | SW T0, 0(SP)
+                        |        604 |        0x0 | LW T0, 0(SP)
+                        |        608 |        0x0 | LW T1, 0(T0)
+                        |        612 |        0x1 | SW T1, 0(SP)
+                        |        616 |        0x0 | LW T0, 0(SP)
+                        |        620 |        0x6 | ADDI SP, SP, -4
+                        |        624 |        0x1 | SW T0, 0(SP)
+                        |        628 |        0x6 | ADDI T0, ZERO, 4
+                        |        632 |        0x6 | ADDI SP, SP, -4
+                        |        636 |        0x1 | SW T0, 0(SP)
+                        |        640 |        0x0 | LW T0, 0(SP)
+                        |        644 |        0x6 | ADDI SP, SP, 4
+                        |        648 |        0x0 | LW T1, 0(SP)
+                        |        652 |        0x7 | ADD T0, T0, T1
+                        |        656 |        0x1 | SW T0, 0(SP)
+                        |        660 |        0x6 | ADDI T0, ZERO, 1268
+                        |        664 |        0x6 | ADDI SP, SP, -4
+                        |        668 |        0x1 | SW T0, 0(SP)
+                        |        672 |        0x0 | LW T0, 0(SP)
+                        |        676 |        0x6 | ADDI SP, SP, 4
+                        |        680 |        0x0 | LW T1, 0(SP)
+                        |        684 |        0x6 | ADDI SP, SP, 4
+                        |        688 |        0x1 | SW T1, 0(T0)
+                        |        692 |        0x0 | LW T0, 0(SP)
+                        |        696 |        0x6 | ADDI SP, SP, 4
+                        |        700 |        0x0 | LW T1, 0(SP)
+                        |        704 |        0x6 | ADDI SP, SP, 4
+                        |        708 |        0x1 | SW T1, 0(T0)
+                        |        712 |        0x6 | ADDI T0, ZERO, 1272
+                        |        716 |        0x6 | ADDI SP, SP, -4
+                        |        720 |        0x1 | SW T0, 0(SP)
+                        |        724 |        0x0 | LW T0, 0(SP)
+                        |        728 |        0x0 | LW T1, 0(T0)
+                        |        732 |        0x1 | SW T1, 0(SP)
+                        |        736 |        0x6 | ADDI T0, ZERO, 1
+                        |        740 |        0x6 | ADDI SP, SP, -4
+                        |        744 |        0x1 | SW T0, 0(SP)
+                        |        748 |        0x0 | LW T0, 0(SP)
+                        |        752 |        0x6 | ADDI SP, SP, 4
+                        |        756 |        0x0 | LW T1, 0(SP)
+                        |        760 |        0x7 | ADD T0, T0, T1
+                        |        764 |        0x1 | SW T0, 0(SP)
+                        |        768 |        0x6 | ADDI T0, ZERO, 1272
+                        |        772 |        0x6 | ADDI SP, SP, -4
+                        |        776 |        0x1 | SW T0, 0(SP)
+                        |        780 |        0x0 | LW T0, 0(SP)
+                        |        784 |        0x6 | ADDI SP, SP, 4
+                        |        788 |        0x0 | LW T1, 0(SP)
+                        |        792 |        0x6 | ADDI SP, SP, 4
+                        |        796 |        0x1 | SW T1, 0(T0)
+                        |        800 |       0x15 | RET 
+SKIP_FUNC__PROCESS_CHAR |        804 |       0x11 | J 1168
+READ_STR                |        808 |        0x0 | LW T0, 0(SP)
+                        |        812 |        0x6 | ADDI SP, SP, -4
+                        |        816 |        0x1 | SW T0, 0(SP)
+                        |        820 |        0x6 | ADDI T0, ZERO, 1276
+                        |        824 |        0x6 | ADDI SP, SP, -4
+                        |        828 |        0x1 | SW T0, 0(SP)
+                        |        832 |        0x0 | LW T0, 0(SP)
+                        |        836 |        0x6 | ADDI SP, SP, 4
+                        |        840 |        0x0 | LW T1, 0(SP)
+                        |        844 |        0x6 | ADDI SP, SP, 4
+                        |        848 |        0x1 | SW T1, 0(T0)
+                        |        852 |        0x6 | ADDI T0, ZERO, 1268
+                        |        856 |        0x6 | ADDI SP, SP, -4
+                        |        860 |        0x1 | SW T0, 0(SP)
+                        |        864 |        0x0 | LW T0, 0(SP)
+                        |        868 |        0x6 | ADDI SP, SP, 4
+                        |        872 |        0x0 | LW T1, 0(SP)
+                        |        876 |        0x6 | ADDI SP, SP, 4
+                        |        880 |        0x1 | SW T1, 0(T0)
+                        |        884 |        0x6 | ADDI T0, ZERO, 0
+                        |        888 |        0x6 | ADDI SP, SP, -4
+                        |        892 |        0x1 | SW T0, 0(SP)
+                        |        896 |        0x6 | ADDI T0, ZERO, 1272
+                        |        900 |        0x6 | ADDI SP, SP, -4
+                        |        904 |        0x1 | SW T0, 0(SP)
+                        |        908 |        0x0 | LW T0, 0(SP)
+                        |        912 |        0x6 | ADDI SP, SP, 4
+                        |        916 |        0x0 | LW T1, 0(SP)
+                        |        920 |        0x6 | ADDI SP, SP, 4
+                        |        924 |        0x1 | SW T1, 0(T0)
+LOOP_928                |        928 |        0x2 | LUI T0, 1
+                        |        932 |        0x6 | ADDI T0, T0, 3828
+                        |        936 |        0x0 | LW T1, 0(T0)
+                        |        940 |        0x6 | ADDI SP, SP, -4
+                        |        944 |        0x1 | SW T1, 0(SP)
+                        |        948 |        0x0 | LW T0, 0(SP)
+                        |        952 |        0x6 | ADDI SP, SP, -4
+                        |        956 |        0x1 | SW T0, 0(SP)
+                        |        960 |        0x6 | ADDI T0, ZERO, 1280
+                        |        964 |        0x6 | ADDI SP, SP, -4
+                        |        968 |        0x1 | SW T0, 0(SP)
+                        |        972 |        0x0 | LW T0, 0(SP)
+                        |        976 |        0x6 | ADDI SP, SP, 4
+                        |        980 |        0x0 | LW T1, 0(SP)
+                        |        984 |        0x6 | ADDI SP, SP, 4
+                        |        988 |        0x1 | SW T1, 0(T0)
+                        |        992 |        0x0 | LW T0, 0(SP)
+                        |        996 |        0x6 | ADDI SP, SP, -4
+                        |       1000 |        0x1 | SW T0, 0(SP)
+                        |       1004 |        0x6 | ADDI T0, ZERO, 10
+                        |       1008 |        0x6 | ADDI SP, SP, -4
+                        |       1012 |        0x1 | SW T0, 0(SP)
+                        |       1016 |        0x0 | LW T0, 0(SP)
+                        |       1020 |        0x6 | ADDI SP, SP, 4
+                        |       1024 |        0x0 | LW T1, 0(SP)
+                        |       1028 |        0x8 | SUB T0, T1, T0
+                        |       1032 |        0x1 | SW T0, 0(SP)
+                        |       1036 |        0x0 | LW T0, 0(SP)
+                        |       1040 |        0x6 | ADDI SP, SP, -4
+                        |       1044 |        0x1 | SW T0, 0(SP)
+                        |       1048 |        0x0 | LW T0, 0(SP)
+                        |       1052 |        0x6 | ADDI SP, SP, 4
+                        |       1056 |        0x3 | JZ T0, 1080
+                        |       1060 |        0x2 | LUI T1, 524288
+                        |       1064 |       0x10 | AND T1, T0, T1
+                        |       1068 |        0x3 | JZ T1, 1076
+                        |       1072 |       0x11 | J 1080
+EXEC_1048               |       1076 |       0x14 | CALL 568
+SKIP_1048               |       1080 |        0x0 | LW T0, 0(SP)
+                        |       1084 |        0x6 | ADDI SP, SP, 4
+                        |       1088 |        0x3 | JZ T0, 1096
+                        |       1092 |       0x11 | J 928
+ENDLOOP_1080            |       1096 |        0x6 | ADDI T0, ZERO, 1272
+                        |       1100 |        0x6 | ADDI SP, SP, -4
+                        |       1104 |        0x1 | SW T0, 0(SP)
+                        |       1108 |        0x0 | LW T0, 0(SP)
+                        |       1112 |        0x0 | LW T1, 0(T0)
+                        |       1116 |        0x1 | SW T1, 0(SP)
+                        |       1120 |        0x6 | ADDI T0, ZERO, 1276
+                        |       1124 |        0x6 | ADDI SP, SP, -4
+                        |       1128 |        0x1 | SW T0, 0(SP)
+                        |       1132 |        0x0 | LW T0, 0(SP)
+                        |       1136 |        0x0 | LW T1, 0(T0)
+                        |       1140 |        0x1 | SW T1, 0(SP)
+                        |       1144 |        0x0 | LW T0, 0(SP)
+                        |       1148 |        0x6 | ADDI SP, SP, 4
+                        |       1152 |        0x0 | LW T1, 0(SP)
+                        |       1156 |        0x6 | ADDI SP, SP, 4
+                        |       1160 |        0x1 | SW T1, 0(T0)
+                        |       1164 |       0x15 | RET 
+SKIP_FUNC_READ_STR      |       1168 |       0x11 | J 1248
+OR                      |       1172 |        0x0 | LW T0, 0(SP)
+                        |       1176 |        0x5 | INV T0, T0
+                        |       1180 |        0x1 | SW T0, 0(SP)
+                        |       1184 |        0x0 | LW T0, 0(SP)
+                        |       1188 |        0x0 | LW T1, 4(SP)
+                        |       1192 |        0x1 | SW T0, 4(SP)
+                        |       1196 |        0x1 | SW T1, 0(SP)
+                        |       1200 |        0x0 | LW T0, 0(SP)
+                        |       1204 |        0x5 | INV T0, T0
+                        |       1208 |        0x1 | SW T0, 0(SP)
+                        |       1212 |        0x0 | LW T0, 0(SP)
+                        |       1216 |        0x6 | ADDI SP, SP, 4
+                        |       1220 |        0x0 | LW T1, 0(SP)
+                        |       1224 |       0x10 | AND T0, T0, T1
+                        |       1228 |        0x1 | SW T0, 0(SP)
+                        |       1232 |        0x0 | LW T0, 0(SP)
+                        |       1236 |        0x5 | INV T0, T0
+                        |       1240 |        0x1 | SW T0, 0(SP)
+                        |       1244 |       0x15 | RET 
+SKIP_FUNC_OR            |       1248 |        0x6 | ADDI T0, ZERO, 1284
+                        |       1252 |        0x6 | ADDI SP, SP, -4
+                        |       1256 |        0x1 | SW T0, 0(SP)
+                        |       1260 |       0x14 | CALL 404
+                        |       1264 |       0x13 | HALT 
+VAR__STR_PTR            |       1268 |        0x0 | DATA
+VAR__STR_LEN            |       1272 |        0x0 | DATA
+VAR__START_PTR          |       1276 |        0x0 | DATA
+VAR__CHAR               |       1280 |        0x0 | DATA
+VAR_HELLO               |       1284 |        0xc | DATA
+                        |       1288 |       0x48 | DATA
+                        |       1292 |       0x65 | DATA
+                        |       1296 |       0x6c | DATA
+                        |       1300 |       0x6c | DATA
+                        |       1304 |       0x6f | DATA
+                        |       1308 |       0x20 | DATA
+                        |       1312 |       0x57 | DATA
+                        |       1316 |       0x6f | DATA
+                        |       1320 |       0x72 | DATA
+                        |       1324 |       0x6c | DATA
+                        |       1328 |       0x64 | DATA
+                        |       1332 |       0x21 | DATA
