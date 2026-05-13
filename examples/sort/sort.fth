@@ -41,16 +41,6 @@ var s2
     endloop
 ;
 
-: print_array
-    0 i !
-    loop
-        d i @ cells + @ .
-        i @ 1 + i !
-        len @ i @ -
-    endloop
-    cr
-;
-
 d read_array
 len !
 len @ 1 - >0 bubble_sort

@@ -66,6 +66,8 @@ class Memory:
 
     def write(self, val: int, addr: int):
         if addr == self.OUTPUT_NUM_ADDR:
+            if val & (1 << 31):
+                val -= 1 << 32
             self.output_buffer.append(f"{val} ")
         elif addr == self.OUTPUT_CHAR_ADDR:
             self.output_buffer.append(chr(val))

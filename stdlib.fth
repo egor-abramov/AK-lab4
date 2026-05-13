@@ -54,13 +54,17 @@ var _char
     and not
 ;
 
-
 var _ch
 var _acc
 var _sign
 var _is_reading
+var _chars_read
 var _arr_ptr
 var _arr_len
+
+: _stop_reading
+    0 _is_reading !
+;
 
 : _set_sign
     1 _sign !
@@ -71,29 +75,42 @@ var _arr_len
     0 _acc @ - _acc !
 ;
 
-: _stop_reading
-    0 _is_reading !
+: _process_digit
+    _acc @ 10 * _ch @ 48 - + _acc !
+    _chars_read @ 1 + _chars_read !
+    read _ch !
 ;
 
 : read_num
     0 _acc !
     0 _sign !
+    0 _chars_read !
 
     read _ch !
     _ch @ 45 - =0 _set_sign
 
     loop
-        _acc @ 10 * _ch @ 48 - + _acc !
-        read _ch !
-
         1 _is_reading !
         _ch @ 32 - =0 _stop_reading
         _ch @ 10 - =0 _stop_reading
+
+        _is_reading @ >0 _process_digit
+
         _is_reading @
     endloop
 
     _sign @ >0 _apply_sign
     _acc @
+;
+
+: _save_to_array
+    _arr_ptr @ _arr_len @ cells + !
+    _arr_len @ 1 + _arr_len !
+;
+
+: _handle_parsed_num
+    _chars_read @ =0 drop
+    _chars_read @ >0 _save_to_array
 ;
 
 : read_array
@@ -102,9 +119,7 @@ var _arr_len
 
     loop
         read_num
-
-        _arr_ptr @ _arr_len @ cells + !
-        _arr_len @ 1 + _arr_len !
+        _handle_parsed_num
 
         _ch @ 10 -
     endloop
