@@ -165,6 +165,10 @@ class DataPath:
             res = x
         elif op == "PASS_R":
             res = y
+        elif op == "DIV":
+            res = 0 if y == 0 else x // y
+        elif op == "MOD":
+            res = 0 if y == 0 else x % y
         res &= 0xFFFFFFFF
         flags = {"N": 1 if (res >> 31) & 1 else 0, "Z": 1 if res == 0 else 0}
         return res, flags
@@ -208,6 +212,8 @@ class ControlUnit:
             opcode_to_binary[Opcode.JR]: 0xF,
             opcode_to_binary[Opcode.JZ]: 0x10,
             opcode_to_binary[Opcode.HALT]: 0x13,
+            opcode_to_binary[Opcode.DIV]: 0x14,
+            opcode_to_binary[Opcode.MOD]: 0x15,
         }
 
         # Типы переходов после исполнения микрокоманды
@@ -381,6 +387,26 @@ class ControlUnit:
                 "jmp_mode": self.SEQ_JMP,
                 "jmp_addr": 0x12,
             },
+            # DIV
+            0x14: {
+                "sel_alu_l": "RS1",
+                "sel_alu_r": "RS2",
+                "alu_op": "DIV",
+                "sel_reg_wr": "ALU",
+                "write_reg": True,
+                "jmp_mode": self.SEQ_JMP,
+                "jmp_addr": 0x0,
+            },
+            # MOD
+            0x15: {
+                "sel_alu_l": "RS1",
+                "sel_alu_r": "RS2",
+                "alu_op": "MOD",
+                "sel_reg_wr": "ALU",
+                "write_reg": True,
+                "jmp_mode": self.SEQ_JMP,
+                "jmp_addr": 0x0,
+            },
         }
 
     def tick(self):
@@ -455,8 +481,8 @@ def main(source_path: str, input_path: str, trace_regs: list[int] = None):
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser()
-    parser.add_argument("source_file", nargs="?", default="./examples/sort/sort.bin")
-    parser.add_argument("input_file", nargs="?", default="./examples/sort/sort.txt")
+    parser.add_argument("source_file", nargs="?", default="./examples/math/math.bin")
+    parser.add_argument("input_file", nargs="?", default="./examples/math/math.txt")
     parser.add_argument("--trace", nargs="+", type=int)
 
     args = parser.parse_args()

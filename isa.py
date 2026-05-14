@@ -15,6 +15,8 @@ class Opcode(str, Enum):
     J = "j"
     JR = "jr"
     JZ = "jz"
+    DIV = "div"
+    MOD = "mod"
     HALT = "halt"
 
     def __str__(self):
@@ -36,6 +38,8 @@ opcode_to_binary = {
     Opcode.J: 0xB,
     Opcode.JR: 0xC,
     Opcode.HALT: 0xD,
+    Opcode.DIV: 0xE,
+    Opcode.MOD: 0xF,
 }
 
 binary_to_opcode = {
@@ -53,6 +57,8 @@ binary_to_opcode = {
     0xB: Opcode.J,
     0xC: Opcode.JR,
     0xD: Opcode.HALT,
+    0xE: Opcode.DIV,
+    0xF: Opcode.MOD,
 }
 
 
@@ -171,7 +177,7 @@ def save_hex(target_path: str, program: list[dict[str, any]]):
 
     with open(target_path, "w", encoding="utf-8") as f:
         header = (
-            f"{'<label>':<23} | {'<address>':>10} | {'<HEXCODE>':>10} | {'<mnemonic>'}"
+            f"{'<label>':<25} | {'<address>':>10} | {'<HEXCODE>':>10} | {'<mnemonic>'}"
         )
         f.write(header + "\n")
 
@@ -193,5 +199,5 @@ def save_hex(target_path: str, program: list[dict[str, any]]):
                     else:
                         args.append(str(arg))
                 mnemonic = f"{item['opcode'].name} {', '.join(args)}"
-            line = f"{label:<23} | {address:>10} | {hexcode:>10} | {mnemonic}"
+            line = f"{label:<25} | {address:>10} | {hexcode:>10} | {mnemonic}"
             f.write(line + "\n")

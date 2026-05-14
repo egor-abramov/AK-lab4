@@ -63,11 +63,12 @@ class Translator:
         self.code.append(f"{label}:")
 
     def emit_lit(self, val):
-        self.emit_lit_reg("t0", val)
         self.emit("addi sp, sp, -4")
-        self.emit("sw t0, 0(sp)")
+        self.emit("sw t1, 0(sp)")
+        self.emit("mv t1, t0")
+        self.emit_load_imm("t0", val)
 
-    def emit_lit_reg(self, reg: str, val):
+    def emit_load_imm(self, reg: str, val):
         if isinstance(val, int):
             if -2048 <= val <= 2047:
                 self.emit(f"addi {reg}, zero, {val}")
@@ -84,20 +85,20 @@ class Translator:
 
     def emit_call(self, target_label: str):
         ret_label = f"RET_{self.cur_addr}"
-        self.emit_lit_reg("t1", ret_label)
+        self.emit_load_imm("t2", ret_label)
         self.emit("addi rp, rp, -4")
-        self.emit("sw t1, 0(rp)")
+        self.emit("sw t2, 0(rp)")
         self.emit(f"j {target_label}")
         self.emit_label(ret_label)
 
     def emit_ret(self):
-        self.emit("lw t1, 0(rp)")
+        self.emit("lw t2, 0(rp)")
         self.emit("addi rp, rp, 4")
-        self.emit("jr t1")
+        self.emit("jr t2")
 
     def translate(self, tokens: list[Token]) -> list[str]:
-        self.emit_lit_reg("sp", DATA_STACK_INIT_ADDR)
-        self.emit_lit_reg("rp", RETURN_STACK_INIT_ADDR)
+        self.emit_load_imm("sp", DATA_STACK_INIT_ADDR)
+        self.emit_load_imm("rp", RETURN_STACK_INIT_ADDR)
 
         self.it = iter(tokens)
         for token in self.it:
@@ -114,64 +115,62 @@ class Translator:
 
     def _translate_word(self, word: str):
         if word == "+":
-            self.emit("lw t0, 0(sp)")
-            self.emit("addi sp, sp, 4")
+            self.emit("add t0, t1, t0")
             self.emit("lw t1, 0(sp)")
-            self.emit("add t0, t0, t1")
-            self.emit("sw t0, 0(sp)")
+            self.emit("addi sp, sp, 4")
         elif word == "-":
-            self.emit("lw t0, 0(sp)")
-            self.emit("addi sp, sp, 4")
-            self.emit("lw t1, 0(sp)")
             self.emit("sub t0, t1, t0")
-            self.emit("sw t0, 0(sp)")
+            self.emit("lw t1, 0(sp)")
+            self.emit("addi sp, sp, 4")
         elif word == "*":
-            self.emit("lw t0, 0(sp)")
-            self.emit("addi sp, sp, 4")
+            self.emit("mul t0, t1, t0")
             self.emit("lw t1, 0(sp)")
-            self.emit("mul t0, t0, t1")
-            self.emit("sw t0, 0(sp)")
+            self.emit("addi sp, sp, 4")
+        elif word == "/":
+            self.emit("div t0, t1, t0")
+            self.emit("lw t1, 0(sp)")
+            self.emit("addi sp, sp, 4")
+        elif word == "%":
+            self.emit("mod t0, t1, t0")
+            self.emit("lw t1, 0(sp)")
+            self.emit("addi sp, sp, 4")
         elif word == "and":
-            self.emit("lw t0, 0(sp)")
-            self.emit("addi sp, sp, 4")
+            self.emit("and t0, t1, t0")
             self.emit("lw t1, 0(sp)")
-            self.emit("and t0, t0, t1")
-            self.emit("sw t0, 0(sp)")
+            self.emit("addi sp, sp, 4")
         elif word == "not":
-            self.emit("lw t0, 0(sp)")
             self.emit("inv t0, t0")
-            self.emit("sw t0, 0(sp)")
         elif word == "dup":
-            self.emit("lw t0, 0(sp)")
             self.emit("addi sp, sp, -4")
-            self.emit("sw t0, 0(sp)")
+            self.emit("sw t1, 0(sp)")
+            self.emit("mv t1, t0")
         elif word == "drop":
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
         elif word == "swap":
+            self.emit("mv t2, t0")
+            self.emit("mv t0, t1")
+            self.emit("mv t1, t2")
+        elif word == "!":
+            self.emit("sw t1, 0(t0)")
             self.emit("lw t0, 0(sp)")
             self.emit("lw t1, 4(sp)")
-            self.emit("sw t0, 4(sp)")
-            self.emit("sw t1, 0(sp)")
-        elif word == "!":
-            self.emit("lw t0, 0(sp)")
-            self.emit("addi sp, sp, 4")
-            self.emit("lw t1, 0(sp)")
-            self.emit("addi sp, sp, 4")
-            self.emit("sw t1, 0(t0)")
+            self.emit("addi sp, sp, 8")
         elif word == "@":
-            self.emit("lw t0, 0(sp)")
-            self.emit("lw t1, 0(t0)")
-            self.emit("sw t1, 0(sp)")
+            self.emit("lw t0, 0(t0)")
         elif word == "read":
-            self.emit_lit_reg("t0", INPUT_ADDR)
-            self.emit("lw t1, 0(t0)")
             self.emit("addi sp, sp, -4")
             self.emit("sw t1, 0(sp)")
+            self.emit("mv t1, t0")
+            self.emit_load_imm("t2", INPUT_ADDR)
+            self.emit("lw t0, 0(t2)")
         elif word == ".":
-            self.emit_lit_reg("t0", OUTPUT_ADDR)
+            self.emit_load_imm("t2", OUTPUT_ADDR)
+            self.emit("sw t0, 0(t2)")
+            self.emit("mv t0, t1")
             self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            self.emit("sw t1, 0(t0)")
 
         elif word == "loop":
             loop_lbl = f"LOOP_{self.cur_addr}"
@@ -180,94 +179,102 @@ class Translator:
         elif word == "endloop":
             if not self.loop_stack:
                 raise Exception("Syntax error: loop expected")
-            loop_start_lbl = self.loop_stack.pop()
-            loop_end_lbl = f"ENDLOOP_{self.cur_addr}"
-            self.emit("lw t0, 0(sp)")
+            loop_start_label = self.loop_stack.pop()
+            loop_end_label = f"ENDLOOP_{self.cur_addr}"
+            self.emit("mv t2, t0")
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            self.emit(f"jz t0, {loop_end_lbl}")
-            self.emit(f"j {loop_start_lbl}")
-            self.emit_label(loop_end_lbl)
+            self.emit(f"jz t2, {loop_end_label}")
+            self.emit(f"j {loop_start_label}")
+            self.emit_label(loop_end_label)
 
         elif word == "=0":
-            exec_lbl = f"EXEC_{self.cur_addr}"
-            skip_lbl = f"SKIP_{self.cur_addr}"
-            self.emit("lw t0, 0(sp)")
+            exec_label = f"EXEC_{self.cur_addr}"
+            skip_label = f"SKIP_{self.cur_addr}"
+            self.emit("mv t2, t0")
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            self.emit(f"jz t0, {exec_lbl}")
-            self.emit(f"j {skip_lbl}")
-            self.emit_label(exec_lbl)
+            self.emit(f"jz t2, {exec_label}")
+            self.emit(f"j {skip_label}")
+            self.emit_label(exec_label)
             next_t = next(self.it)
             if next_t.typ == "NUMBER":
                 self.emit_lit(next_t.value)
             else:
                 self._translate_word(next_t.value)
-            self.emit_label(skip_lbl)
+            self.emit_label(skip_label)
 
         elif word == ">0":
-            exec_lbl = f"EXEC_{self.cur_addr}"
-            skip_lbl = f"SKIP_{self.cur_addr}"
-            self.emit("lw t0, 0(sp)")
+            exec_label = f"EXEC_{self.cur_addr}"
+            skip_label = f"SKIP_{self.cur_addr}"
+            self.emit("mv t2, t0")
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            self.emit(f"jz t0, {skip_lbl}")
-            self.emit("lui t1, 524288")
-            self.emit("and t1, t0, t1")
-            self.emit(f"jz t1, {exec_lbl}")
-            self.emit(f"j {skip_lbl}")
-            self.emit_label(exec_lbl)
+            self.emit(f"jz t2, {skip_label}")
+            self.emit("lui t3, 524288")
+            self.emit("and t3, t2, t3")
+            self.emit(f"jz t3, {exec_label}")
+            self.emit(f"j {skip_label}")
+            self.emit_label(exec_label)
             next_t = next(self.it)
             if next_t.typ == "NUMBER":
                 self.emit_lit(next_t.value)
             else:
                 self._translate_word(next_t.value)
-            self.emit_label(skip_lbl)
+            self.emit_label(skip_label)
 
         elif word == ":":
             token_name = str(next(self.it).value).upper()
-            skip_lbl = f"SKIP_FUNC_{token_name}"
-            self.emit(f"j {skip_lbl}")
+            skip_label = f"SKIP_FUNC_{token_name}"
+            self.emit(f"j {skip_label}")
             self.emit_label(token_name)
             self.word2addr[token_name] = self.cur_addr
-            self.func_skips.append(skip_lbl)
+            self.func_skips.append(skip_label)
         elif word == ";":
             self.emit_ret()
-            skip_lbl = self.func_skips.pop()
-            self.emit_label(skip_lbl)
+            skip_label = self.func_skips.pop()
+            self.emit_label(skip_label)
 
         elif word == "'":
             target_name = next(self.it).value.upper()
             self.emit_lit(target_name)
 
         elif word == "cells":
-            self.emit("lw t0, 0(sp)")
-            self.emit("addi t1, zero, 4")
-            self.emit("mul t0, t0, t1")
-            self.emit("sw t0, 0(sp)")
+            self.emit_load_imm("t2", 4)
+            self.emit("mul t0, t0, t2")
 
         elif word == "execute":
-            self.emit("lw t0, 0(sp)")
+            self.emit("mv t2, t0")
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            ret_lbl = f"EXEC_RET_{self.cur_addr}"
-            self.emit(f"addi t1, zero, {ret_lbl}")
+            ret_label = f"EXEC_RET_{self.cur_addr}"
+            self.emit_load_imm("t3", ret_label)
             self.emit("addi rp, rp, -4")
-            self.emit("sw t1, 0(rp)")
-            self.emit("jr t0")
-            self.emit_label(ret_lbl)
+            self.emit("sw t3, 0(rp)")
+            self.emit("jr t2")
+            self.emit_label(ret_label)
 
         elif word == "var":
             var_name = next(self.it).value
             self._assert_free_name(var_name)
-            lbl = f"VAR_{var_name.upper()}"
-            self.var2addr[var_name] = lbl
-            self.data_segment.append(f"{lbl}:")
+            label = f"VAR_{var_name.upper()}"
+            self.var2addr[var_name] = label
+            self.data_segment.append(f"{label}:")
             self.data_segment.append("0")
 
         elif word == "array":
             arr_name = next(self.it).value
             self._assert_free_name(arr_name)
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            lbl = f"VAR_{arr_name.upper()}"
-            self.var2addr[arr_name] = lbl
-            self.data_segment.append(f"{lbl}:")
+            label = f"VAR_{arr_name.upper()}"
+            self.var2addr[arr_name] = label
+            self.data_segment.append(f"{label}:")
             for _ in range(self.last_number):
                 self.data_segment.append("0")
 
@@ -275,9 +282,9 @@ class Translator:
             str_val = next(self.it).value
             str_name = next(self.it).value
             self._assert_free_name(str_name)
-            lbl = f"VAR_{str_name.upper()}"
-            self.var2addr[str_name] = lbl
-            self.data_segment.append(f"{lbl}:")
+            label = f"VAR_{str_name.upper()}"
+            self.var2addr[str_name] = label
+            self.data_segment.append(f"{label}:")
             self.data_segment.append(str(len(str_val)))
             for ch in str_val:
                 self.data_segment.append(str(ord(ch)))
@@ -325,7 +332,14 @@ def assemble(code: list[str]) -> list[dict[str, any]]:
 
             rd_val, rs1_val, rs2_val, imm_val = Register.X0, Register.X0, Register.X0, 0
 
-            if opcode in (Opcode.ADD, Opcode.SUB, Opcode.MUL, Opcode.AND):
+            if opcode in (
+                Opcode.ADD,
+                Opcode.SUB,
+                Opcode.MUL,
+                Opcode.AND,
+                Opcode.DIV,
+                Opcode.MOD,
+            ):
                 rd_val, rs1_val, rs2_val = instr_args[0], instr_args[1], instr_args[2]
             elif opcode == Opcode.INV:
                 rd_val, rs1_val = instr_args[0], instr_args[1]
