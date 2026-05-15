@@ -1,0 +1,296 @@
+in_source: |-
+  256 array user_buf
+
+  user_buf read_str
+  user_buf print_str
+
+input: |-
+  foo
+
+out_log: |
+out_code_log: |
+  <label>                   |  <address> |  <HEXCODE> | <mnemonic>
+                            |       3356 |        0x6 | ADDI SP, SP, -4
+                            |       3360 |        0x1 | SW T1, 0(SP)
+                            |       3364 |        0x4 | MV T1, T0
+                            |       3368 |        0x6 | ADDI T0, ZERO, 256
+                            |       3372 |        0x4 | MV T0, T1
+                            |       3376 |        0x0 | LW T1, 0(SP)
+                            |       3380 |        0x6 | ADDI SP, SP, 4
+                            |       3384 |        0x6 | ADDI SP, SP, -4
+                            |       3388 |        0x1 | SW T1, 0(SP)
+                            |       3392 |        0x4 | MV T1, T0
+                            |       3396 |        0x2 | LUI T0, 1
+                            |       3400 |        0x6 | ADDI T0, T0, -572
+                            |       3404 |        0x2 | LUI T2, 1
+                            |       3408 |        0x6 | ADDI T2, T2, -672
+                            |       3412 |        0x6 | ADDI RP, RP, -4
+                            |       3416 |        0x1 | SW T2, 0(RP)
+                            |       3420 |       0x11 | J 744
+                            |       3424 |        0x6 | ADDI SP, SP, -4
+                            |       3428 |        0x1 | SW T1, 0(SP)
+                            |       3432 |        0x4 | MV T1, T0
+                            |       3436 |        0x2 | LUI T0, 1
+                            |       3440 |        0x6 | ADDI T0, T0, -572
+                            |       3444 |        0x2 | LUI T2, 1
+                            |       3448 |        0x6 | ADDI T2, T2, -632
+                            |       3452 |        0x6 | ADDI RP, RP, -4
+                            |       3456 |        0x1 | SW T2, 0(RP)
+                            |       3460 |       0x11 | J 384
+                            |       3464 |       0x13 | HALT 
+  ARR_USER_BUF              |       3524 |        0x0 | DATA
+                            |       3528 |        0x0 | DATA
+                            |       3532 |        0x0 | DATA
+                            |       3536 |        0x0 | DATA
+                            |       3540 |        0x0 | DATA
+                            |       3544 |        0x0 | DATA
+                            |       3548 |        0x0 | DATA
+                            |       3552 |        0x0 | DATA
+                            |       3556 |        0x0 | DATA
+                            |       3560 |        0x0 | DATA
+                            |       3564 |        0x0 | DATA
+                            |       3568 |        0x0 | DATA
+                            |       3572 |        0x0 | DATA
+                            |       3576 |        0x0 | DATA
+                            |       3580 |        0x0 | DATA
+                            |       3584 |        0x0 | DATA
+                            |       3588 |        0x0 | DATA
+                            |       3592 |        0x0 | DATA
+                            |       3596 |        0x0 | DATA
+                            |       3600 |        0x0 | DATA
+                            |       3604 |        0x0 | DATA
+                            |       3608 |        0x0 | DATA
+                            |       3612 |        0x0 | DATA
+                            |       3616 |        0x0 | DATA
+                            |       3620 |        0x0 | DATA
+                            |       3624 |        0x0 | DATA
+                            |       3628 |        0x0 | DATA
+                            |       3632 |        0x0 | DATA
+                            |       3636 |        0x0 | DATA
+                            |       3640 |        0x0 | DATA
+                            |       3644 |        0x0 | DATA
+                            |       3648 |        0x0 | DATA
+                            |       3652 |        0x0 | DATA
+                            |       3656 |        0x0 | DATA
+                            |       3660 |        0x0 | DATA
+                            |       3664 |        0x0 | DATA
+                            |       3668 |        0x0 | DATA
+                            |       3672 |        0x0 | DATA
+                            |       3676 |        0x0 | DATA
+                            |       3680 |        0x0 | DATA
+                            |       3684 |        0x0 | DATA
+                            |       3688 |        0x0 | DATA
+                            |       3692 |        0x0 | DATA
+                            |       3696 |        0x0 | DATA
+                            |       3700 |        0x0 | DATA
+                            |       3704 |        0x0 | DATA
+                            |       3708 |        0x0 | DATA
+                            |       3712 |        0x0 | DATA
+                            |       3716 |        0x0 | DATA
+                            |       3720 |        0x0 | DATA
+                            |       3724 |        0x0 | DATA
+                            |       3728 |        0x0 | DATA
+                            |       3732 |        0x0 | DATA
+                            |       3736 |        0x0 | DATA
+                            |       3740 |        0x0 | DATA
+                            |       3744 |        0x0 | DATA
+                            |       3748 |        0x0 | DATA
+                            |       3752 |        0x0 | DATA
+                            |       3756 |        0x0 | DATA
+                            |       3760 |        0x0 | DATA
+                            |       3764 |        0x0 | DATA
+                            |       3768 |        0x0 | DATA
+                            |       3772 |        0x0 | DATA
+                            |       3776 |        0x0 | DATA
+                            |       3780 |        0x0 | DATA
+                            |       3784 |        0x0 | DATA
+                            |       3788 |        0x0 | DATA
+                            |       3792 |        0x0 | DATA
+                            |       3796 |        0x0 | DATA
+                            |       3800 |        0x0 | DATA
+                            |       3804 |        0x0 | DATA
+                            |       3808 |        0x0 | DATA
+                            |       3812 |        0x0 | DATA
+                            |       3816 |        0x0 | DATA
+                            |       3820 |        0x0 | DATA
+                            |       3824 |        0x0 | DATA
+                            |       3828 |        0x0 | DATA
+                            |       3832 |        0x0 | DATA
+                            |       3836 |        0x0 | DATA
+                            |       3840 |        0x0 | DATA
+                            |       3844 |        0x0 | DATA
+                            |       3848 |        0x0 | DATA
+                            |       3852 |        0x0 | DATA
+                            |       3856 |        0x0 | DATA
+                            |       3860 |        0x0 | DATA
+                            |       3864 |        0x0 | DATA
+                            |       3868 |        0x0 | DATA
+                            |       3872 |        0x0 | DATA
+                            |       3876 |        0x0 | DATA
+                            |       3880 |        0x0 | DATA
+                            |       3884 |        0x0 | DATA
+                            |       3888 |        0x0 | DATA
+                            |       3892 |        0x0 | DATA
+                            |       3896 |        0x0 | DATA
+                            |       3900 |        0x0 | DATA
+                            |       3904 |        0x0 | DATA
+                            |       3908 |        0x0 | DATA
+                            |       3912 |        0x0 | DATA
+                            |       3916 |        0x0 | DATA
+                            |       3920 |        0x0 | DATA
+                            |       3924 |        0x0 | DATA
+                            |       3928 |        0x0 | DATA
+                            |       3932 |        0x0 | DATA
+                            |       3936 |        0x0 | DATA
+                            |       3940 |        0x0 | DATA
+                            |       3944 |        0x0 | DATA
+                            |       3948 |        0x0 | DATA
+                            |       3952 |        0x0 | DATA
+                            |       3956 |        0x0 | DATA
+                            |       3960 |        0x0 | DATA
+                            |       3964 |        0x0 | DATA
+                            |       3968 |        0x0 | DATA
+                            |       3972 |        0x0 | DATA
+                            |       3976 |        0x0 | DATA
+                            |       3980 |        0x0 | DATA
+                            |       3984 |        0x0 | DATA
+                            |       3988 |        0x0 | DATA
+                            |       3992 |        0x0 | DATA
+                            |       3996 |        0x0 | DATA
+                            |       4000 |        0x0 | DATA
+                            |       4004 |        0x0 | DATA
+                            |       4008 |        0x0 | DATA
+                            |       4012 |        0x0 | DATA
+                            |       4016 |        0x0 | DATA
+                            |       4020 |        0x0 | DATA
+                            |       4024 |        0x0 | DATA
+                            |       4028 |        0x0 | DATA
+                            |       4032 |        0x0 | DATA
+                            |       4036 |        0x0 | DATA
+                            |       4040 |        0x0 | DATA
+                            |       4044 |        0x0 | DATA
+                            |       4048 |        0x0 | DATA
+                            |       4052 |        0x0 | DATA
+                            |       4056 |        0x0 | DATA
+                            |       4060 |        0x0 | DATA
+                            |       4064 |        0x0 | DATA
+                            |       4068 |        0x0 | DATA
+                            |       4072 |        0x0 | DATA
+                            |       4076 |        0x0 | DATA
+                            |       4080 |        0x0 | DATA
+                            |       4084 |        0x0 | DATA
+                            |       4088 |        0x0 | DATA
+                            |       4092 |        0x0 | DATA
+                            |       4096 |        0x0 | DATA
+                            |       4100 |        0x0 | DATA
+                            |       4104 |        0x0 | DATA
+                            |       4108 |        0x0 | DATA
+                            |       4112 |        0x0 | DATA
+                            |       4116 |        0x0 | DATA
+                            |       4120 |        0x0 | DATA
+                            |       4124 |        0x0 | DATA
+                            |       4128 |        0x0 | DATA
+                            |       4132 |        0x0 | DATA
+                            |       4136 |        0x0 | DATA
+                            |       4140 |        0x0 | DATA
+                            |       4144 |        0x0 | DATA
+                            |       4148 |        0x0 | DATA
+                            |       4152 |        0x0 | DATA
+                            |       4156 |        0x0 | DATA
+                            |       4160 |        0x0 | DATA
+                            |       4164 |        0x0 | DATA
+                            |       4168 |        0x0 | DATA
+                            |       4172 |        0x0 | DATA
+                            |       4176 |        0x0 | DATA
+                            |       4180 |        0x0 | DATA
+                            |       4184 |        0x0 | DATA
+                            |       4188 |        0x0 | DATA
+                            |       4192 |        0x0 | DATA
+                            |       4196 |        0x0 | DATA
+                            |       4200 |        0x0 | DATA
+                            |       4204 |        0x0 | DATA
+                            |       4208 |        0x0 | DATA
+                            |       4212 |        0x0 | DATA
+                            |       4216 |        0x0 | DATA
+                            |       4220 |        0x0 | DATA
+                            |       4224 |        0x0 | DATA
+                            |       4228 |        0x0 | DATA
+                            |       4232 |        0x0 | DATA
+                            |       4236 |        0x0 | DATA
+                            |       4240 |        0x0 | DATA
+                            |       4244 |        0x0 | DATA
+                            |       4248 |        0x0 | DATA
+                            |       4252 |        0x0 | DATA
+                            |       4256 |        0x0 | DATA
+                            |       4260 |        0x0 | DATA
+                            |       4264 |        0x0 | DATA
+                            |       4268 |        0x0 | DATA
+                            |       4272 |        0x0 | DATA
+                            |       4276 |        0x0 | DATA
+                            |       4280 |        0x0 | DATA
+                            |       4284 |        0x0 | DATA
+                            |       4288 |        0x0 | DATA
+                            |       4292 |        0x0 | DATA
+                            |       4296 |        0x0 | DATA
+                            |       4300 |        0x0 | DATA
+                            |       4304 |        0x0 | DATA
+                            |       4308 |        0x0 | DATA
+                            |       4312 |        0x0 | DATA
+                            |       4316 |        0x0 | DATA
+                            |       4320 |        0x0 | DATA
+                            |       4324 |        0x0 | DATA
+                            |       4328 |        0x0 | DATA
+                            |       4332 |        0x0 | DATA
+                            |       4336 |        0x0 | DATA
+                            |       4340 |        0x0 | DATA
+                            |       4344 |        0x0 | DATA
+                            |       4348 |        0x0 | DATA
+                            |       4352 |        0x0 | DATA
+                            |       4356 |        0x0 | DATA
+                            |       4360 |        0x0 | DATA
+                            |       4364 |        0x0 | DATA
+                            |       4368 |        0x0 | DATA
+                            |       4372 |        0x0 | DATA
+                            |       4376 |        0x0 | DATA
+                            |       4380 |        0x0 | DATA
+                            |       4384 |        0x0 | DATA
+                            |       4388 |        0x0 | DATA
+                            |       4392 |        0x0 | DATA
+                            |       4396 |        0x0 | DATA
+                            |       4400 |        0x0 | DATA
+                            |       4404 |        0x0 | DATA
+                            |       4408 |        0x0 | DATA
+                            |       4412 |        0x0 | DATA
+                            |       4416 |        0x0 | DATA
+                            |       4420 |        0x0 | DATA
+                            |       4424 |        0x0 | DATA
+                            |       4428 |        0x0 | DATA
+                            |       4432 |        0x0 | DATA
+                            |       4436 |        0x0 | DATA
+                            |       4440 |        0x0 | DATA
+                            |       4444 |        0x0 | DATA
+                            |       4448 |        0x0 | DATA
+                            |       4452 |        0x0 | DATA
+                            |       4456 |        0x0 | DATA
+                            |       4460 |        0x0 | DATA
+                            |       4464 |        0x0 | DATA
+                            |       4468 |        0x0 | DATA
+                            |       4472 |        0x0 | DATA
+                            |       4476 |        0x0 | DATA
+                            |       4480 |        0x0 | DATA
+                            |       4484 |        0x0 | DATA
+                            |       4488 |        0x0 | DATA
+                            |       4492 |        0x0 | DATA
+                            |       4496 |        0x0 | DATA
+                            |       4500 |        0x0 | DATA
+                            |       4504 |        0x0 | DATA
+                            |       4508 |        0x0 | DATA
+                            |       4512 |        0x0 | DATA
+                            |       4516 |        0x0 | DATA
+                            |       4520 |        0x0 | DATA
+                            |       4524 |        0x0 | DATA
+                            |       4528 |        0x0 | DATA
+                            |       4532 |        0x0 | DATA
+                            |       4536 |        0x0 | DATA
+                            |       4540 |        0x0 | DATA
+                            |       4544 |        0x0 | DATA

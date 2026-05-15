@@ -1,7 +1,7 @@
 import argparse
 import re
 
-from isa import Opcode, Register, to_bytes, save_hex
+from isa import assemble, to_bytes, save_hex
 
 WORD_SIZE = 4
 DATA_STACK_INIT_ADDR = 0x3F80
@@ -52,8 +52,10 @@ class Translator:
         self.data_segment = []
         self.loop_stack = []
         self.func_skips = []
-        self.it = iter([])
         self.last_number = 0
+
+        self.tokens = []
+        self.token_idx = 0
 
     def emit(self, instruction: str):
         self.code.append(instruction)
@@ -84,7 +86,7 @@ class Translator:
             self.emit(f"addi {reg}, {reg}, %lo({val})")
 
     def emit_call(self, target_label: str):
-        ret_label = f"RET_{self.cur_addr}"
+        ret_label = f"_RET_{self.cur_addr}"
         self.emit_load_imm("t2", ret_label)
         self.emit("addi rp, rp, -4")
         self.emit("sw t2, 0(rp)")
@@ -96,22 +98,102 @@ class Translator:
         self.emit("addi rp, rp, 4")
         self.emit("jr t2")
 
-    def translate(self, tokens: list[Token]) -> list[str]:
+    def translate(self, stdlib_tokens: [Token], user_tokens: [Token]) -> [str]:
         self.emit_load_imm("sp", DATA_STACK_INIT_ADDR)
         self.emit_load_imm("rp", RETURN_STACK_INIT_ADDR)
 
-        self.it = iter(tokens)
-        for token in self.it:
+        self.tokens = stdlib_tokens
+        self.emit_label("__STDLIB_CODE__")
+        self._translate_loop()
+        stdlib_data = self.data_segment
+        self.data_segment = []
+
+        self.tokens = user_tokens
+        self.emit_label("__USER_CODE__")
+        self.token_idx = 0
+        self._translate_loop()
+        user_data = self.data_segment
+        self.data_segment = []
+        self.emit("halt")
+
+        self.emit_label("__STDLIB_DATA__")
+        self.code.extend(stdlib_data)
+        self.emit_label("__USER_DATA__")
+        self.code.extend(user_data)
+        return self.code
+
+    def _translate_loop(self):
+        while self.token_idx < len(self.tokens):
+            token = self.tokens[self.token_idx]
+            is_success = self._peephole(token)
+            if is_success:
+                continue
+
             if token.typ == "WORD":
                 self._translate_word(token.value)
             elif token.typ == "NUMBER":
                 self.last_number = token.value
                 self.emit_lit(token.value)
+            self.token_idx += 1
 
-        self.emit("halt")
+    def _peephole(self, token: Token):
+        ops = {
+            "+": "add",
+            "-": "sub",
+            "*": "mul",
+            "/": "div",
+            "div": "div",
+            "%": "mod",
+            "mod": "mod",
+            "and": "and",
+        }
+        # <num> <operation>
+        if (
+            token.typ == "NUMBER"
+            and self.token_idx + 1 < len(self.tokens)
+            and self.tokens[self.token_idx + 1].value in ops
+        ):
+            val = token.value
+            op = ops[self.tokens[self.token_idx + 1].value]
+            if op in ["add", "sub"] and -2048 <= val <= 2047:
+                self.emit(f"addi t0, t0, {val if op == 'add' else -val}")
+            else:
+                self.emit_load_imm("t2", val)
+                self.emit(f"{op} t0, t0, t2")
+            self.token_idx += 2
+            return True
+        # <var> @
+        elif (
+            token.typ == "WORD"
+            and token.value in self.var2addr
+            and self.token_idx + 1 < len(self.tokens)
+            and self.tokens[self.token_idx + 1].value == "@"
+        ):
+            addr = self.var2addr[token.value]
+            self.emit("addi sp, sp, -4")
+            self.emit("sw t1, 0(sp)")
+            self.emit("mv t1, t0")
+            self.emit(f"lui t0, %hi({addr})")
+            self.emit(f"lw t0, %lo({addr})(t0)")
+            self.token_idx += 2
+            return True
+        # <var> !
+        elif (
+            token.typ == "WORD"
+            and token in self.var2addr
+            and self.token_idx + 1 < len(self.tokens)
+            and self.tokens[self.token_idx + 1].value == "!"
+        ):
+            addr = self.var2addr[token.value]
+            self.emit(f"lui t2, %hi({addr})")
+            self.emit(f"sw t0, %lo({addr})(t2)")
 
-        self.code.extend(self.data_segment)
-        return self.code
+            self.emit("mv t0, t1")
+            self.emit("lw t1, 0(sp)")
+            self.emit("addi sp, sp, 4")
+            self.token_idx += 2
+            return True
+        return False
 
     def _translate_word(self, word: str):
         if word == "+":
@@ -189,37 +271,18 @@ class Translator:
             self.emit(f"j {loop_start_label}")
             self.emit_label(loop_end_label)
 
-        elif word == "=0":
-            exec_label = f"EXEC_{self.cur_addr}"
-            skip_label = f"SKIP_{self.cur_addr}"
+        elif word in ("=0", ">0"):
+            exec_label = f"_EXEC_{self.cur_addr}"
+            skip_label = f"_SKIP_{self.cur_addr}"
             self.emit("mv t2, t0")
             self.emit("mv t0, t1")
             self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            self.emit(f"jz t2, {exec_label}")
+            self.emit(f"{'jz' if word == '=0' else 'jg'} t2, {exec_label}")
             self.emit(f"j {skip_label}")
             self.emit_label(exec_label)
-            next_t = next(self.it)
-            if next_t.typ == "NUMBER":
-                self.emit_lit(next_t.value)
-            else:
-                self._translate_word(next_t.value)
-            self.emit_label(skip_label)
-
-        elif word == ">0":
-            exec_label = f"EXEC_{self.cur_addr}"
-            skip_label = f"SKIP_{self.cur_addr}"
-            self.emit("mv t2, t0")
-            self.emit("mv t0, t1")
-            self.emit("lw t1, 0(sp)")
-            self.emit("addi sp, sp, 4")
-            self.emit(f"jz t2, {skip_label}")
-            self.emit("lui t3, 524288")
-            self.emit("and t3, t2, t3")
-            self.emit(f"jz t3, {exec_label}")
-            self.emit(f"j {skip_label}")
-            self.emit_label(exec_label)
-            next_t = next(self.it)
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
             if next_t.typ == "NUMBER":
                 self.emit_lit(next_t.value)
             else:
@@ -227,8 +290,10 @@ class Translator:
             self.emit_label(skip_label)
 
         elif word == ":":
-            token_name = str(next(self.it).value).upper()
-            skip_label = f"SKIP_FUNC_{token_name}"
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
+            token_name = str(next_t.value).upper()
+            skip_label = f"_SKIP_FUNC_{token_name}"
             self.emit(f"j {skip_label}")
             self.emit_label(token_name)
             self.word2addr[token_name] = self.cur_addr
@@ -239,7 +304,9 @@ class Translator:
             self.emit_label(skip_label)
 
         elif word == "'":
-            target_name = next(self.it).value.upper()
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
+            target_name = next_t.value.upper()
             self.emit_lit(target_name)
 
         elif word == "cells":
@@ -251,7 +318,7 @@ class Translator:
             self.emit("mv t0, t1")
             self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            ret_label = f"EXEC_RET_{self.cur_addr}"
+            ret_label = f"_EXEC_RET_{self.cur_addr}"
             self.emit_load_imm("t3", ret_label)
             self.emit("addi rp, rp, -4")
             self.emit("sw t3, 0(rp)")
@@ -259,7 +326,9 @@ class Translator:
             self.emit_label(ret_label)
 
         elif word == "var":
-            var_name = next(self.it).value
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
+            var_name = next_t.value
             self._assert_free_name(var_name)
             label = f"VAR_{var_name.upper()}"
             self.var2addr[var_name] = label
@@ -267,22 +336,28 @@ class Translator:
             self.data_segment.append("0")
 
         elif word == "array":
-            arr_name = next(self.it).value
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
+            arr_name = next_t.value
             self._assert_free_name(arr_name)
             self.emit("mv t0, t1")
             self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            label = f"VAR_{arr_name.upper()}"
+            label = f"ARR_{arr_name.upper()}"
             self.var2addr[arr_name] = label
             self.data_segment.append(f"{label}:")
             for _ in range(self.last_number):
                 self.data_segment.append("0")
 
         elif word == "string":
-            str_val = next(self.it).value
-            str_name = next(self.it).value
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
+            str_val = next_t.value
+            self.token_idx += 1
+            next_t = self.tokens[self.token_idx]
+            str_name = next_t.value
             self._assert_free_name(str_name)
-            label = f"VAR_{str_name.upper()}"
+            label = f"STR_{str_name.upper()}"
             self.var2addr[str_name] = label
             self.data_segment.append(f"{label}:")
             self.data_segment.append(str(len(str_val)))
@@ -300,119 +375,6 @@ class Translator:
             raise Exception(f"Name error: {name} already defined")
 
 
-def assemble(code: list[str]) -> list[dict[str, any]]:
-    current_addr = 0
-    lines = []
-    label2addr = {}
-    addr2label = {}
-
-    for line in code:
-        line = line.split("#")[0].strip()
-        if not line:
-            continue
-        if line.endswith(":"):
-            label2addr[line[:-1]] = current_addr
-            addr2label[current_addr] = line[:-1]
-        else:
-            lines.append((current_addr, line))
-            current_addr += 4
-
-    program: list[dict[str, any]] = []
-    for addr, line in lines:
-        if line.startswith("0x") or line.lstrip("-").isdigit():
-            data_item = {"address": addr, "type": "data", "value": int(line, 0)}
-            if addr in addr2label:
-                data_item["label"] = addr2label[addr]
-            program.append(data_item)
-        else:
-            instruction = line.replace(",", " ").split()
-            mnemonic = instruction[0].upper()
-            opcode = Opcode[mnemonic]
-            instr_args = [parse_arg(p, label2addr) for p in instruction[1:]]
-
-            rd_val, rs1_val, rs2_val, imm_val = Register.X0, Register.X0, Register.X0, 0
-
-            if opcode in (
-                Opcode.ADD,
-                Opcode.SUB,
-                Opcode.MUL,
-                Opcode.AND,
-                Opcode.DIV,
-                Opcode.MOD,
-            ):
-                rd_val, rs1_val, rs2_val = instr_args[0], instr_args[1], instr_args[2]
-            elif opcode == Opcode.INV:
-                rd_val, rs1_val = instr_args[0], instr_args[1]
-            elif opcode == Opcode.ADDI:
-                rd_val, rs1_val, imm_val = instr_args[0], instr_args[1], instr_args[2]
-            elif opcode == Opcode.LUI:
-                rd_val, imm_val = instr_args[0], instr_args[1]
-            elif opcode == Opcode.MV:
-                rd_val, rs1_val = instr_args[0], instr_args[1]
-            elif opcode == Opcode.LW:
-                rd_val = instr_args[0]
-                rs1_val = instr_args[1]["reg"]
-                imm_val = instr_args[1]["offset"]
-            elif opcode == Opcode.SW:
-                rs2_val = instr_args[0]
-                rs1_val = instr_args[1]["reg"]
-                imm_val = instr_args[1]["offset"]
-            elif opcode == Opcode.J:
-                imm_val = instr_args[0]
-            elif opcode == Opcode.JR:
-                rs1_val = instr_args[0]
-            elif opcode == Opcode.JZ:
-                rs1_val = instr_args[0]
-                imm_val = instr_args[1]
-
-            parsed_instruction = {
-                "address": addr,
-                "type": "instruction",
-                "opcode": opcode,
-                "args": instr_args,
-                "rd": rd_val,
-                "rs1": rs1_val,
-                "rs2": rs2_val,
-                "imm": imm_val,
-            }
-            if addr in addr2label:
-                parsed_instruction["label"] = addr2label[addr]
-            program.append(parsed_instruction)
-    return program
-
-
-def parse_arg(op_str: str, labels: dict[str, int]) -> any:
-    op_upper = op_str.upper()
-    if op_upper in Register.__members__:
-        return Register[op_upper]
-    mem_match = re.match(r"^(-?[0-9a-fA-F]+)\(([a-zA-Z0-9_]+)\)$", op_str)
-    if mem_match:
-        offset = int(mem_match.group(1), 0)
-        reg_name = mem_match.group(2).upper()
-        return {"offset": offset, "reg": Register[reg_name]}
-
-    if op_str.startswith("%hi("):
-        lbl = op_str[4:-1]
-        val = labels[lbl]
-        lower = val & 0xFFF
-        upper = (val >> 12) & 0xFFFFF
-        if lower & 0x800:
-            upper += 1
-        return upper & 0xFFFFF
-
-    if op_str.startswith("%lo("):
-        lbl = op_str[4:-1]
-        val = labels[lbl]
-        return val & 0xFFF
-
-    if op_str in labels:
-        return labels[op_str]
-    try:
-        return int(op_str, 0)
-    except ValueError:
-        raise ValueError(f"Unresolvable operand: {op_str}")
-
-
 def main(source_path: str, target_path: str):
     with open("stdlib.fth", "r", encoding="utf-8") as f:
         stdlib_text = f.read()
@@ -420,11 +382,26 @@ def main(source_path: str, target_path: str):
     with open(source_path, "r", encoding="utf-8") as f:
         source_text = f.read()
 
-    tokens = tokenize(stdlib_text + "\n" + source_text)
+    stdlib_tokens = tokenize(stdlib_text)
+    user_tokens = tokenize(source_text)
+
     translator = Translator()
-    translated_code = translator.translate(tokens)
-    parsed_program = assemble(translated_code)
-    save_hex(target_path, parsed_program)
+    translated_code = translator.translate(stdlib_tokens, user_tokens)
+    parsed_program, label2addr = assemble(translated_code)
+
+    user_start = label2addr.get("__USER_CODE__", 0)
+    user_data_start = label2addr.get("__USER_DATA__", 0)
+
+    filtered_program = []
+    for item in parsed_program:
+        addr = item["address"]
+        if item["type"] == "data":
+            if addr >= user_data_start:
+                filtered_program.append(item)
+        else:
+            if addr >= user_start:
+                filtered_program.append(item)
+    save_hex(target_path, filtered_program)
 
     binary_code = to_bytes(parsed_program)
     if not target_path.endswith(".bin"):
@@ -436,7 +413,7 @@ def main(source_path: str, target_path: str):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("source", nargs="?", default="./examples/hello/hello.fth")
-    parser.add_argument("target", nargs="?", default="./examples/hello/hello.bin")
+    parser.add_argument("source", nargs="?", default="./examples/math/math.fth")
+    parser.add_argument("target", nargs="?", default="./examples/math/math.bin")
     args = parser.parse_args()
     main(args.source, args.target)

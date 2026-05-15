@@ -37,12 +37,14 @@ var _char
 ;
 
 : read_str
-    dup _start_ptr ! _str_ptr !
+    dup _start_ptr !
+    4 + _str_ptr !
     0 _str_len !
 
     loop
-        read dup _char ! dup 10 -
-        dup >0 _process_char
+        read _char !
+        _char @ 10 - >0 _process_char
+        _char @ 10 -
     endloop
 
     _str_len @ _start_ptr @ !

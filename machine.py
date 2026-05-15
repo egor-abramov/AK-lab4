@@ -1,5 +1,4 @@
 import argparse
-import logging
 
 from isa import Opcode, opcode_to_binary, binary_to_opcode
 
@@ -170,7 +169,7 @@ class DataPath:
         elif op == "MOD":
             res = 0 if y == 0 else x % y
         res &= 0xFFFFFFFF
-        flags = {"N": 1 if (res >> 31) & 1 else 0, "Z": 1 if res == 0 else 0}
+        flags = {"N": (res >> 31) & 1, "Z": 1 if res == 0 else 0}
         return res, flags
 
     def _sign_extend(self, x: int, mode: str):
@@ -214,23 +213,22 @@ class ControlUnit:
             opcode_to_binary[Opcode.HALT]: 0x13,
             opcode_to_binary[Opcode.DIV]: 0x14,
             opcode_to_binary[Opcode.MOD]: 0x15,
+            opcode_to_binary[Opcode.JG]: 0x16,
         }
 
         # Типы переходов после исполнения микрокоманды
         self.SEQ_INC = 0  # pc + 4
         self.SEQ_MAP = 1  # переход по dispatch_table
         self.SEQ_JMP = 2  # безусловный
-        self.SEQ_JMP_Z = 3  # условный (z == 0)
+        self.SEQ_JMP_Z = 3  # условный (z == 1)
+        self.SEQ_JMP_G = 4  # условный (n == 0 ^ z == 0)
 
         self.mp_memory = {
             # FETCH
-            0x00: {
+            0x0: {
                 "read_mem": True,
                 "latch_ir": True,
                 "sel_mem_addr": "PC",
-                "jmp_mode": self.SEQ_INC,
-            },
-            0x01: {
                 "sel_alu_l": "PC",
                 "sel_alu_r": "INC_PC",
                 "alu_op": "ADD",
@@ -407,6 +405,14 @@ class ControlUnit:
                 "jmp_mode": self.SEQ_JMP,
                 "jmp_addr": 0x0,
             },
+            # JG
+            0x16: {
+                "sel_alu_l": "RS1",
+                "alu_op": "PASS_L",
+                "jmp_mode": self.SEQ_JMP_G,
+                "jmp_addr": 0x12,
+            },
+            0x17: {"jmp_mode": self.SEQ_JMP, "jmp_addr": 0x0},
         }
 
     def tick(self):
@@ -431,6 +437,13 @@ class ControlUnit:
                 self.mPC = jmp_addr
             else:
                 self.mPC += 1
+        elif jmp_mode == self.SEQ_JMP_G:
+            n = self.data_path.flags.get("N", False)
+            z = self.data_path.flags.get("Z", False)
+            if not n and not z:
+                self.mPC = jmp_addr
+            else:
+                self.mPC += 1
 
 
 def simulation(initial_mem: [int], input_token: [str], trace_regs: list[int] = None):
@@ -438,12 +451,13 @@ def simulation(initial_mem: [int], input_token: [str], trace_regs: list[int] = N
     data_path = DataPath(memory)
     control_unit = ControlUnit(data_path)
     ticks = 0
+    trace_log = []
     try:
         while True:
             control_unit.tick()
             ticks += 1
 
-            if trace_regs is not None:
+            if trace_regs is not None and ticks <= 1000:
                 pc_str = f"PC: 0x{data_path.PC:02X}"
                 mpc_str = f"mPC: 0x{control_unit.mPC:02X}"
                 opcode = binary_to_opcode[(data_path.IR >> 27) & 0x1F]
@@ -454,12 +468,14 @@ def simulation(initial_mem: [int], input_token: [str], trace_regs: list[int] = N
                 )
 
                 trace_line = f"Tick: {ticks:04d} | {pc_str:9} | {mpc_str:9} | {opcode:>4} | {flags_str} | {regs_str}"
-                logging.debug("%s", trace_line)
+                trace_log.append(trace_line)
     except StopIteration:
         pass
-    print(f"\nTicks executed: {ticks}")
+    print(f"Ticks executed: {ticks}")
     print("Output:")
     print("".join(memory.output_buffer))
+    print("\nTrace:")
+    print("\n".join(trace_log))
 
 
 def main(source_path: str, input_path: str, trace_regs: list[int] = None):
@@ -479,10 +495,9 @@ def main(source_path: str, input_path: str, trace_regs: list[int] = None):
 
 
 if __name__ == "__main__":
-    logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser()
-    parser.add_argument("source_file", nargs="?", default="./examples/math/math.bin")
-    parser.add_argument("input_file", nargs="?", default="./examples/math/math.txt")
+    parser.add_argument("source_file", nargs="?", default="./examples/sort/sort.bin")
+    parser.add_argument("input_file", nargs="?", default="./examples/sort/sort.txt")
     parser.add_argument("--trace", nargs="+", type=int)
 
     args = parser.parse_args()
