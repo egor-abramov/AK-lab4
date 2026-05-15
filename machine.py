@@ -1,4 +1,5 @@
 import argparse
+import logging
 
 from isa import Opcode, opcode_to_binary, binary_to_opcode
 
@@ -457,25 +458,31 @@ def simulation(initial_mem: [int], input_token: [str], trace_regs: list[int] = N
             control_unit.tick()
             ticks += 1
 
-            if trace_regs is not None and ticks <= 1000:
+            if ticks <= 1000:
                 pc_str = f"PC: 0x{data_path.PC:02X}"
                 mpc_str = f"mPC: 0x{control_unit.mPC:02X}"
                 opcode = binary_to_opcode[(data_path.IR >> 27) & 0x1F]
                 flags_str = f"Z: {data_path.flags['Z']} N: {data_path.flags['N']}"
 
-                regs_str = " | ".join(
-                    [f"R{r}: 0x{data_path.reg_file.read_rs(r):08X}" for r in trace_regs]
-                )
-
-                trace_line = f"Tick: {ticks:04d} | {pc_str:9} | {mpc_str:9} | {opcode:>4} | {flags_str} | {regs_str}"
+                if trace_regs is not None:
+                    regs_str = " | ".join(
+                        [
+                            f"R{r}: 0x{data_path.reg_file.read_rs(r):08X}"
+                            for r in trace_regs
+                        ]
+                    )
+                    trace_line = f"Tick: {ticks:04d} | {pc_str:9} | {mpc_str:9} | {opcode:>4} | {flags_str} | {regs_str}"
+                else:
+                    trace_line = f"Tick: {ticks:04d} | {pc_str:9} | {mpc_str:9} | {opcode:>4} | {flags_str}"
                 trace_log.append(trace_line)
     except StopIteration:
         pass
-    print(f"Ticks executed: {ticks}")
-    print("Output:")
-    print("".join(memory.output_buffer))
-    print("\nTrace:")
-    print("\n".join(trace_log))
+    logging.info(f"Ticks executed: {ticks}")
+    logging.info("Output:")
+    logging.info("".join(memory.output_buffer) + "\n")
+    logging.info("Trace:")
+    for trace_line in trace_log:
+        logging.info(trace_line)
 
 
 def main(source_path: str, input_path: str, trace_regs: list[int] = None):
@@ -495,6 +502,7 @@ def main(source_path: str, input_path: str, trace_regs: list[int] = None):
 
 
 if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser()
     parser.add_argument("source_file", nargs="?", default="./examples/sort/sort.bin")
     parser.add_argument("input_file", nargs="?", default="./examples/sort/sort.txt")
