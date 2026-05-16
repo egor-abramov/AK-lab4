@@ -1,20 +1,13 @@
 var AL
 var AH
-
 var BL
 var BH
-
 var RL
 var RH
-
 var a31
 var b31
 var r31
 var carry_flag
-
-: _set_carry
-    1 carry_flag !
-;
 
 : add64
     AL @ BL @ + RL !
@@ -29,7 +22,9 @@ var carry_flag
     or
 
     0 carry_flag !
-    not >0 _set_carry
+    not >0 if
+        1 carry_flag !
+    then
 
     AH @ BH @ + carry_flag @ + RH !
 ;
@@ -48,11 +43,10 @@ var carry_flag
     add64
 ;
 
-
 string "64-bit Addition\n" msg_add
-string "64-bit Addition with Carry\n" msg_add_c
+string "64-bit Addition with carry\n" msg_add_c
 string "64-bit Subtraction\n" msg_sub
-string "64-bit Subtraction with Borrow\n" msg_sub_b
+string "64-bit Subtraction with borrow\n" msg_sub_b
 string "High: " msg_h
 string " Low: " msg_l
 string "\n" msg_nl

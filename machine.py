@@ -215,6 +215,7 @@ class ControlUnit:
             opcode_to_binary[Opcode.DIV]: 0x14,
             opcode_to_binary[Opcode.MOD]: 0x15,
             opcode_to_binary[Opcode.JG]: 0x16,
+            opcode_to_binary[Opcode.JL]: 0x17,
         }
 
         # Типы переходов после исполнения микрокоманды
@@ -222,6 +223,7 @@ class ControlUnit:
         self.SEQ_MAP = 1  # переход по dispatch_table
         self.SEQ_JMP = 2  # безусловный
         self.SEQ_JMP_Z = 3  # условный (z == 1)
+        self.SEQ_JMP_L = 3  # условный (n == 1 ^ z == 0)
         self.SEQ_JMP_G = 4  # условный (n == 0 ^ z == 0)
 
         self.mp_memory = {
@@ -414,6 +416,14 @@ class ControlUnit:
                 "jmp_addr": 0x12,
             },
             0x17: {"jmp_mode": self.SEQ_JMP, "jmp_addr": 0x0},
+            # JL
+            0x18: {
+                "sel_alu_l": "RS1",
+                "alu_op": "PASS_L",
+                "jmp_mode": self.SEQ_JMP_L,
+                "jmp_addr": 0x12,
+            },
+            0x19: {"jmp_mode": self.SEQ_JMP, "jmp_addr": 0x0},
         }
 
     def tick(self):
@@ -442,6 +452,13 @@ class ControlUnit:
             n = self.data_path.flags.get("N", False)
             z = self.data_path.flags.get("Z", False)
             if not n and not z:
+                self.mPC = jmp_addr
+            else:
+                self.mPC += 1
+        elif jmp_mode == self.SEQ_JMP_L:
+            n = self.data_path.flags.get("N", False)
+            z = self.data_path.flags.get("Z", False)
+            if n and not z:
                 self.mPC = jmp_addr
             else:
                 self.mPC += 1
@@ -504,8 +521,8 @@ def main(source_path: str, input_path: str, trace_regs: list[int] = None):
 if __name__ == "__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     parser = argparse.ArgumentParser()
-    parser.add_argument("source_file", nargs="?", default="./examples/sort/sort.bin")
-    parser.add_argument("input_file", nargs="?", default="./examples/sort/sort.txt")
+    parser.add_argument("source_file", nargs="?", default="./examples/prob1/prob1.bin")
+    parser.add_argument("input_file", nargs="?", default="./examples/prob1/prob1.txt")
     parser.add_argument("--trace", nargs="+", type=int)
 
     args = parser.parse_args()

@@ -51,6 +51,7 @@ class Translator:
         self.code = []
         self.data_segment = []
         self.loop_stack = []
+        self.if_stack = []
         self.func_skips = []
         self.last_number = 0
 
@@ -271,24 +272,46 @@ class Translator:
             self.emit(f"j {loop_start_label}")
             self.emit_label(loop_end_label)
 
-        elif word in ("=0", ">0"):
-            exec_label = f"_EXEC_{self.cur_addr}"
-            skip_label = f"_SKIP_{self.cur_addr}"
+        elif word == "if":
+            false_label = f"IF_FALSE_{self.cur_addr}"
+            self.if_stack.append(("IF", false_label))
             self.emit("mv t2, t0")
             self.emit("mv t0, t1")
             self.emit("lw t1, 0(sp)")
             self.emit("addi sp, sp, 4")
-            self.emit(f"{'jz' if word == '=0' else 'jg'} t2, {exec_label}")
-            self.emit(f"j {skip_label}")
-            self.emit_label(exec_label)
-            self.token_idx += 1
-            next_t = self.tokens[self.token_idx]
-            if next_t.typ == "NUMBER":
-                self.emit_lit(next_t.value)
-            else:
-                self._translate_word(next_t.value)
-            self.emit_label(skip_label)
+            self.emit(f"jz t2, {false_label}")
 
+        elif word == "else":
+            tag, false_label = self.if_stack.pop()
+            if tag != "IF":
+                raise Exception("ELSE without IF")
+            end_label = f"IF_END_{self.cur_addr}"
+            self.emit(f"j {end_label}")
+            self.emit_label(false_label)
+            self.if_stack.append(("ELSE", end_label))
+
+        elif word == "then":
+            tag, end_label = self.if_stack.pop()
+            if tag != "IF" and tag != "ELSE":
+                raise Exception("THEN without IF/ELSE")
+            self.emit_label(end_label)
+
+        elif word in ["=0", ">0", "<0"]:
+            true_label = f"IS_TRUE_{self.cur_addr}"
+            end_label = f"IS_FALSE_{self.cur_addr}"
+            self.emit("mv t2, t0")
+            self.emit("addi t0, zero, 0")
+            if word == "=0":
+                self.emit(f"jz t2, {true_label}")
+            elif word == ">0":
+                self.emit(f"jg t2, {true_label}")
+            elif word == "<0":
+                self.emit(f"jl t2, {true_label}")
+
+            self.emit(f"j {end_label}")
+            self.emit_label(true_label)
+            self.emit("addi t0, zero, 1")
+            self.emit_label(end_label)
         elif word == ":":
             self.token_idx += 1
             next_t = self.tokens[self.token_idx]

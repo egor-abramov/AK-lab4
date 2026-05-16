@@ -7,17 +7,10 @@ var s2
 128 array d
 
 : swap_elements
-    d j @ cells + @
-    s1 !
-
-    d j @ 1 + cells + @
-    s2 !
-
-    s2 @
-    d j @ cells + !
-
-    s1 @
-    d j @ 1 + cells + !
+    d j @ cells + @ s1 !
+    d j @ 1 + cells + @ s2 !
+    s2 @ d j @ cells + !
+    s1 @ d j @ 1 + cells + !
 ;
 
 : inner_sort_loop
@@ -25,7 +18,9 @@ var s2
     loop
         d j @ cells + @
         d j @ 1 + cells + @
-        - >0 swap_elements
+        - >0 if
+            swap_elements
+        then
 
         j @ 1 + j !
         len @ i @ - 1 - j @ -
@@ -35,7 +30,10 @@ var s2
 : bubble_sort
     0 i !
     loop
-        len @ i @ - 1 - >0 inner_sort_loop
+        len @ i @ - 1 - >0 if
+            inner_sort_loop
+        then
+
         i @ 1 + i !
         len @ 1 - i @ -
     endloop
@@ -43,5 +41,7 @@ var s2
 
 d read_array
 len !
-len @ 1 - >0 bubble_sort
+len @ 1 - >0 if
+    bubble_sort
+then
 d len @ print_array

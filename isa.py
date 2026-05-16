@@ -16,9 +16,10 @@ class Opcode(str, Enum):
     J = "j"
     JR = "jr"
     JZ = "jz"
+    JG = "jg"
     DIV = "div"
     MOD = "mod"
-    JG = "jg"
+    JL = "jl"
     HALT = "halt"
 
     def __str__(self):
@@ -43,6 +44,7 @@ opcode_to_binary = {
     Opcode.DIV: 0xE,
     Opcode.MOD: 0xF,
     Opcode.JG: 0x10,
+    Opcode.JL: 0x11,
 }
 
 binary_to_opcode = {
@@ -63,6 +65,7 @@ binary_to_opcode = {
     0xE: Opcode.DIV,
     0xF: Opcode.MOD,
     0x10: Opcode.JG,
+    0x11: Opcode.JL,
 }
 
 
@@ -154,7 +157,7 @@ def to_bytes(program: list[dict[str, any]]) -> bytearray:
                 imm = raw_imm & 0xFFFFF
                 rs1 = 0
                 rs2 = 0
-            elif opcode in (Opcode.LW, Opcode.SW, Opcode.JZ, Opcode.JG):
+            elif opcode in (Opcode.LW, Opcode.SW, Opcode.JZ, Opcode.JG, Opcode.JL):
                 imm = raw_imm & 0x7FFF
             elif opcode == Opcode.ADDI:
                 imm = raw_imm & 0xFFF
@@ -289,8 +292,6 @@ def assemble(code: list[str]) -> ([[str, any]], [str, int]):
             if addr in addr2label:
                 parsed_instruction["label"] = addr2label[addr]
             program.append(parsed_instruction)
-            if isinstance(parsed_instruction["imm"], Register):
-                print(parsed_instruction)
     return program, label2addr
 
 
