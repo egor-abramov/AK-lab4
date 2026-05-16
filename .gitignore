@@ -1,4 +1,5 @@
 .idea
 examples/*/*.bin
+examples/*/*.hex
 __pycache__
 *.sh
