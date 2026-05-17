@@ -256,7 +256,7 @@ Memory-mapped I/O
 Интерфейс командной строки: `machine.py <machine_code> <target_file>`
 
 ### Data Path
-![datapath.jpg](scheme%2Fdatapath.jpg)
+<img src="./scheme/datapath.jpg" width="620">
 
 **Сигналы**
 - `write_mem` - запись в память
@@ -294,9 +294,209 @@ Memory-mapped I/O
   * `Mem`
   * `ALU`
 
+**Флаги**
+- `Zero`
+- `Negative`
+
+В `Control Unit` отправляются флаги из АЛУ и код операции из `IR`.
 
 ### Register File
+<img src="./scheme/register_file.jpg" width="620">
+
+Из регистра `IR` в файл регистров приходят три 5ти битовых шины: `r_addr_1`, `r_addr_2`, `w_addr`. Все ригистры подключены к общей шине данных, через которую передаются данные на запись.
 
 ### Control Unit
+<img src="./scheme/control_unit.jpg" width="620">
+
+Микропрограммное управление. 
+
+**Структура микроинструкции**
+- Signals 
+  * `write_mem` -- бит 24
+  * `read_mem` -- бит 23 
+  * `write_reg` -- бит 22
+  * `latch_pc` -- бит 21
+  * `latch_ir` -- бит 20
+  * `latch_ar` -- бит 19
+  * `sel_alu_l` -- бит 18
+  * `sel_alu_r` -- биты 17-16
+  * `alu_op` -- биты 15-12
+  * `sel_ext_mode` -- биты 11-10
+  * `sel_mem_addr` -- бит 9
+  * `sel_mem_reg` -- бит 8
+- Jump Type -- биты 7-5
+  * `INC` - инкремент `mPC`
+  * `MAP` - переход по `dispatch table`
+  * `JMP` - безусловный переход
+  * `JMP_Z` - переход если `zero == 1`
+  * `JMP_G` - переход если `negative == 0 ^ zero == 0` 
+  * `JMP_L` - переход если `negative == 1 ^ zero == 0` 
+- New Addr -- биты 4-0
+
+Signal состоит из управляющих сигналов Data Path, Jump Type - стратегия выбора следующего `mPC`, New Addr - новый адрес `mPC`. 
+
+На каждом такте из памяти микропрограмм выбоирается микроинструкция по адресу `mPC`. Биты 8-24 (Signals) идут напрямую в Data Path, биты 5-7 (Jump Type) идут в блок `Jump Logic`, биты 4-0 идут на вход мультиплексора, отвечающего за выбор следующего `mPC`.
+
+Блок `Dispather` принимает опкод из Data Path и на выходе выдает адрес начала микропрограммы для этого опкода. 
+
+Блок `Jump Logic` принимает тип перехода и флаги состояния `NZ` из Data Path. На их основе формируется сигнал `sel_mpc`. В случае если микроинструкция требует перехода и условие перехода выполнено, то через мультиплексор пройдет значение с шины `New Addr`, если Jump Type равен `Map`, то пройдет значение из `Dispatcher`, иначе произойдет инкремент `mPC`. 
 
 ## Тестирование
+Тестирование выполняется при помощи golden тестов. Тесты реализованы в [test_golden.py](./test_golden.py). 
+
+Конфигурации тестов реализованы в [golden](./golden)
+
+**Список тестов**
+- `hello` - вывод `"Hello World!"`
+- `hello_user_name` - чтение имени и вывод приветствия
+- `math` - базовая математика, процедуры, использование `execution token`
+- `cat` - вывод символов из потока ввода
+- `long_math` - пример арифметики двойной точности
+- `sort` - сортировака массива из потока ввода
+- `prob1` - поиск наибольшего полиндрома, являющегося происзведением двух трехзначных чисел
+
+Запуск тестов: ```pytest -v```
+
+Обновление конфигурации тестов: ```pytest -v --update-goldens```
+
+### Пример использования
+**Трансляция**
+```shell
+$ python translator.py hello.fth hello.bin
+Binary saved to hello.bin
+$ cat hello.bin.hex
+<label>                   |  <address> |  <HEXCODE> | <mnemonic>
+                          |       3276 |        0x6 | ADDI SP, SP, -4
+                          |       3280 |        0x1 | SW T1, 0(SP)
+                          |       3284 |        0x4 | MV T1, T0
+                          |       3288 |        0x2 | LUI T0, 1
+                          |       3292 |        0x6 | ADDI T0, T0, -720
+                          |       3296 |        0x2 | LUI T2, 1
+                          |       3300 |        0x6 | ADDI T2, T2, -780
+                          |       3304 |        0x6 | ADDI RP, RP, -4
+                          |       3308 |        0x1 | SW T2, 0(RP)
+                          |       3312 |       0x11 | J 384
+                          |       3316 |       0x13 | HALT
+STR_HELLO                 |       3376 |        0xc | DATA
+                          |       3380 |       0x48 | DATA
+                          |       3384 |       0x65 | DATA
+                          |       3388 |       0x6c | DATA
+                          |       3392 |       0x6c | DATA
+                          |       3396 |       0x6f | DATA
+                          |       3400 |       0x20 | DATA
+                          |       3404 |       0x57 | DATA
+                          |       3408 |       0x6f | DATA
+                          |       3412 |       0x72 | DATA
+                          |       3416 |       0x6c | DATA
+                          |       3420 |       0x64 | DATA
+                          |       3424 |       0x21 | DATA
+```
+**Модель процессора**
+```shell
+$ python machine.py hello.bin
+INFO:root:Ticks executed: 2222
+INFO:root:Output:
+INFO:root:Hello World!
+
+INFO:root:Trace:
+INFO:root:Tick: 0001 | PC: 0x04  | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0002 | PC: 0x04  | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0003 | PC: 0x08  | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0004 | PC: 0x08  | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0005 | PC: 0x0C  | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0006 | PC: 0x0C  | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0007 | PC: 0x10  | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0008 | PC: 0x10  | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0009 | PC: 0x14  | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0010 | PC: 0x44  | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0011 | PC: 0x48  | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0012 | PC: 0x78  | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0013 | PC: 0x7C  | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0014 | PC: 0xF0  | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0015 | PC: 0xF4  | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0016 | PC: 0x17C | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0017 | PC: 0x180 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0018 | PC: 0x23C | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0019 | PC: 0x240 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0020 | PC: 0x2F4 | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0021 | PC: 0x2F8 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0022 | PC: 0x488 | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0023 | PC: 0x48C | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0024 | PC: 0x4BC | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0025 | PC: 0x4C0 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0026 | PC: 0x958 | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0027 | PC: 0x95C | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0028 | PC: 0xAEC | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0029 | PC: 0xAF0 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0030 | PC: 0xBF0 | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0031 | PC: 0xBF4 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0032 | PC: 0xCCC | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0033 | PC: 0xCD0 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0034 | PC: 0xCD0 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0035 | PC: 0xCD4 | mPC: 0x04 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0036 | PC: 0xCD4 | mPC: 0x05 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0037 | PC: 0xCD4 | mPC: 0x00 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0038 | PC: 0xCD8 | mPC: 0x03 |   MV | Z: 0 N: 0
+INFO:root:Tick: 0039 | PC: 0xCD8 | mPC: 0x00 |   MV | Z: 1 N: 0
+INFO:root:Tick: 0040 | PC: 0xCDC | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0041 | PC: 0xCDC | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0042 | PC: 0xCE0 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0043 | PC: 0xCE0 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0044 | PC: 0xCE4 | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0045 | PC: 0xCE4 | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0046 | PC: 0xCE8 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0047 | PC: 0xCE8 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0048 | PC: 0xCEC | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0049 | PC: 0xCEC | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0050 | PC: 0xCF0 | mPC: 0x04 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0051 | PC: 0xCF0 | mPC: 0x05 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0052 | PC: 0xCF0 | mPC: 0x00 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0053 | PC: 0xCF4 | mPC: 0x0E |    J | Z: 0 N: 0
+INFO:root:Tick: 0054 | PC: 0x180 | mPC: 0x00 |    J | Z: 0 N: 0
+INFO:root:Tick: 0055 | PC: 0x184 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0056 | PC: 0x184 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0057 | PC: 0x188 | mPC: 0x04 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0058 | PC: 0x188 | mPC: 0x05 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0059 | PC: 0x188 | mPC: 0x00 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0060 | PC: 0x18C | mPC: 0x03 |   MV | Z: 0 N: 0
+INFO:root:Tick: 0061 | PC: 0x18C | mPC: 0x00 |   MV | Z: 0 N: 0
+INFO:root:Tick: 0062 | PC: 0x190 | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0063 | PC: 0x190 | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0064 | PC: 0x194 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0065 | PC: 0x194 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0066 | PC: 0x198 | mPC: 0x04 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0067 | PC: 0x198 | mPC: 0x05 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0068 | PC: 0x198 | mPC: 0x00 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0069 | PC: 0x19C | mPC: 0x06 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0070 | PC: 0x19C | mPC: 0x07 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0071 | PC: 0x19C | mPC: 0x00 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0072 | PC: 0x1A0 | mPC: 0x06 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0073 | PC: 0x1A0 | mPC: 0x07 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0074 | PC: 0x1A0 | mPC: 0x00 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0075 | PC: 0x1A4 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0076 | PC: 0x1A4 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0077 | PC: 0x1A8 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0078 | PC: 0x1A8 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0079 | PC: 0x1AC | mPC: 0x04 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0080 | PC: 0x1AC | mPC: 0x05 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0081 | PC: 0x1AC | mPC: 0x00 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0082 | PC: 0x1B0 | mPC: 0x03 |   MV | Z: 0 N: 0
+INFO:root:Tick: 0083 | PC: 0x1B0 | mPC: 0x00 |   MV | Z: 1 N: 0
+INFO:root:Tick: 0084 | PC: 0x1B4 | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0085 | PC: 0x1B4 | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0086 | PC: 0x1B8 | mPC: 0x06 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0087 | PC: 0x1B8 | mPC: 0x07 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0088 | PC: 0x1B8 | mPC: 0x00 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0089 | PC: 0x1BC | mPC: 0x06 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0090 | PC: 0x1BC | mPC: 0x07 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0091 | PC: 0x1BC | mPC: 0x00 |   LW | Z: 0 N: 0
+INFO:root:Tick: 0092 | PC: 0x1C0 | mPC: 0x08 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0093 | PC: 0x1C0 | mPC: 0x00 | ADDI | Z: 0 N: 0
+INFO:root:Tick: 0094 | PC: 0x1C4 | mPC: 0x04 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0095 | PC: 0x1C4 | mPC: 0x05 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0096 | PC: 0x1C4 | mPC: 0x00 |   SW | Z: 0 N: 0
+INFO:root:Tick: 0097 | PC: 0x1C8 | mPC: 0x03 |   MV | Z: 0 N: 0
+INFO:root:Tick: 0098 | PC: 0x1C8 | mPC: 0x00 |   MV | Z: 0 N: 0
+INFO:root:Tick: 0099 | PC: 0x1CC | mPC: 0x02 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0100 | PC: 0x1CC | mPC: 0x00 |  LUI | Z: 0 N: 0
+```
