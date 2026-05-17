@@ -237,7 +237,8 @@ Memory-mapped I/O
   * Остановка 
 
 ## Транслятор
-Интерфейс командной строки: `translator.py <input_file> <target_file>`
+Интерфейс командной строки: `translator.py <input_file> <target_file>`.
+Транслятор реализован в [translator](./translator.py)
 
 Транслятор выполняет прямой перевод `forth` в ассемблер. 
 
@@ -253,7 +254,8 @@ Memory-mapped I/O
 Вместе с пользовательским кодом транслируется код стандартной библиотеки. В выходном бинарнике код стандартной библиотеки будет перед пользовательским кодом. Понятно, что это не очень эффективно, но пока так.
 
 ## Модель процессора
-Интерфейс командной строки: `machine.py <machine_code> <target_file>`
+Интерфейс командной строки: `machine.py <machine_code> <target_file>`. 
+Модель реализована в [machine](./machine.py).
 
 ### Data Path
 <img src="./scheme/datapath.jpg" width="620">
