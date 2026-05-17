@@ -431,6 +431,7 @@ def main(source_path: str, target_path: str):
         target_path += ".bin"
     with open(target_path, "wb") as f:
         f.write(binary_code)
+    print(f"Binary saved to {target_path}")
 
 
 if __name__ == "__main__":
