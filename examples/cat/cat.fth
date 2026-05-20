@@ -1,4 +1,12 @@
-16 array user_buf
+loop
+    read
+    dup 10 - =0
 
-user_buf read_str
-user_buf print_str
+    if
+        drop
+        0
+    else
+        emit
+        1
+    then
+endloop
