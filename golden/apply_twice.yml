@@ -23,526 +23,386 @@ in_source: |
 input: |
 
 out_log: |-
-  Ticks executed: 513
+  Ticks executed: 373
   Output:
   20 
   81 
 
 
   Trace:
-  Tick: 0001 | PC: 0x00  | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0002 | PC: 0x04  | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0003 | PC: 0x04  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0004 | PC: 0x08  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0005 | PC: 0x08  | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0006 | PC: 0x0C  | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0007 | PC: 0x0C  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0008 | PC: 0x10  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0009 | PC: 0x10  | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0010 | PC: 0x44  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0011 | PC: 0x44  | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0012 | PC: 0x78  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0013 | PC: 0x78  | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0014 | PC: 0xF0  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0015 | PC: 0xF0  | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0016 | PC: 0x17C | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0017 | PC: 0x17C | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0018 | PC: 0x23C | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0019 | PC: 0x23C | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0020 | PC: 0x2F4 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0021 | PC: 0x2F4 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0022 | PC: 0x488 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0023 | PC: 0x488 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0024 | PC: 0x4BC | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0025 | PC: 0x4BC | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0026 | PC: 0x958 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0027 | PC: 0x958 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0028 | PC: 0xAEC | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0029 | PC: 0xAEC | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0030 | PC: 0xBF0 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0031 | PC: 0xBF0 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0032 | PC: 0xCCC | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0033 | PC: 0xCCC | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0034 | PC: 0xD70 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0035 | PC: 0xD70 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0036 | PC: 0xD88 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0037 | PC: 0xD88 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0038 | PC: 0xDB0 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0039 | PC: 0xDB0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0040 | PC: 0xDB4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0041 | PC: 0xDB4 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0042 | PC: 0xDB8 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0043 | PC: 0xDB8 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0044 | PC: 0xDB8 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0045 | PC: 0xDBC | mPC: 0x00 |   MV | Z: 1 N: 0
-  Tick: 0046 | PC: 0xDBC | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0047 | PC: 0xDC0 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0048 | PC: 0xDC0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0049 | PC: 0xDC4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0050 | PC: 0xDC4 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0051 | PC: 0xDC8 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0052 | PC: 0xDC8 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0053 | PC: 0xDC8 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0054 | PC: 0xDCC | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0055 | PC: 0xDCC | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0056 | PC: 0xDD0 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0057 | PC: 0xDD0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0058 | PC: 0xDD4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0059 | PC: 0xDD4 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0060 | PC: 0xDD8 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0061 | PC: 0xDD8 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0062 | PC: 0xDDC | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0063 | PC: 0xDDC | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0064 | PC: 0xDE0 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0065 | PC: 0xDE0 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0066 | PC: 0xDE4 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0067 | PC: 0xDE4 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0068 | PC: 0xDE4 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0069 | PC: 0xCD0 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0070 | PC: 0xCD0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0071 | PC: 0xCD4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0072 | PC: 0xCD4 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0073 | PC: 0xCD8 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0074 | PC: 0xCD8 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0075 | PC: 0xCD8 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0076 | PC: 0xCDC | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0077 | PC: 0xCDC | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0078 | PC: 0xCE0 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0079 | PC: 0xCE0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0080 | PC: 0xCE4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0081 | PC: 0xCE4 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0082 | PC: 0xCE8 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0083 | PC: 0xCE8 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0084 | PC: 0xCE8 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0085 | PC: 0xCEC | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0086 | PC: 0xCEC | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0087 | PC: 0xCEC | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0088 | PC: 0xCF0 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0089 | PC: 0xCF0 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0090 | PC: 0xCF0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0091 | PC: 0xCF4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0092 | PC: 0xCF4 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0093 | PC: 0xCF8 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0094 | PC: 0xCF8 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0095 | PC: 0xCFC | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0096 | PC: 0xCFC | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0097 | PC: 0xCFC | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0098 | PC: 0xD00 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0099 | PC: 0xD00 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0100 | PC: 0xD04 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0101 | PC: 0xD04 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0102 | PC: 0xD08 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0103 | PC: 0xD08 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0104 | PC: 0xD08 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0105 | PC: 0xD0C | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0106 | PC: 0xD0C | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0107 | PC: 0xD10 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0108 | PC: 0xD10 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0109 | PC: 0xD14 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0110 | PC: 0xD14 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0111 | PC: 0xD14 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0112 | PC: 0xD18 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0113 | PC: 0xD18 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0114 | PC: 0xD1C | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0115 | PC: 0xD1C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0116 | PC: 0xD20 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0117 | PC: 0xD20 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0118 | PC: 0xD24 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0119 | PC: 0xD24 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0120 | PC: 0xD28 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0121 | PC: 0xD28 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0122 | PC: 0xD28 | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0123 | PC: 0xD74 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0124 | PC: 0xD74 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0125 | PC: 0xD78 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0126 | PC: 0xD78 | mPC: 0x0A |  MUL | Z: 1 N: 0
-  Tick: 0127 | PC: 0xD7C | mPC: 0x00 |  MUL | Z: 0 N: 0
-  Tick: 0128 | PC: 0xD7C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0129 | PC: 0xD80 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0130 | PC: 0xD80 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0131 | PC: 0xD80 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0132 | PC: 0xD84 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0133 | PC: 0xD84 | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0134 | PC: 0xD2C | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0135 | PC: 0xD2C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0136 | PC: 0xD30 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0137 | PC: 0xD30 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0138 | PC: 0xD34 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0139 | PC: 0xD34 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0140 | PC: 0xD34 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0141 | PC: 0xD38 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0142 | PC: 0xD38 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0143 | PC: 0xD3C | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0144 | PC: 0xD3C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0145 | PC: 0xD40 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0146 | PC: 0xD40 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0147 | PC: 0xD40 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0148 | PC: 0xD44 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0149 | PC: 0xD44 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0150 | PC: 0xD48 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0151 | PC: 0xD48 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0152 | PC: 0xD4C | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0153 | PC: 0xD4C | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0154 | PC: 0xD4C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0155 | PC: 0xD50 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0156 | PC: 0xD50 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0157 | PC: 0xD54 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0158 | PC: 0xD54 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0159 | PC: 0xD58 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0160 | PC: 0xD58 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0161 | PC: 0xD5C | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0162 | PC: 0xD5C | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0163 | PC: 0xD60 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0164 | PC: 0xD60 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0165 | PC: 0xD60 | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0166 | PC: 0xD74 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0167 | PC: 0xD74 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0168 | PC: 0xD78 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0169 | PC: 0xD78 | mPC: 0x0A |  MUL | Z: 1 N: 0
-  Tick: 0170 | PC: 0xD7C | mPC: 0x00 |  MUL | Z: 0 N: 0
-  Tick: 0171 | PC: 0xD7C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0172 | PC: 0xD80 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0173 | PC: 0xD80 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0174 | PC: 0xD80 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0175 | PC: 0xD84 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0176 | PC: 0xD84 | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0177 | PC: 0xD64 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0178 | PC: 0xD64 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0179 | PC: 0xD68 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0180 | PC: 0xD68 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0181 | PC: 0xD68 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0182 | PC: 0xD6C | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0183 | PC: 0xD6C | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0184 | PC: 0xDE8 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0185 | PC: 0xDE8 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0186 | PC: 0xDEC | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0187 | PC: 0xDEC | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0188 | PC: 0xDF0 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0189 | PC: 0xDF0 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0190 | PC: 0xDF4 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0191 | PC: 0xDF4 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0192 | PC: 0xDF4 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0193 | PC: 0xDF8 | mPC: 0x00 |   MV | Z: 1 N: 0
-  Tick: 0194 | PC: 0xDF8 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0195 | PC: 0xDFC | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0196 | PC: 0xDFC | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0197 | PC: 0xDFC | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0198 | PC: 0xE00 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0199 | PC: 0xE00 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0200 | PC: 0xE04 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0201 | PC: 0xE04 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0202 | PC: 0xE08 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0203 | PC: 0xE08 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0204 | PC: 0xE0C | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0205 | PC: 0xE0C | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0206 | PC: 0xE10 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0207 | PC: 0xE10 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0208 | PC: 0xE10 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0209 | PC: 0x48  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0210 | PC: 0x48  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0211 | PC: 0x4C  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0212 | PC: 0x4C  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0213 | PC: 0x50  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0214 | PC: 0x50  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0215 | PC: 0x50  | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0216 | PC: 0x54  | mPC: 0x00 |   MV | Z: 1 N: 0
-  Tick: 0217 | PC: 0x54  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0218 | PC: 0x58  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0219 | PC: 0x58  | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0220 | PC: 0x5C  | mPC: 0x00 |  LUI | Z: 1 N: 0
-  Tick: 0221 | PC: 0x5C  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0222 | PC: 0x60  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0223 | PC: 0x60  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0224 | PC: 0x64  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0225 | PC: 0x64  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0226 | PC: 0x68  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0227 | PC: 0x68  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0228 | PC: 0x68  | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0229 | PC: 0x14  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0230 | PC: 0x14  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0231 | PC: 0x18  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0232 | PC: 0x18  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0233 | PC: 0x1C  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0234 | PC: 0x1C  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0235 | PC: 0x1C  | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0236 | PC: 0x20  | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0237 | PC: 0x20  | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0238 | PC: 0x24  | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0239 | PC: 0x24  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0240 | PC: 0x28  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0241 | PC: 0x28  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0242 | PC: 0x2C  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0243 | PC: 0x2C  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0244 | PC: 0x2C  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0245 | PC: 0x30  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0246 | PC: 0x30  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0247 | PC: 0x30  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0248 | PC: 0x34  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0249 | PC: 0x34  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0250 | PC: 0x34  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0251 | PC: 0x38  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0252 | PC: 0x38  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0253 | PC: 0x3C  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0254 | PC: 0x3C  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0255 | PC: 0x3C  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0256 | PC: 0x40  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0257 | PC: 0x40  | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0258 | PC: 0x6C  | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0259 | PC: 0x6C  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0260 | PC: 0x70  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0261 | PC: 0x70  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0262 | PC: 0x70  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0263 | PC: 0x74  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0264 | PC: 0x74  | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0265 | PC: 0xE14 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0266 | PC: 0xE14 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0267 | PC: 0xE18 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0268 | PC: 0xE18 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0269 | PC: 0xE1C | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0270 | PC: 0xE1C | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0271 | PC: 0xE1C | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0272 | PC: 0xE20 | mPC: 0x00 |   MV | Z: 1 N: 0
-  Tick: 0273 | PC: 0xE20 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0274 | PC: 0xE24 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0275 | PC: 0xE24 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0276 | PC: 0xE28 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0277 | PC: 0xE28 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0278 | PC: 0xE2C | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0279 | PC: 0xE2C | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0280 | PC: 0xE2C | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0281 | PC: 0xE30 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0282 | PC: 0xE30 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0283 | PC: 0xE34 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0284 | PC: 0xE34 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0285 | PC: 0xE38 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0286 | PC: 0xE38 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0287 | PC: 0xE3C | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0288 | PC: 0xE3C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0289 | PC: 0xE40 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0290 | PC: 0xE40 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0291 | PC: 0xE44 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0292 | PC: 0xE44 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0293 | PC: 0xE48 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0294 | PC: 0xE48 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0295 | PC: 0xE48 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0296 | PC: 0xCD0 | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0297 | PC: 0xCD0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0298 | PC: 0xCD4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0299 | PC: 0xCD4 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0300 | PC: 0xCD8 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0301 | PC: 0xCD8 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0302 | PC: 0xCD8 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0303 | PC: 0xCDC | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0304 | PC: 0xCDC | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0305 | PC: 0xCE0 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0306 | PC: 0xCE0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0307 | PC: 0xCE4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0308 | PC: 0xCE4 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0309 | PC: 0xCE8 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0310 | PC: 0xCE8 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0311 | PC: 0xCE8 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0312 | PC: 0xCEC | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0313 | PC: 0xCEC | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0314 | PC: 0xCEC | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0315 | PC: 0xCF0 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0316 | PC: 0xCF0 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0317 | PC: 0xCF0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0318 | PC: 0xCF4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0319 | PC: 0xCF4 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0320 | PC: 0xCF8 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0321 | PC: 0xCF8 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0322 | PC: 0xCFC | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0323 | PC: 0xCFC | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0324 | PC: 0xCFC | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0325 | PC: 0xD00 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0326 | PC: 0xD00 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0327 | PC: 0xD04 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0328 | PC: 0xD04 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0329 | PC: 0xD08 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0330 | PC: 0xD08 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0331 | PC: 0xD08 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0332 | PC: 0xD0C | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0333 | PC: 0xD0C | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0334 | PC: 0xD10 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0335 | PC: 0xD10 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0336 | PC: 0xD14 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0337 | PC: 0xD14 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0338 | PC: 0xD14 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0339 | PC: 0xD18 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0340 | PC: 0xD18 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0341 | PC: 0xD1C | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0342 | PC: 0xD1C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0343 | PC: 0xD20 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0344 | PC: 0xD20 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0345 | PC: 0xD24 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0346 | PC: 0xD24 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0347 | PC: 0xD28 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0348 | PC: 0xD28 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0349 | PC: 0xD28 | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0350 | PC: 0xD8C | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0351 | PC: 0xD8C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0352 | PC: 0xD90 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0353 | PC: 0xD90 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0354 | PC: 0xD94 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0355 | PC: 0xD94 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0356 | PC: 0xD94 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0357 | PC: 0xD98 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0358 | PC: 0xD98 | mPC: 0x0A |  MUL | Z: 1 N: 0
-  Tick: 0359 | PC: 0xD9C | mPC: 0x00 |  MUL | Z: 0 N: 0
-  Tick: 0360 | PC: 0xD9C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0361 | PC: 0xDA0 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0362 | PC: 0xDA0 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0363 | PC: 0xDA0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0364 | PC: 0xDA4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0365 | PC: 0xDA4 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0366 | PC: 0xDA8 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0367 | PC: 0xDA8 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0368 | PC: 0xDA8 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0369 | PC: 0xDAC | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0370 | PC: 0xDAC | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0371 | PC: 0xD2C | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0372 | PC: 0xD2C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0373 | PC: 0xD30 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0374 | PC: 0xD30 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0375 | PC: 0xD34 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0376 | PC: 0xD34 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0377 | PC: 0xD34 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0378 | PC: 0xD38 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0379 | PC: 0xD38 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0380 | PC: 0xD3C | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0381 | PC: 0xD3C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0382 | PC: 0xD40 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0383 | PC: 0xD40 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0384 | PC: 0xD40 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0385 | PC: 0xD44 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0386 | PC: 0xD44 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0387 | PC: 0xD48 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0388 | PC: 0xD48 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0389 | PC: 0xD4C | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0390 | PC: 0xD4C | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0391 | PC: 0xD4C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0392 | PC: 0xD50 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0393 | PC: 0xD50 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0394 | PC: 0xD54 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0395 | PC: 0xD54 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0396 | PC: 0xD58 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0397 | PC: 0xD58 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0398 | PC: 0xD5C | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0399 | PC: 0xD5C | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0400 | PC: 0xD60 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0401 | PC: 0xD60 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0402 | PC: 0xD60 | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0403 | PC: 0xD8C | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0404 | PC: 0xD8C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0405 | PC: 0xD90 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0406 | PC: 0xD90 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0407 | PC: 0xD94 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0408 | PC: 0xD94 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0409 | PC: 0xD94 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0410 | PC: 0xD98 | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0411 | PC: 0xD98 | mPC: 0x0A |  MUL | Z: 1 N: 0
-  Tick: 0412 | PC: 0xD9C | mPC: 0x00 |  MUL | Z: 0 N: 0
-  Tick: 0413 | PC: 0xD9C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0414 | PC: 0xDA0 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0415 | PC: 0xDA0 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0416 | PC: 0xDA0 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0417 | PC: 0xDA4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0418 | PC: 0xDA4 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0419 | PC: 0xDA8 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0420 | PC: 0xDA8 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0421 | PC: 0xDA8 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0422 | PC: 0xDAC | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0423 | PC: 0xDAC | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0424 | PC: 0xD64 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0425 | PC: 0xD64 | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0426 | PC: 0xD68 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0427 | PC: 0xD68 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0428 | PC: 0xD68 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0429 | PC: 0xD6C | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0430 | PC: 0xD6C | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0431 | PC: 0xE4C | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0432 | PC: 0xE4C | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0433 | PC: 0xE50 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0434 | PC: 0xE50 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0435 | PC: 0xE54 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0436 | PC: 0xE54 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0437 | PC: 0xE58 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0438 | PC: 0xE58 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0439 | PC: 0xE58 | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0440 | PC: 0xE5C | mPC: 0x00 |   MV | Z: 1 N: 0
-  Tick: 0441 | PC: 0xE5C | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0442 | PC: 0xE60 | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0443 | PC: 0xE60 | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0444 | PC: 0xE60 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0445 | PC: 0xE64 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0446 | PC: 0xE64 | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0447 | PC: 0xE68 | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0448 | PC: 0xE68 | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0449 | PC: 0xE6C | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0450 | PC: 0xE6C | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0451 | PC: 0xE70 | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0452 | PC: 0xE70 | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0453 | PC: 0xE74 | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0454 | PC: 0xE74 | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0455 | PC: 0xE74 | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0456 | PC: 0x48  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0457 | PC: 0x48  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0458 | PC: 0x4C  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0459 | PC: 0x4C  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0460 | PC: 0x50  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0461 | PC: 0x50  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0462 | PC: 0x50  | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0463 | PC: 0x54  | mPC: 0x00 |   MV | Z: 1 N: 0
-  Tick: 0464 | PC: 0x54  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0465 | PC: 0x58  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0466 | PC: 0x58  | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0467 | PC: 0x5C  | mPC: 0x00 |  LUI | Z: 1 N: 0
-  Tick: 0468 | PC: 0x5C  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0469 | PC: 0x60  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0470 | PC: 0x60  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0471 | PC: 0x64  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0472 | PC: 0x64  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0473 | PC: 0x68  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0474 | PC: 0x68  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0475 | PC: 0x68  | mPC: 0x0F |    J | Z: 1 N: 0
-  Tick: 0476 | PC: 0x14  | mPC: 0x00 |    J | Z: 0 N: 0
-  Tick: 0477 | PC: 0x14  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0478 | PC: 0x18  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0479 | PC: 0x18  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0480 | PC: 0x1C  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0481 | PC: 0x1C  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0482 | PC: 0x1C  | mPC: 0x02 |   MV | Z: 1 N: 0
-  Tick: 0483 | PC: 0x20  | mPC: 0x00 |   MV | Z: 0 N: 0
-  Tick: 0484 | PC: 0x20  | mPC: 0x01 |  LUI | Z: 1 N: 0
-  Tick: 0485 | PC: 0x24  | mPC: 0x00 |  LUI | Z: 0 N: 0
-  Tick: 0486 | PC: 0x24  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0487 | PC: 0x28  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0488 | PC: 0x28  | mPC: 0x03 |   SW | Z: 1 N: 0
-  Tick: 0489 | PC: 0x2C  | mPC: 0x04 |   SW | Z: 0 N: 0
-  Tick: 0490 | PC: 0x2C  | mPC: 0x00 |   SW | Z: 1 N: 0
-  Tick: 0491 | PC: 0x2C  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0492 | PC: 0x30  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0493 | PC: 0x30  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0494 | PC: 0x30  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0495 | PC: 0x34  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0496 | PC: 0x34  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0497 | PC: 0x34  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0498 | PC: 0x38  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0499 | PC: 0x38  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0500 | PC: 0x3C  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0501 | PC: 0x3C  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0502 | PC: 0x3C  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0503 | PC: 0x40  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0504 | PC: 0x40  | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0505 | PC: 0x6C  | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0506 | PC: 0x6C  | mPC: 0x05 |   LW | Z: 1 N: 0
-  Tick: 0507 | PC: 0x70  | mPC: 0x06 |   LW | Z: 0 N: 0
-  Tick: 0508 | PC: 0x70  | mPC: 0x00 |   LW | Z: 1 N: 0
-  Tick: 0509 | PC: 0x70  | mPC: 0x07 | ADDI | Z: 1 N: 0
-  Tick: 0510 | PC: 0x74  | mPC: 0x00 | ADDI | Z: 0 N: 0
-  Tick: 0511 | PC: 0x74  | mPC: 0x10 |   JR | Z: 1 N: 0
-  Tick: 0512 | PC: 0xE78 | mPC: 0x00 |   JR | Z: 0 N: 0
-  Tick: 0513 | PC: 0xE78 | mPC: 0x18 | HALT | Z: 1 N: 0
+  Tick: 0001 | PC: 0x00  | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0002 | PC: 0x04  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0003 | PC: 0x04  | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+  Tick: 0004 | PC: 0x0C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0005 | PC: 0x0C  | m1:07 m2:0F |  ADDI |     J |Z:1 N:0
+  Tick: 0006 | PC: 0x44  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0007 | PC: 0x44  | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0008 | PC: 0x78  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0009 | PC: 0x78  | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0010 | PC: 0xF0  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0011 | PC: 0xF0  | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0012 | PC: 0x17C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0013 | PC: 0x17C | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0014 | PC: 0x23C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0015 | PC: 0x23C | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0016 | PC: 0x2F4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0017 | PC: 0x2F4 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0018 | PC: 0x488 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0019 | PC: 0x488 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0020 | PC: 0x4BC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0021 | PC: 0x4BC | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0022 | PC: 0x958 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0023 | PC: 0x958 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0024 | PC: 0xAEC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0025 | PC: 0xAEC | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0026 | PC: 0xBF0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0027 | PC: 0xBF0 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0028 | PC: 0xCCC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0029 | PC: 0xCCC | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0030 | PC: 0xD70 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0031 | PC: 0xD70 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0032 | PC: 0xD88 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0033 | PC: 0xD88 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+  Tick: 0034 | PC: 0xDB0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0035 | PC: 0xDB0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0036 | PC: 0xDB4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0037 | PC: 0xDB4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0038 | PC: 0xDB8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0039 | PC: 0xDB8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0040 | PC: 0xDB8 | m1:02 m2:07 |    MV |  ADDI |Z:1 N:0
+  Tick: 0041 | PC: 0xDC0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0042 | PC: 0xDC0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0043 | PC: 0xDC4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0044 | PC: 0xDC4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0045 | PC: 0xDC8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0046 | PC: 0xDC8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0047 | PC: 0xDC8 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0048 | PC: 0xDD0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0049 | PC: 0xDD0 | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+  Tick: 0050 | PC: 0xDD8 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0051 | PC: 0xDD8 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0052 | PC: 0xDE0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0053 | PC: 0xDE0 | m1:03 m2:0F |    SW |     J |Z:1 N:0
+  Tick: 0054 | PC: 0xCD0 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0055 | PC: 0xCD0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0056 | PC: 0xCD0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0057 | PC: 0xCD4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0058 | PC: 0xCD4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0059 | PC: 0xCD8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0060 | PC: 0xCD8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0061 | PC: 0xCD8 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0062 | PC: 0xCE0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0063 | PC: 0xCE0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0064 | PC: 0xCE4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0065 | PC: 0xCE4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0066 | PC: 0xCE8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0067 | PC: 0xCE8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0068 | PC: 0xCE8 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0069 | PC: 0xCEC | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0070 | PC: 0xCEC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0071 | PC: 0xCEC | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0072 | PC: 0xCF4 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0073 | PC: 0xCF4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0074 | PC: 0xCF4 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0075 | PC: 0xCF8 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0076 | PC: 0xCF8 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0077 | PC: 0xCFC | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0078 | PC: 0xCFC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0079 | PC: 0xCFC | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0080 | PC: 0xD04 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0081 | PC: 0xD04 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0082 | PC: 0xD08 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0083 | PC: 0xD08 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0084 | PC: 0xD08 | m1:02 m2:02 |    MV |    MV |Z:1 N:0
+  Tick: 0085 | PC: 0xD10 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0086 | PC: 0xD10 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0087 | PC: 0xD18 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0088 | PC: 0xD18 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0089 | PC: 0xD18 | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0090 | PC: 0xD1C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0091 | PC: 0xD1C | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0092 | PC: 0xD24 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0093 | PC: 0xD24 | m1:03 m2:10 |    SW |    JR |Z:1 N:0
+  Tick: 0094 | PC: 0xD74 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0095 | PC: 0xD74 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0096 | PC: 0xD74 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0097 | PC: 0xD78 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0098 | PC: 0xD78 | m1:0A m2:05 |   MUL |    LW |Z:1 N:0
+  Tick: 0099 | PC: 0xD80 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0100 | PC: 0xD80 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0101 | PC: 0xD80 | m1:07 m2:10 |  ADDI |    JR |Z:1 N:0
+  Tick: 0102 | PC: 0xD2C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0103 | PC: 0xD2C | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0104 | PC: 0xD30 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0105 | PC: 0xD30 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0106 | PC: 0xD34 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0107 | PC: 0xD34 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0108 | PC: 0xD34 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0109 | PC: 0xD3C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0110 | PC: 0xD3C | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0111 | PC: 0xD40 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0112 | PC: 0xD40 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0113 | PC: 0xD40 | m1:02 m2:02 |    MV |    MV |Z:1 N:0
+  Tick: 0114 | PC: 0xD48 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0115 | PC: 0xD48 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0116 | PC: 0xD50 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0117 | PC: 0xD50 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0118 | PC: 0xD50 | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0119 | PC: 0xD54 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0120 | PC: 0xD54 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0121 | PC: 0xD5C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0122 | PC: 0xD5C | m1:03 m2:10 |    SW |    JR |Z:1 N:0
+  Tick: 0123 | PC: 0xD74 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0124 | PC: 0xD74 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0125 | PC: 0xD74 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0126 | PC: 0xD78 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0127 | PC: 0xD78 | m1:0A m2:05 |   MUL |    LW |Z:1 N:0
+  Tick: 0128 | PC: 0xD80 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0129 | PC: 0xD80 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0130 | PC: 0xD80 | m1:07 m2:10 |  ADDI |    JR |Z:1 N:0
+  Tick: 0131 | PC: 0xD64 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0132 | PC: 0xD64 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0133 | PC: 0xD6C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0134 | PC: 0xD6C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0135 | PC: 0xD6C | m1:10 m2:00 |    JR |  IDLE |Z:1 N:0
+  Tick: 0136 | PC: 0xDE8 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0137 | PC: 0xDE8 | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0138 | PC: 0xDEC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0139 | PC: 0xDEC | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0140 | PC: 0xDF0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0141 | PC: 0xDF0 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0142 | PC: 0xDF4 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0143 | PC: 0xDF4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0144 | PC: 0xDF4 | m1:02 m2:05 |    MV |    LW |Z:1 N:0
+  Tick: 0145 | PC: 0xDFC | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0146 | PC: 0xDFC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0147 | PC: 0xDFC | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+  Tick: 0148 | PC: 0xE04 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0149 | PC: 0xE04 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0150 | PC: 0xE0C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0151 | PC: 0xE0C | m1:03 m2:0F |    SW |     J |Z:1 N:0
+  Tick: 0152 | PC: 0x48  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0153 | PC: 0x48  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0154 | PC: 0x48  | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0155 | PC: 0x4C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0156 | PC: 0x4C  | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0157 | PC: 0x50  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0158 | PC: 0x50  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0159 | PC: 0x50  | m1:02 m2:07 |    MV |  ADDI |Z:1 N:0
+  Tick: 0160 | PC: 0x58  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0161 | PC: 0x58  | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0162 | PC: 0x5C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0163 | PC: 0x5C  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0164 | PC: 0x64  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0165 | PC: 0x64  | m1:03 m2:0F |    SW |     J |Z:1 N:0
+  Tick: 0166 | PC: 0x14  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0167 | PC: 0x14  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0168 | PC: 0x14  | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0169 | PC: 0x18  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0170 | PC: 0x18  | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0171 | PC: 0x1C  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0172 | PC: 0x1C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0173 | PC: 0x1C  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0174 | PC: 0x24  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0175 | PC: 0x24  | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0176 | PC: 0x28  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0177 | PC: 0x28  | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0178 | PC: 0x2C  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0179 | PC: 0x2C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0180 | PC: 0x2C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0181 | PC: 0x30  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0182 | PC: 0x30  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0183 | PC: 0x30  | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0184 | PC: 0x38  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0185 | PC: 0x38  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0186 | PC: 0x38  | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0187 | PC: 0x40  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0188 | PC: 0x40  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0189 | PC: 0x40  | m1:10 m2:00 |    JR |  IDLE |Z:1 N:0
+  Tick: 0190 | PC: 0x6C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0191 | PC: 0x6C  | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0192 | PC: 0x74  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0193 | PC: 0x74  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0194 | PC: 0x74  | m1:10 m2:00 |    JR |  IDLE |Z:1 N:0
+  Tick: 0195 | PC: 0xE14 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0196 | PC: 0xE14 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0197 | PC: 0xE18 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0198 | PC: 0xE18 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0199 | PC: 0xE1C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0200 | PC: 0xE1C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0201 | PC: 0xE1C | m1:02 m2:07 |    MV |  ADDI |Z:1 N:0
+  Tick: 0202 | PC: 0xE24 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0203 | PC: 0xE24 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0204 | PC: 0xE28 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0205 | PC: 0xE28 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0206 | PC: 0xE2C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0207 | PC: 0xE2C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0208 | PC: 0xE2C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0209 | PC: 0xE34 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0210 | PC: 0xE34 | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+  Tick: 0211 | PC: 0xE3C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0212 | PC: 0xE3C | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0213 | PC: 0xE44 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0214 | PC: 0xE44 | m1:03 m2:0F |    SW |     J |Z:1 N:0
+  Tick: 0215 | PC: 0xCD0 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0216 | PC: 0xCD0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0217 | PC: 0xCD0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0218 | PC: 0xCD4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0219 | PC: 0xCD4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0220 | PC: 0xCD8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0221 | PC: 0xCD8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0222 | PC: 0xCD8 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0223 | PC: 0xCE0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0224 | PC: 0xCE0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0225 | PC: 0xCE4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0226 | PC: 0xCE4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0227 | PC: 0xCE8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0228 | PC: 0xCE8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0229 | PC: 0xCE8 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0230 | PC: 0xCEC | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0231 | PC: 0xCEC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0232 | PC: 0xCEC | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0233 | PC: 0xCF4 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0234 | PC: 0xCF4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0235 | PC: 0xCF4 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0236 | PC: 0xCF8 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0237 | PC: 0xCF8 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0238 | PC: 0xCFC | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0239 | PC: 0xCFC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0240 | PC: 0xCFC | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0241 | PC: 0xD04 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0242 | PC: 0xD04 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0243 | PC: 0xD08 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0244 | PC: 0xD08 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0245 | PC: 0xD08 | m1:02 m2:02 |    MV |    MV |Z:1 N:0
+  Tick: 0246 | PC: 0xD10 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0247 | PC: 0xD10 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0248 | PC: 0xD18 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0249 | PC: 0xD18 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0250 | PC: 0xD18 | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0251 | PC: 0xD1C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0252 | PC: 0xD1C | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0253 | PC: 0xD24 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0254 | PC: 0xD24 | m1:03 m2:10 |    SW |    JR |Z:1 N:0
+  Tick: 0255 | PC: 0xD8C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0256 | PC: 0xD8C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0257 | PC: 0xD8C | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0258 | PC: 0xD90 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0259 | PC: 0xD90 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0260 | PC: 0xD94 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0261 | PC: 0xD94 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0262 | PC: 0xD94 | m1:02 m2:00 |    MV |  IDLE |Z:1 N:0
+  Tick: 0263 | PC: 0xD98 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0264 | PC: 0xD98 | m1:0A m2:05 |   MUL |    LW |Z:1 N:0
+  Tick: 0265 | PC: 0xDA0 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0266 | PC: 0xDA0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0267 | PC: 0xDA0 | m1:07 m2:05 |  ADDI |    LW |Z:1 N:0
+  Tick: 0268 | PC: 0xDA8 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0269 | PC: 0xDA8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0270 | PC: 0xDA8 | m1:07 m2:10 |  ADDI |    JR |Z:1 N:0
+  Tick: 0271 | PC: 0xD2C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0272 | PC: 0xD2C | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0273 | PC: 0xD30 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0274 | PC: 0xD30 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0275 | PC: 0xD34 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0276 | PC: 0xD34 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0277 | PC: 0xD34 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0278 | PC: 0xD3C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0279 | PC: 0xD3C | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0280 | PC: 0xD40 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0281 | PC: 0xD40 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0282 | PC: 0xD40 | m1:02 m2:02 |    MV |    MV |Z:1 N:0
+  Tick: 0283 | PC: 0xD48 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0284 | PC: 0xD48 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0285 | PC: 0xD50 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0286 | PC: 0xD50 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0287 | PC: 0xD50 | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0288 | PC: 0xD54 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0289 | PC: 0xD54 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0290 | PC: 0xD5C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0291 | PC: 0xD5C | m1:03 m2:10 |    SW |    JR |Z:1 N:0
+  Tick: 0292 | PC: 0xD8C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0293 | PC: 0xD8C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0294 | PC: 0xD8C | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0295 | PC: 0xD90 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0296 | PC: 0xD90 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0297 | PC: 0xD94 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0298 | PC: 0xD94 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0299 | PC: 0xD94 | m1:02 m2:00 |    MV |  IDLE |Z:1 N:0
+  Tick: 0300 | PC: 0xD98 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0301 | PC: 0xD98 | m1:0A m2:05 |   MUL |    LW |Z:1 N:0
+  Tick: 0302 | PC: 0xDA0 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0303 | PC: 0xDA0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0304 | PC: 0xDA0 | m1:07 m2:05 |  ADDI |    LW |Z:1 N:0
+  Tick: 0305 | PC: 0xDA8 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0306 | PC: 0xDA8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0307 | PC: 0xDA8 | m1:07 m2:10 |  ADDI |    JR |Z:1 N:0
+  Tick: 0308 | PC: 0xD64 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0309 | PC: 0xD64 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0310 | PC: 0xD6C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0311 | PC: 0xD6C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0312 | PC: 0xD6C | m1:10 m2:00 |    JR |  IDLE |Z:1 N:0
+  Tick: 0313 | PC: 0xE4C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0314 | PC: 0xE4C | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0315 | PC: 0xE50 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0316 | PC: 0xE50 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0317 | PC: 0xE54 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0318 | PC: 0xE54 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0319 | PC: 0xE58 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0320 | PC: 0xE58 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0321 | PC: 0xE58 | m1:02 m2:05 |    MV |    LW |Z:1 N:0
+  Tick: 0322 | PC: 0xE60 | m1:00 m2:06 |  IDLE |    LW |Z:0 N:0
+  Tick: 0323 | PC: 0xE60 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0324 | PC: 0xE60 | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+  Tick: 0325 | PC: 0xE68 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0326 | PC: 0xE68 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0327 | PC: 0xE70 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0328 | PC: 0xE70 | m1:03 m2:0F |    SW |     J |Z:1 N:0
+  Tick: 0329 | PC: 0x48  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0330 | PC: 0x48  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0331 | PC: 0x48  | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0332 | PC: 0x4C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0333 | PC: 0x4C  | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0334 | PC: 0x50  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0335 | PC: 0x50  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0336 | PC: 0x50  | m1:02 m2:07 |    MV |  ADDI |Z:1 N:0
+  Tick: 0337 | PC: 0x58  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0338 | PC: 0x58  | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+  Tick: 0339 | PC: 0x5C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0340 | PC: 0x5C  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+  Tick: 0341 | PC: 0x64  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0342 | PC: 0x64  | m1:03 m2:0F |    SW |     J |Z:1 N:0
+  Tick: 0343 | PC: 0x14  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0344 | PC: 0x14  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0345 | PC: 0x14  | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0346 | PC: 0x18  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0347 | PC: 0x18  | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0348 | PC: 0x1C  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0349 | PC: 0x1C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0350 | PC: 0x1C  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+  Tick: 0351 | PC: 0x24  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0352 | PC: 0x24  | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+  Tick: 0353 | PC: 0x28  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0354 | PC: 0x28  | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+  Tick: 0355 | PC: 0x2C  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+  Tick: 0356 | PC: 0x2C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0357 | PC: 0x2C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0358 | PC: 0x30  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0359 | PC: 0x30  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0360 | PC: 0x30  | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0361 | PC: 0x38  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0362 | PC: 0x38  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0363 | PC: 0x38  | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0364 | PC: 0x40  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0365 | PC: 0x40  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0366 | PC: 0x40  | m1:10 m2:00 |    JR |  IDLE |Z:1 N:0
+  Tick: 0367 | PC: 0x6C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0368 | PC: 0x6C  | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+  Tick: 0369 | PC: 0x74  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+  Tick: 0370 | PC: 0x74  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+  Tick: 0371 | PC: 0x74  | m1:10 m2:00 |    JR |  IDLE |Z:1 N:0
+  Tick: 0372 | PC: 0xE78 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0373 | PC: 0xE78 | m1:18 m2:00 |  HALT |  IDLE |Z:1 N:0
 
 out_code_log: |
   <label>                   |  <address> |  <HEXCODE> | <mnemonic>
