@@ -358,9 +358,9 @@ class ControlUnit:
         self.SEQ_JMP_L = 4
         self.SEQ_JMP_G = 5
 
-        self.mp_memory = {
-            # FETCH
-            0x0: MicroCommand(
+        self.mp_memory = [
+            # FETCH (0x0)
+            MicroCommand(
                 [
                     Signal.SEL_MEM_ADDR_PC,
                     Signal.READ_MEM,
@@ -369,8 +369,8 @@ class ControlUnit:
                 ],
                 jmp_mode=self.SEQ_MAP,
             ),
-            # LUI
-            0x1: MicroCommand(
+            # LUI (0x1)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -381,8 +381,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # MV
-            0x2: MicroCommand(
+            # MV (0x2)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -392,8 +392,8 @@ class ControlUnit:
                     Signal.WRITE_REG,
                 ]
             ),
-            # SW
-            0x3: MicroCommand(
+            # SW (0x3)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -405,14 +405,14 @@ class ControlUnit:
                 ],
                 jmp_mode=self.SEQ_INC,
             ),
-            0x4: MicroCommand(
+            MicroCommand(
                 [
                     Signal.SEL_MEM_ADDR_AR,
                     Signal.WRITE_MEM,
                 ]
             ),
-            # LW
-            0x5: MicroCommand(
+            # LW (0x5)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -424,7 +424,7 @@ class ControlUnit:
                 ],
                 jmp_mode=self.SEQ_INC,
             ),
-            0x6: MicroCommand(
+            MicroCommand(
                 [
                     Signal.SEL_MEM_ADDR_AR,
                     Signal.READ_MEM,
@@ -432,8 +432,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_MEM,
                 ]
             ),
-            # ADDI
-            0x7: MicroCommand(
+            # ADDI (0x7)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -445,8 +445,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ],
             ),
-            # ADD
-            0x8: MicroCommand(
+            # ADD (0x8)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -457,8 +457,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # SUB
-            0x9: MicroCommand(
+            # SUB (0x9)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -469,8 +469,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # MUL
-            0xA: MicroCommand(
+            # MUL (0xA)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -481,8 +481,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # AND
-            0xB: MicroCommand(
+            # AND (0xB)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -493,8 +493,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # INV
-            0xC: MicroCommand(
+            # INV (0xC)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -505,8 +505,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # DIV
-            0xD: MicroCommand(
+            # DIV (0xD)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -517,8 +517,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # MOD
-            0xE: MicroCommand(
+            # MOD (0xE)
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
@@ -529,8 +529,8 @@ class ControlUnit:
                     Signal.SEL_REG_SR_ALU,
                 ]
             ),
-            # J
-            0xF: MicroCommand(
+            # J (0xF)
+            MicroCommand(
                 [
                     Signal.SEL_ALU_R_IMM,
                     Signal.ALU_OP_PASS_R,
@@ -538,8 +538,8 @@ class ControlUnit:
                     Signal.LATCH_PC,
                 ]
             ),
-            # JR
-            0x10: MicroCommand(
+            # JR (0x10)
+            MicroCommand(
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
@@ -547,8 +547,8 @@ class ControlUnit:
                     Signal.LATCH_PC,
                 ]
             ),
-            # JZ
-            0x11: MicroCommand(
+            # JZ (0x11)
+            MicroCommand(
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
@@ -556,13 +556,13 @@ class ControlUnit:
                 jmp_mode=self.SEQ_JMP_Z,
                 jmp_addr=0x13,
             ),
-            0x12: MicroCommand(
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
                 ]
             ),
-            0x13: MicroCommand(
+            MicroCommand(
                 [
                     Signal.SEL_ALU_R_IMM,
                     Signal.ALU_OP_PASS_R,
@@ -570,8 +570,8 @@ class ControlUnit:
                     Signal.LATCH_PC,
                 ]
             ),
-            # JG
-            0x14: MicroCommand(
+            # JG (0x14)
+            MicroCommand(
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
@@ -579,14 +579,14 @@ class ControlUnit:
                 jmp_mode=self.SEQ_JMP_G,
                 jmp_addr=0x13,
             ),
-            0x15: MicroCommand(
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
                 ]
             ),
-            # JL
-            0x16: MicroCommand(
+            # JL (0x16)
+            MicroCommand(
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
@@ -594,17 +594,17 @@ class ControlUnit:
                 jmp_mode=self.SEQ_JMP_L,
                 jmp_addr=0x13,
             ),
-            0x17: MicroCommand(
+            MicroCommand(
                 [
                     Signal.SEL_NEXT_PC_INC,
                     Signal.LATCH_PC,
                 ]
             ),
-            # HALT
-            0x18: MicroCommand([], jmp_addr=0x18),
-            # Force WAIT
-            0x19: MicroCommand([]),
-        }
+            # HALT (0x18)
+            MicroCommand([], jmp_addr=0x18),
+            # NOP (0x19)
+            MicroCommand([]),
+        ]
 
     def _issue_logic(self, ir1: int, ir2: int) -> bool:
         if self.scalar_mode:
@@ -734,13 +734,13 @@ class ControlUnit:
         # Sync Logic
         if self.mPC1 == 0 and self.mPC2 != 0:
             mc1 = self.mp_memory[0x19]
-            mc2 = self.mp_memory.get(self.mPC2, self.mp_memory[0x19])
+            mc2 = self.mp_memory[self.mPC2]
         elif self.mPC2 == 0 and self.mPC1 != 0:
-            mc1 = self.mp_memory.get(self.mPC1, self.mp_memory[0x19])
+            mc1 = self.mp_memory[self.mPC1]
             mc2 = self.mp_memory[0x19]
         else:
-            mc1 = self.mp_memory.get(self.mPC1, self.mp_memory[0x19])
-            mc2 = self.mp_memory.get(self.mPC2, self.mp_memory[0x19])
+            mc1 = self.mp_memory[self.mPC1]
+            mc2 = self.mp_memory[self.mPC2]
 
         self.data_path.tick(mc1.signals, mc2.signals)
 
