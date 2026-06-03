@@ -44,7 +44,7 @@
 <cond_exp> ::= "if" <instruction_list> "then" 
 	         | "if" <instruction_list> "else" <instruction_list> "then"	  
 	         
-<string_literal> ::= '"'[A-Za-z0-9А-Яа-я]+'"'
+<string_literal> ::= '"' .* '"'
 
 <identifier> ::= [a-zA-Z0-9_]*
 
