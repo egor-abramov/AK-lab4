@@ -776,7 +776,7 @@ def simulation(
             control_unit.tick()
             ticks += 1
 
-            if ticks <= 100:
+            if ticks <= 1000:
                 pc_str = f"PC: 0x{data_path.PC:02X}"
                 mpc_str = f"m1:{control_unit.mPC1:02X} m2:{control_unit.mPC2:02X}"
 
