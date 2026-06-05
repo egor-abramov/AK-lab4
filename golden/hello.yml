@@ -43,7 +43,7 @@ out_log: |-
   Tick: 0032 | PC: 0xCD4 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0033 | PC: 0xCD4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0034 | PC: 0xCD4 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0035 | PC: 0xCDC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0035 | PC: 0xCDC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0036 | PC: 0xCDC | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
   Tick: 0037 | PC: 0xCE4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
   Tick: 0038 | PC: 0xCE4 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
@@ -75,7 +75,7 @@ out_log: |-
   Tick: 0064 | PC: 0x1AC | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0065 | PC: 0x1AC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0066 | PC: 0x1AC | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0067 | PC: 0x1B4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0067 | PC: 0x1B4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0068 | PC: 0x1B4 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0069 | PC: 0x1B8 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0070 | PC: 0x1B8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -104,7 +104,7 @@ out_log: |-
   Tick: 0093 | PC: 0x1E8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0094 | PC: 0x1E8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0095 | PC: 0x1E8 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0096 | PC: 0x1F0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0096 | PC: 0x1F0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0097 | PC: 0x1F0 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0098 | PC: 0x1F4 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0099 | PC: 0x1F4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -143,7 +143,7 @@ out_log: |-
   Tick: 0132 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0133 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0134 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0135 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0135 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0136 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0137 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0138 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -171,12 +171,12 @@ out_log: |-
   Tick: 0160 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0161 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0162 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0163 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0163 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0164 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0165 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0166 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0167 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0168 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0168 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0169 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0170 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0171 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -217,7 +217,7 @@ out_log: |-
   Tick: 0206 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0207 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0208 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0209 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0209 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0210 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0211 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0212 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -245,7 +245,7 @@ out_log: |-
   Tick: 0234 | PC: 0x14C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0235 | PC: 0x14C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0236 | PC: 0x14C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0237 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0237 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0238 | PC: 0x154 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0239 | PC: 0x158 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0240 | PC: 0x158 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -272,7 +272,7 @@ out_log: |-
   Tick: 0261 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0262 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0263 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0264 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0264 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0265 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0266 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0267 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -300,12 +300,12 @@ out_log: |-
   Tick: 0289 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0290 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0291 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0292 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0292 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0293 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0294 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0295 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0296 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0297 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0297 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0298 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0299 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0300 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -346,7 +346,7 @@ out_log: |-
   Tick: 0335 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0336 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0337 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0338 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0338 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0339 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0340 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0341 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -374,7 +374,7 @@ out_log: |-
   Tick: 0363 | PC: 0x14C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0364 | PC: 0x14C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0365 | PC: 0x14C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0366 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0366 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0367 | PC: 0x154 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0368 | PC: 0x158 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0369 | PC: 0x158 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -401,7 +401,7 @@ out_log: |-
   Tick: 0390 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0391 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0392 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0393 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0393 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0394 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0395 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0396 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -429,12 +429,12 @@ out_log: |-
   Tick: 0418 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0419 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0420 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0421 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0421 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0422 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0423 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0424 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0425 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0426 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0426 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0427 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0428 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0429 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -475,7 +475,7 @@ out_log: |-
   Tick: 0464 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0465 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0466 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0467 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0467 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0468 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0469 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0470 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -503,7 +503,7 @@ out_log: |-
   Tick: 0492 | PC: 0x14C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0493 | PC: 0x14C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0494 | PC: 0x14C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0495 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0495 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0496 | PC: 0x154 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0497 | PC: 0x158 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0498 | PC: 0x158 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -530,7 +530,7 @@ out_log: |-
   Tick: 0519 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0520 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0521 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0522 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0522 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0523 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0524 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0525 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -558,12 +558,12 @@ out_log: |-
   Tick: 0547 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0548 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0549 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0550 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0550 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0551 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0552 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0553 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0554 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0555 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0555 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0556 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0557 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0558 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -604,7 +604,7 @@ out_log: |-
   Tick: 0593 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0594 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0595 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0596 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0596 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0597 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0598 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0599 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -632,7 +632,7 @@ out_log: |-
   Tick: 0621 | PC: 0x14C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0622 | PC: 0x14C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0623 | PC: 0x14C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0624 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0624 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0625 | PC: 0x154 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0626 | PC: 0x158 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0627 | PC: 0x158 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -659,7 +659,7 @@ out_log: |-
   Tick: 0648 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0649 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0650 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0651 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0651 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0652 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0653 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0654 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -687,12 +687,12 @@ out_log: |-
   Tick: 0676 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0677 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0678 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0679 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0679 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0680 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0681 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0682 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0683 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0684 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0684 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0685 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0686 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0687 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -733,7 +733,7 @@ out_log: |-
   Tick: 0722 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0723 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0724 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0725 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0725 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0726 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0727 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0728 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -761,7 +761,7 @@ out_log: |-
   Tick: 0750 | PC: 0x14C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0751 | PC: 0x14C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0752 | PC: 0x14C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0753 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0753 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0754 | PC: 0x154 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0755 | PC: 0x158 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0756 | PC: 0x158 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -788,7 +788,7 @@ out_log: |-
   Tick: 0777 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0778 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0779 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0780 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0780 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0781 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0782 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0783 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -816,12 +816,12 @@ out_log: |-
   Tick: 0805 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0806 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0807 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0808 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0808 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0809 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0810 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0811 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0812 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0813 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0813 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0814 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0815 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0816 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -862,7 +862,7 @@ out_log: |-
   Tick: 0851 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0852 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0853 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0854 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0854 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0855 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0856 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0857 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -890,7 +890,7 @@ out_log: |-
   Tick: 0879 | PC: 0x14C | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0880 | PC: 0x14C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0881 | PC: 0x14C | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0882 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0882 | PC: 0x154 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0883 | PC: 0x154 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0884 | PC: 0x158 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0885 | PC: 0x158 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -917,7 +917,7 @@ out_log: |-
   Tick: 0906 | PC: 0x84  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0907 | PC: 0x84  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0908 | PC: 0x84  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0909 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0909 | PC: 0x8C  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0910 | PC: 0x8C  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0911 | PC: 0x90  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0912 | PC: 0x90  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
@@ -945,12 +945,12 @@ out_log: |-
   Tick: 0934 | PC: 0xC0  | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0935 | PC: 0xC0  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0936 | PC: 0xC0  | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0937 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0937 | PC: 0xC8  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0938 | PC: 0xC8  | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0939 | PC: 0xCC  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0940 | PC: 0xCC  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0941 | PC: 0xCC  | m1:05 m2:01 |    LW |   LUI |Z:1 N:0
-  Tick: 0942 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:1 N:0
+  Tick: 0942 | PC: 0xD4  | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0943 | PC: 0xD4  | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0944 | PC: 0xD4  | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
   Tick: 0945 | PC: 0xDC  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
@@ -991,7 +991,7 @@ out_log: |-
   Tick: 0980 | PC: 0x110 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
   Tick: 0981 | PC: 0x110 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0982 | PC: 0x110 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
-  Tick: 0983 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+  Tick: 0983 | PC: 0x118 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
   Tick: 0984 | PC: 0x118 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
   Tick: 0985 | PC: 0x11C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
   Tick: 0986 | PC: 0x11C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0

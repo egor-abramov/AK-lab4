@@ -294,6 +294,7 @@ Memory-mapped I/O
 - `latch_ir1` - защелкнуть `IR1`
 - `latch_ir2` - защелкнуть `IR2`
 - `latch_ar` - защелкнуть `AR`
+- `set_alu_flags` - установить флаги результата АЛУ
 - `sel_alu_l` - левый вход АЛУ
     * `PC`
     * `RS1` - левый выход Register File
@@ -322,8 +323,7 @@ Memory-mapped I/O
     * `Mem`
     * `ALU`
 - `sel_next_pc` - выбор следующего значения `PC`
-    * `ALU1`
-    * `ALU2`
+    * `ALU`
     * `INC4`
     * `INC8`
 - `sel_mem_sr` - выбор источника для записи в память
@@ -349,13 +349,14 @@ Memory-mapped I/O
 **Структура микроинструкции**
 
 - Signals
-    * `write_mem` -- бит 26
-    * `read_mem` -- бит 25
-    * `write_reg` -- бит 24
-    * `latch_pc` -- бит 23
-    * `latch_ir1` -- бит 22
-    * `latch_ir2` -- бит 21
-    * `latch_ar` -- бит 20
+    * `write_mem` -- бит 27
+    * `read_mem` -- бит 26
+    * `write_reg` -- бит 25
+    * `latch_pc` -- бит 24
+    * `latch_ir1` -- бит 23
+    * `latch_ir2` -- бит 22
+    * `latch_ar` -- бит 21
+    * `set_alu_flags` -- бит 20
     * `sel_alu_l` -- бит 19
     * `sel_alu_r` -- бит 18
     * `alu_op` -- биты 17-14
@@ -364,12 +365,12 @@ Memory-mapped I/O
     * `sel_reg_sr` -- бит 10
     * `sel_next_pc` -- бит 9-8
 - Jump Type -- биты 7-5
-    * `INC` - инкремент `mPC`
-    * `MAP` - переход по `dispatch table`
-    * `JMP` - безусловный переход
-    * `JMP_Z` - переход если `zero == 1`
-    * `JMP_G` - переход если `negative == 0 ^ zero == 0`
-    * `JMP_L` - переход если `negative == 1 ^ zero == 0`
+    * `INC` -- инкремент `mPC`
+    * `MAP` -- переход по `dispatch table`
+    * `JMP` -- безусловный переход
+    * `JMP_Z` -- переход если `zero == 1`
+    * `JMP_G` -- переход если `negative == 0 ^ zero == 0`
+    * `JMP_L` -- переход если `negative == 1 ^ zero == 0`
 - New Addr -- биты 4-0
 
 Сигнал состоит из управляющих сигналов Data Path, Jump Type - стратегия выбора следующего `mPC`, New Addr - новый адрес
@@ -387,7 +388,7 @@ Memory-mapped I/O
   `sel_mpc`. В случае если микроинструкция требует перехода и условие перехода выполнено, то через мультиплексор пройдет
   значение с шины `New Addr`, если Jump Type равен `Map`, то пройдет значение из `Dispatch Table`, иначе произойдет
   инкремент `mPC`.
-- `Issue Logic` - принимает `IR1` и `IR2`. Проводит проверку на возможность параллельного запуска инструкций. В случае
+- `Hazards Resolve` - принимает `IR1` и `IR2`. Проводит проверку на возможность параллельного запуска инструкций. В случае
   если это не возможно на мультиплексор `mPC2` подается управляющий сигнал, принудительно устанавливающий `mPC2` в
   значение 0 (Fetch).
 - `Sync Logic` - принимает `mPC1` и `mPC2`. Если выполнение одной из инструкций завершилось (`mPC` установлен в 0), а
@@ -400,12 +401,12 @@ Memory-mapped I/O
 ## Суперскаляр
 
 Возможность одновременного исполнения двух инструкций достигается засчет дублирования некоторых элементов схемы: АЛУ,
-`IR`, `AR`, `mPC`, выходы и входы Register File. Разрешение конфликтов происходит в схеме `Issue Logic` в
+`IR`, `AR`, `mPC`, выходы и входы Register File. Разрешение конфликтов происходит в схеме `Hazards Resolve` в
 `Control Unit`.
 
 **Не разрешается** одновременное исполнение в следующих случаях
 
-- Обе инсструкции взаимодействуют с памятью (`lw`, `sw`)
+- Обе инструкции взаимодействуют с памятью (`lw`, `sw`)
 - Первая инструкция - переход (`j`, `jr` и т.д.)
 - Инструкция пишет в регистр, из которого читает вторая инструкция
 - Инструкции пишут в один регистр
@@ -488,110 +489,110 @@ STR_HELLO                 |       3376 |        0xc | DATA
 **Модель процессора**
 
 ```shell
-$ python machine.py hello.bin
-INFO:root:Ticks executed: 2222
+$ python machine.py examples/hello/hello.bin
+INFO:root:Ticks executed: 1678
 INFO:root:Output:
 INFO:root:Hello World!
 
 INFO:root:Trace:
-INFO:root:Tick: 0001 | PC: 0x04  | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0002 | PC: 0x04  | mPC: 0x00 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0003 | PC: 0x08  | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0004 | PC: 0x08  | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0005 | PC: 0x0C  | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0006 | PC: 0x0C  | mPC: 0x00 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0007 | PC: 0x10  | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0008 | PC: 0x10  | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0009 | PC: 0x14  | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0010 | PC: 0x44  | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0011 | PC: 0x48  | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0012 | PC: 0x78  | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0013 | PC: 0x7C  | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0014 | PC: 0xF0  | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0015 | PC: 0xF4  | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0016 | PC: 0x17C | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0017 | PC: 0x180 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0018 | PC: 0x23C | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0019 | PC: 0x240 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0020 | PC: 0x2F4 | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0021 | PC: 0x2F8 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0022 | PC: 0x488 | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0023 | PC: 0x48C | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0024 | PC: 0x4BC | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0025 | PC: 0x4C0 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0026 | PC: 0x958 | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0027 | PC: 0x95C | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0028 | PC: 0xAEC | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0029 | PC: 0xAF0 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0030 | PC: 0xBF0 | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0031 | PC: 0xBF4 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0032 | PC: 0xCCC | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0033 | PC: 0xCD0 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0034 | PC: 0xCD0 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0035 | PC: 0xCD4 | mPC: 0x04 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0036 | PC: 0xCD4 | mPC: 0x05 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0037 | PC: 0xCD4 | mPC: 0x00 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0038 | PC: 0xCD8 | mPC: 0x03 |   MV | Z: 0 N: 0
-INFO:root:Tick: 0039 | PC: 0xCD8 | mPC: 0x00 |   MV | Z: 1 N: 0
-INFO:root:Tick: 0040 | PC: 0xCDC | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0041 | PC: 0xCDC | mPC: 0x00 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0042 | PC: 0xCE0 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0043 | PC: 0xCE0 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0044 | PC: 0xCE4 | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0045 | PC: 0xCE4 | mPC: 0x00 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0046 | PC: 0xCE8 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0047 | PC: 0xCE8 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0048 | PC: 0xCEC | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0049 | PC: 0xCEC | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0050 | PC: 0xCF0 | mPC: 0x04 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0051 | PC: 0xCF0 | mPC: 0x05 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0052 | PC: 0xCF0 | mPC: 0x00 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0053 | PC: 0xCF4 | mPC: 0x0E |    J | Z: 0 N: 0
-INFO:root:Tick: 0054 | PC: 0x180 | mPC: 0x00 |    J | Z: 0 N: 0
-INFO:root:Tick: 0055 | PC: 0x184 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0056 | PC: 0x184 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0057 | PC: 0x188 | mPC: 0x04 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0058 | PC: 0x188 | mPC: 0x05 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0059 | PC: 0x188 | mPC: 0x00 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0060 | PC: 0x18C | mPC: 0x03 |   MV | Z: 0 N: 0
-INFO:root:Tick: 0061 | PC: 0x18C | mPC: 0x00 |   MV | Z: 0 N: 0
-INFO:root:Tick: 0062 | PC: 0x190 | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0063 | PC: 0x190 | mPC: 0x00 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0064 | PC: 0x194 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0065 | PC: 0x194 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0066 | PC: 0x198 | mPC: 0x04 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0067 | PC: 0x198 | mPC: 0x05 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0068 | PC: 0x198 | mPC: 0x00 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0069 | PC: 0x19C | mPC: 0x06 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0070 | PC: 0x19C | mPC: 0x07 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0071 | PC: 0x19C | mPC: 0x00 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0072 | PC: 0x1A0 | mPC: 0x06 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0073 | PC: 0x1A0 | mPC: 0x07 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0074 | PC: 0x1A0 | mPC: 0x00 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0075 | PC: 0x1A4 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0076 | PC: 0x1A4 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0077 | PC: 0x1A8 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0078 | PC: 0x1A8 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0079 | PC: 0x1AC | mPC: 0x04 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0080 | PC: 0x1AC | mPC: 0x05 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0081 | PC: 0x1AC | mPC: 0x00 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0082 | PC: 0x1B0 | mPC: 0x03 |   MV | Z: 0 N: 0
-INFO:root:Tick: 0083 | PC: 0x1B0 | mPC: 0x00 |   MV | Z: 1 N: 0
-INFO:root:Tick: 0084 | PC: 0x1B4 | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0085 | PC: 0x1B4 | mPC: 0x00 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0086 | PC: 0x1B8 | mPC: 0x06 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0087 | PC: 0x1B8 | mPC: 0x07 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0088 | PC: 0x1B8 | mPC: 0x00 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0089 | PC: 0x1BC | mPC: 0x06 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0090 | PC: 0x1BC | mPC: 0x07 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0091 | PC: 0x1BC | mPC: 0x00 |   LW | Z: 0 N: 0
-INFO:root:Tick: 0092 | PC: 0x1C0 | mPC: 0x08 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0093 | PC: 0x1C0 | mPC: 0x00 | ADDI | Z: 0 N: 0
-INFO:root:Tick: 0094 | PC: 0x1C4 | mPC: 0x04 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0095 | PC: 0x1C4 | mPC: 0x05 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0096 | PC: 0x1C4 | mPC: 0x00 |   SW | Z: 0 N: 0
-INFO:root:Tick: 0097 | PC: 0x1C8 | mPC: 0x03 |   MV | Z: 0 N: 0
-INFO:root:Tick: 0098 | PC: 0x1C8 | mPC: 0x00 |   MV | Z: 0 N: 0
-INFO:root:Tick: 0099 | PC: 0x1CC | mPC: 0x02 |  LUI | Z: 0 N: 0
-INFO:root:Tick: 0100 | PC: 0x1CC | mPC: 0x00 |  LUI | Z: 0 N: 0
+INFO:root:Tick: 0001 | PC: 0x00  | m1:01 m2:00 |   LUI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0002 | PC: 0x04  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0003 | PC: 0x04  | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+INFO:root:Tick: 0004 | PC: 0x0C  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0005 | PC: 0x0C  | m1:07 m2:0F |  ADDI |     J |Z:1 N:0
+INFO:root:Tick: 0006 | PC: 0x44  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0007 | PC: 0x44  | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0008 | PC: 0x78  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0009 | PC: 0x78  | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0010 | PC: 0xF0  | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0011 | PC: 0xF0  | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0012 | PC: 0x17C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0013 | PC: 0x17C | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0014 | PC: 0x23C | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0015 | PC: 0x23C | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0016 | PC: 0x2F4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0017 | PC: 0x2F4 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0018 | PC: 0x488 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0019 | PC: 0x488 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0020 | PC: 0x4BC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0021 | PC: 0x4BC | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0022 | PC: 0x958 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0023 | PC: 0x958 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0024 | PC: 0xAEC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0025 | PC: 0xAEC | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0026 | PC: 0xBF0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0027 | PC: 0xBF0 | m1:0F m2:00 |     J |  IDLE |Z:1 N:0
+INFO:root:Tick: 0028 | PC: 0xCCC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0029 | PC: 0xCCC | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0030 | PC: 0xCD0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0031 | PC: 0xCD0 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0032 | PC: 0xCD4 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0033 | PC: 0xCD4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0034 | PC: 0xCD4 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+INFO:root:Tick: 0035 | PC: 0xCDC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0036 | PC: 0xCDC | m1:07 m2:01 |  ADDI |   LUI |Z:1 N:0
+INFO:root:Tick: 0037 | PC: 0xCE4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0038 | PC: 0xCE4 | m1:07 m2:07 |  ADDI |  ADDI |Z:1 N:0
+INFO:root:Tick: 0039 | PC: 0xCEC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0040 | PC: 0xCEC | m1:03 m2:0F |    SW |     J |Z:1 N:0
+INFO:root:Tick: 0041 | PC: 0x180 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0042 | PC: 0x180 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0043 | PC: 0x180 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0044 | PC: 0x184 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0045 | PC: 0x184 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0046 | PC: 0x188 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0047 | PC: 0x188 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0048 | PC: 0x188 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+INFO:root:Tick: 0049 | PC: 0x190 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0050 | PC: 0x190 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0051 | PC: 0x194 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0052 | PC: 0x194 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0053 | PC: 0x198 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0054 | PC: 0x198 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0055 | PC: 0x198 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0056 | PC: 0x19C | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0057 | PC: 0x19C | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0058 | PC: 0x19C | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+INFO:root:Tick: 0059 | PC: 0x1A4 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0060 | PC: 0x1A4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0061 | PC: 0x1A4 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0062 | PC: 0x1A8 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0063 | PC: 0x1A8 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0064 | PC: 0x1AC | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0065 | PC: 0x1AC | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0066 | PC: 0x1AC | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+INFO:root:Tick: 0067 | PC: 0x1B4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0068 | PC: 0x1B4 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0069 | PC: 0x1B8 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0070 | PC: 0x1B8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0071 | PC: 0x1B8 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+INFO:root:Tick: 0072 | PC: 0x1C0 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0073 | PC: 0x1C0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0074 | PC: 0x1C0 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0075 | PC: 0x1C4 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0076 | PC: 0x1C4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0077 | PC: 0x1C4 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+INFO:root:Tick: 0078 | PC: 0x1CC | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0079 | PC: 0x1CC | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0080 | PC: 0x1D0 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0081 | PC: 0x1D0 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0082 | PC: 0x1D4 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0083 | PC: 0x1D4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0084 | PC: 0x1D4 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0085 | PC: 0x1D8 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0086 | PC: 0x1D8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0087 | PC: 0x1D8 | m1:05 m2:07 |    LW |  ADDI |Z:1 N:0
+INFO:root:Tick: 0088 | PC: 0x1E0 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0089 | PC: 0x1E0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0090 | PC: 0x1E0 | m1:07 m2:00 |  ADDI |  IDLE |Z:1 N:0
+INFO:root:Tick: 0091 | PC: 0x1E4 | m1:00 m2:00 | FETCH | FETCH |Z:0 N:0
+INFO:root:Tick: 0092 | PC: 0x1E4 | m1:03 m2:00 |    SW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0093 | PC: 0x1E8 | m1:04 m2:00 |    SW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0094 | PC: 0x1E8 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0095 | PC: 0x1E8 | m1:02 m2:01 |    MV |   LUI |Z:1 N:0
+INFO:root:Tick: 0096 | PC: 0x1F0 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0097 | PC: 0x1F0 | m1:05 m2:00 |    LW |  IDLE |Z:1 N:0
+INFO:root:Tick: 0098 | PC: 0x1F4 | m1:06 m2:00 |    LW |  IDLE |Z:0 N:0
+INFO:root:Tick: 0099 | PC: 0x1F4 | m1:00 m2:00 | FETCH | FETCH |Z:1 N:0
+INFO:root:Tick: 0100 | PC: 0x1F4 | m1:02 m2:07 |    MV |  ADDI |Z:1 N:0
 ```

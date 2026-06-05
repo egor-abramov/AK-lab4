@@ -13,6 +13,7 @@ class Signal(int, Enum):
     LATCH_IR1 = auto()
     LATCH_IR2 = auto()
     LATCH_AR = auto()
+    SET_ALU_FLAGS = auto()
     SEL_ALU_L_PC = auto()
     SEL_ALU_L_RS1 = auto()
     SEL_ALU_R_RS2 = auto()
@@ -191,21 +192,7 @@ class DataPath:
             alu2_r = rs2_2_data
         alu2_res, flags2 = self._alu_execute(alu2_l, alu2_r, signals2)
 
-        # New flags
-        alu_op_signals = {
-            Signal.ALU_OP_PLUS,
-            Signal.ALU_OP_MINUS,
-            Signal.ALU_OP_MUL,
-            Signal.ALU_OP_DIV,
-            Signal.ALU_OP_MOD,
-            Signal.ALU_OP_AND,
-            Signal.ALU_OP_INV,
-            Signal.ALU_OP_PASS_L,
-            Signal.ALU_OP_PASS_R,
-        }
-        sig2_updates_flags = any(sig in alu_op_signals for sig in signals2)
-
-        if sig2_updates_flags:
+        if Signal.SET_ALU_FLAGS in signals2:
             self.flags = flags2
         else:
             self.flags = flags1
@@ -329,7 +316,6 @@ class ControlUnit:
         self.mPC2 = 0x0
         self.scalar_mode = scalar_mode
 
-        # Опкод в адрес начала микропограммы
         self.dispatch_table = {
             opcode_to_binary[Opcode.LUI]: 0x1,
             opcode_to_binary[Opcode.MV]: 0x2,
@@ -388,6 +374,7 @@ class ControlUnit:
                     Signal.LATCH_PC,
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
+                    Signal.SET_ALU_FLAGS,
                     Signal.SEL_REG_SR_ALU,
                     Signal.WRITE_REG,
                 ]
@@ -441,6 +428,7 @@ class ControlUnit:
                     Signal.SEL_ALU_R_IMM,
                     Signal.SEL_IMM_MODE_12,
                     Signal.ALU_OP_PLUS,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ],
@@ -453,6 +441,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_PLUS,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -465,6 +454,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_MINUS,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -477,6 +467,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_MUL,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -489,6 +480,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_AND,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -501,6 +493,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_INV,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -513,6 +506,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_DIV,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -525,6 +519,7 @@ class ControlUnit:
                     Signal.SEL_ALU_L_RS1,
                     Signal.SEL_ALU_R_RS2,
                     Signal.ALU_OP_MOD,
+                    Signal.SET_ALU_FLAGS,
                     Signal.WRITE_REG,
                     Signal.SEL_REG_SR_ALU,
                 ]
@@ -552,6 +547,7 @@ class ControlUnit:
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
+                    Signal.SET_ALU_FLAGS,
                 ],
                 jmp_mode=self.SEQ_JMP_Z,
                 jmp_addr=0x13,
@@ -575,6 +571,7 @@ class ControlUnit:
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
+                    Signal.SET_ALU_FLAGS,
                 ],
                 jmp_mode=self.SEQ_JMP_G,
                 jmp_addr=0x13,
@@ -590,6 +587,7 @@ class ControlUnit:
                 [
                     Signal.SEL_ALU_L_RS1,
                     Signal.ALU_OP_PASS_L,
+                    Signal.SET_ALU_FLAGS,
                 ],
                 jmp_mode=self.SEQ_JMP_L,
                 jmp_addr=0x13,
@@ -606,7 +604,7 @@ class ControlUnit:
             MicroCommand([]),
         ]
 
-    def _issue_logic(self, ir1: int, ir2: int) -> bool:
+    def _hazards_resolve(self, ir1: int, ir2: int) -> bool:
         if self.scalar_mode:
             return False
 
@@ -750,7 +748,7 @@ class ControlUnit:
 
             self.mPC1 = self.dispatch_table.get(op1, 0x18)
 
-            if self._issue_logic(self.data_path.IR1, self.data_path.IR2):
+            if self._hazards_resolve(self.data_path.IR1, self.data_path.IR2):
                 self.mPC2 = self.dispatch_table.get(op2, 0x18)
             else:
                 self.mPC2 = 0x0
@@ -778,7 +776,7 @@ def simulation(
             control_unit.tick()
             ticks += 1
 
-            if ticks <= 1000:
+            if ticks <= 100:
                 pc_str = f"PC: 0x{data_path.PC:02X}"
                 mpc_str = f"m1:{control_unit.mPC1:02X} m2:{control_unit.mPC2:02X}"
 
