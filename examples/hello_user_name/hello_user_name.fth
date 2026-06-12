@@ -1,3 +1,5 @@
+import io
+
 string "What is your name?\n" question_msg
 string "Hello, " hello_msg
 string "!\n" excl_msg

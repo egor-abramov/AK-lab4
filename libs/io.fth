@@ -53,10 +53,6 @@ var _char
     _str_len @ _start_ptr @ !
 ;
 
-: or
-    not swap not and not
-;
-
 var _ch
 var _acc
 var _sign
@@ -127,7 +123,6 @@ var _print_i
         _print_i @ 1 + _print_i !
         _print_len @ _print_i @ -
     endloop
-    cr
 ;
 
 : print_array

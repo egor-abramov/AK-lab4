@@ -1,3 +1,5 @@
+import io
+
 : SQUARE DUP * ;
 5 square . cr
 

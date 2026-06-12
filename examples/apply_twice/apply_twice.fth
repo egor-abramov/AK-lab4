@@ -1,3 +1,5 @@
+import io
+
 var callback
 
 : apply_twice
@@ -23,4 +25,4 @@ str_msg1 print_str cr
 
 str_msg2 print_str cr
 3 ' square apply_twice
-. cr
+.

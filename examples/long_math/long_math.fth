@@ -1,3 +1,6 @@
+import io
+import utils
+
 var AL
 var AH
 var BL
@@ -49,14 +52,13 @@ string "64-bit Subtraction\n" msg_sub
 string "64-bit Subtraction with borrow\n" msg_sub_b
 string "High: " msg_h
 string " Low: " msg_l
-string "\n" msg_nl
 
 : print_res
     msg_h print_str
     RH @ .
     msg_l print_str
     RL @ .
-    msg_nl print_str
+    cr print_str
 ;
 
 msg_add print_str

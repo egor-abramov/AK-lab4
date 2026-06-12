@@ -22,6 +22,7 @@ class Token:
 def tokenize(code: str) -> list[Token]:
     tokens: list[Token] = []
     token_specification = [
+        ("IMPORT", r"import\s+(\w+)+"),
         ("STRING", r'"[^"]*"'),
         ("NUMBER", r"-?\d+"),
         ("WORD", r"[^\s]+"),
@@ -39,6 +40,9 @@ def tokenize(code: str) -> list[Token]:
         elif typ == "STRING":
             actual_str = value[1:-1].encode("utf-8").decode("unicode_escape")
             tokens.append(Token(typ, actual_str))
+        elif typ == "IMPORT":
+            lib_name = str(value.split()[1]).lower()
+            tokens.append(Token(typ, lib_name))
     return tokens
 
 
@@ -399,17 +403,22 @@ class Translator:
 
 
 def main(source_path: str, target_path: str):
-    with open("stdlib.fth", "r", encoding="utf-8") as f:
-        stdlib_text = f.read()
-
     with open(source_path, "r", encoding="utf-8") as f:
         source_text = f.read()
 
-    stdlib_tokens = tokenize(stdlib_text)
-    user_tokens = tokenize(source_text)
+    tokens = tokenize(source_text)
+    libs = list(map(lambda t: t.value, filter(lambda t: t.typ == "IMPORT", tokens)))
+    tokens = list(filter(lambda t: t.typ != "IMPORT", tokens))
+
+    libs_text = []
+    for lib in libs:
+        with open(f"libs/{lib}.fth", "r", encoding="utf-8") as f:
+            libs_text.append(f.read())
+    libs_text = "\n".join(libs_text)
+    libs_tokens = tokenize(libs_text)
 
     translator = Translator()
-    translated_code = translator.translate(stdlib_tokens, user_tokens)
+    translated_code = translator.translate(libs_tokens, tokens)
     parsed_program, label2addr = assemble(translated_code)
 
     user_start = label2addr.get("__USER_CODE__", 0)
